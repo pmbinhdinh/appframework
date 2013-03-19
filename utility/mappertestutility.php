@@ -28,12 +28,18 @@ use OCA\AppFramework\Core\Api;
 
 
 /**
- * Simple utility class for testing controllers
+ * Simple utility class for testing mappers
  */
 abstract class MapperTestUtility extends \PHPUnit_Framework_TestCase {
 
 	protected $api;
 
+	/**
+	 * Run this function before the actual test to either set or initialize the
+	 * api. After this the api can be accessed by using $this->api
+	 * @param \OCA\AppFramework\Core\API $api the api mock, if not set it will 
+	 * initialized automatically with the basic methods
+	 */
 	protected function beforeEach($api=null){
 		if($api === null){
 			$this->api = $this->getMock('\OCA\AppFramework\Core\API', 
@@ -45,6 +51,14 @@ abstract class MapperTestUtility extends \PHPUnit_Framework_TestCase {
 	}
 
 
+	/**
+	 * Create mocks and set expected results for database queries
+	 * @param string $sql the sql query that you expect to receive
+	 * @param array $arguments the expected arguments for the prepare query
+	 * method
+	 * @param array $returnRows the rows that should be returned for the result
+	 * of the database query
+	 */
 	protected function setMapperResult($sql, $arguments=array(), 
 										$returnRows=array()){
 		$pdoResult = $this->getMock('Result', 
