@@ -30,123 +30,123 @@ require_once(__DIR__ . "/../classloader.php");
 
 class DIContainerTest extends \PHPUnit_Framework_TestCase {
 
-        private $container;
+	private $container;
 
-        protected function setUp(){
-                $this->container = new DIContainer('name');
-                $this->api = $this->getMock('OCA\AppFramework\Core\API', array('getTrans'), array('hi'));
-        }
+	protected function setUp(){
+		$this->container = new DIContainer('name');
+		$this->api = $this->getMock('OCA\AppFramework\Core\API', array('getTrans'), array('hi'));
+	}
 
-        private function exchangeAPI(){
-                $this->api->expects($this->any())
-                                ->method('getTrans')
-                                ->will($this->returnValue('yo'));
-                $this->container['API'] = $this->api;
-        }
+	private function exchangeAPI(){
+		$this->api->expects($this->any())
+				->method('getTrans')
+				->will($this->returnValue('yo'));
+		$this->container['API'] = $this->api;
+	}
 
-        public function testProvidesAPI(){
-                $this->assertTrue(isset($this->container['API']));
-        }
-
-
-        public function testProvidesRequest(){
-                $this->assertTrue(isset($this->container['Request']));
-        }
+	public function testProvidesAPI(){
+		$this->assertTrue(isset($this->container['API']));
+	}
 
 
-        public function testProvidesSecurityMiddleware(){
-                $this->assertTrue(isset($this->container['SecurityMiddleware']));
-        }
+	public function testProvidesRequest(){
+		$this->assertTrue(isset($this->container['Request']));
+	}
 
 
-        public function testProvidesMiddlewareDispatcher(){
-                $this->assertTrue(isset($this->container['MiddlewareDispatcher']));
-        }
+	public function testProvidesSecurityMiddleware(){
+		$this->assertTrue(isset($this->container['SecurityMiddleware']));
+	}
 
 
-        public function testProvidesAppName(){
-                $this->assertTrue(isset($this->container['AppName']));
-        }
-
-        public function testProvidesTwigL10N(){
-                $this->exchangeAPI();
-                $this->assertTrue(isset($this->container['TwigL10N']));
-        }
+	public function testProvidesMiddlewareDispatcher(){
+		$this->assertTrue(isset($this->container['MiddlewareDispatcher']));
+	}
 
 
-        public function testProvidesTwigLinkToRoute(){
-                $this->exchangeAPI();
-                $this->assertTrue(isset($this->container['TwigLinkToRoute']));
-        }
+	public function testProvidesAppName(){
+		$this->assertTrue(isset($this->container['AppName']));
+	}
+
+	public function testProvidesTwigL10N(){
+		$this->exchangeAPI();
+		$this->assertTrue(isset($this->container['TwigL10N']));
+	}
 
 
-        public function testProvidesTwigLinkToAbsoluteRoute(){
-                $this->exchangeAPI();
-                $this->assertTrue(isset($this->container['TwigLinkToAbsoluteRoute']));
-        }
+	public function testProvidesTwigLinkToRoute(){
+		$this->exchangeAPI();
+		$this->assertTrue(isset($this->container['TwigLinkToRoute']));
+	}
 
 
-        public function testAppNameIsSetCorrectly(){
-                $this->assertEquals('name', $this->container['AppName']);
-        }
+	public function testProvidesTwigLinkToAbsoluteRoute(){
+		$this->exchangeAPI();
+		$this->assertTrue(isset($this->container['TwigLinkToAbsoluteRoute']));
+	}
 
 
-        public function testMiddlewareDispatcherIncludesSecurityMiddleware(){
-                $security = $this->container['SecurityMiddleware'];
-                $dispatcher = $this->container['MiddlewareDispatcher'];
-
-                $this->assertContains($security, $dispatcher->getMiddlewares());
-        }
+	public function testAppNameIsSetCorrectly(){
+		$this->assertEquals('name', $this->container['AppName']);
+	}
 
 
-        public function testTwigTemplateDirectoryNotSet(){
-                $this->assertNull($this->container['TwigTemplateDirectory']);
-        }
+	public function testMiddlewareDispatcherIncludesSecurityMiddleware(){
+		$security = $this->container['SecurityMiddleware'];
+		$dispatcher = $this->container['MiddlewareDispatcher'];
+
+		$this->assertContains($security, $dispatcher->getMiddlewares());
+	}
 
 
-        public function testTwigTemplateCacheDirectoryNotSet(){
-                $this->assertNull($this->container['TwigTemplateCacheDirectory']);
-        }
+	public function testTwigTemplateDirectoryNotSet(){
+		$this->assertNull($this->container['TwigTemplateDirectory']);
+	}
 
 
-        public function testTwigMiddlewareSet(){
-                $this->exchangeAPI();
-                $this->assertTrue(isset($this->container['TwigMiddleware']));
-        }
+	public function testTwigTemplateCacheDirectoryNotSet(){
+		$this->assertNull($this->container['TwigTemplateCacheDirectory']);
+	}
 
 
-        public function testMiddlewareDispatcherIncludesTwigWhenTplDirectorySet(){
-                $this->exchangeAPI();
-                $this->container['TwigTemplateDirectory'] = '.';
-                $twig = $this->container['TwigMiddleware'];
-                $dispatcher = $this->container['MiddlewareDispatcher'];
-
-                $this->assertContains($twig, $dispatcher->getMiddlewares());
-        }
-
-        public function testMiddlewareDispatcherDoesNotIncludeTwigWhenTplDirectoryNotSet(){
-                $this->exchangeAPI();
-                $dispatcher = $this->container['MiddlewareDispatcher'];
-
-                $this->assertEquals(1, count($dispatcher->getMiddlewares()));
-        }
+	public function testTwigMiddlewareSet(){
+		$this->exchangeAPI();
+		$this->assertTrue(isset($this->container['TwigMiddleware']));
+	}
 
 
-        public function testTwigCacheIsDisabledByDefault(){
-                $this->exchangeAPI();
-                $this->container['TwigTemplateDirectory'] = '.';
+	public function testMiddlewareDispatcherIncludesTwigWhenTplDirectorySet(){
+		$this->exchangeAPI();
+		$this->container['TwigTemplateDirectory'] = '.';
+		$twig = $this->container['TwigMiddleware'];
+		$dispatcher = $this->container['MiddlewareDispatcher'];
 
-                $this->assertFalse($this->container['Twig']->getCache());
-        }
+		$this->assertContains($twig, $dispatcher->getMiddlewares());
+	}
+
+	public function testMiddlewareDispatcherDoesNotIncludeTwigWhenTplDirectoryNotSet(){
+		$this->exchangeAPI();
+		$dispatcher = $this->container['MiddlewareDispatcher'];
+
+		$this->assertEquals(1, count($dispatcher->getMiddlewares()));
+	}
 
 
-        public function testTwigCache(){
-                $this->exchangeAPI();
-                $this->container['TwigTemplateDirectory'] = '.';
-                $this->container['TwigTemplateCacheDirectory'] = '..';
+	public function testTwigCacheIsDisabledByDefault(){
+		$this->exchangeAPI();
+		$this->container['TwigTemplateDirectory'] = '.';
 
-                $this->assertEquals('..', $this->container['Twig']->getCache());
-        }
+		$this->assertFalse($this->container['Twig']->getCache());
+	}
+
+
+	public function testTwigCache(){
+		$this->exchangeAPI();
+		$this->container['TwigTemplateDirectory'] = '.';
+		$this->container['TwigTemplateCacheDirectory'] = '..';
+
+		$this->assertEquals('..', $this->container['Twig']->getCache());
+	}
 
 
 }

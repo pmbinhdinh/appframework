@@ -26,21 +26,21 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 angular.module('OC').factory '_DoesNotContainQuery', ['_Query',
 (_Query) ->
 
-        class DoesNotContainQuery extends _Query
+	class DoesNotContainQuery extends _Query
 
-                constructor: (@_field, @_value) ->
-                        name = 'doesnotcontain'
-                        super(name, [@_field, @_value])
-
-
-                exec: (data) ->
-                        filtered = []
-                        for entry in data
-                                if entry[@_field].indexOf(@_value) == -1
-                                        filtered.push(entry)
-
-                        return filtered
+		constructor: (@_field, @_value) ->
+			name = 'doesnotcontain'
+			super(name, [@_field, @_value])
 
 
-        return DoesNotContainQuery
+		exec: (data) ->
+			filtered = []
+			for entry in data
+				if entry[@_field].indexOf(@_value) == -1
+					filtered.push(entry)
+
+			return filtered
+
+
+	return DoesNotContainQuery
 ]

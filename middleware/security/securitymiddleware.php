@@ -41,106 +41,106 @@ use OCA\AppFramework\Core\API;
  */
 class SecurityMiddleware extends Middleware {
 
-        private $security;
-        private $api;
+	private $security;
+	private $api;
 
-        /**
-         * @param API $api an instance of the api
-         */
-        public function __construct(API $api){
-                $this->api = $api;
-        }
-
-
-        /**
-         * This runs all the security checks before a method call. The
-         * security checks are determined by inspecting the controller method
-         * annotations
-         * @param string/Controller $controller the controllername or string
-         * @param string $methodName the name of the method
-         * @throws SecurityException when a security check fails
-         */
-        public function beforeController($controller, $methodName){
-
-                // get annotations from comments
-                $annotationReader = new MethodAnnotationReader($controller, $methodName);
-
-                // this will set the current navigation entry of the app, use this only
-                // for normal HTML requests and not for AJAX requests
-                if(!$annotationReader->hasAnnotation('Ajax')){
-                        $this->api->activateNavigationEntry();
-                        $ajax = false;
-                } else {
-                        $ajax = true;
-                }
-
-                $exceptionMessage = null;
-
-                // security checks
-                if(!$annotationReader->hasAnnotation('IsLoggedInExemption')){
-                        if(!$this->api->isLoggedIn()){
-                                $exceptionMessage = 'Current user is not logged in';
-                        }
-                }
-
-                if(!$annotationReader->hasAnnotation('CSRFExemption')){
-                        if(!$this->api->passesCSRFCheck()){
-                                $exceptionMessage = 'CSRF check failed';
-                        }
-                }
-
-                if(!$annotationReader->hasAnnotation('IsAdminExemption')){
-                        if(!$this->api->isAdminUser($this->api->getUserId())){
-                                $exceptionMessage = 'Logged in user must be an admin';
-                        }
-                }
-
-                if(!$annotationReader->hasAnnotation('IsSubAdminExemption')){
-                        if(!$this->api->isSubAdminUser($this->api->getUserId())){
-                                $exceptionMessage = 'Logged in user must be a subadmin';
-                        }
-                }
-
-                if($exceptionMessage !== null){
-                        throw new SecurityException($exceptionMessage, $ajax);
-                }
-
-        }
+	/**
+	 * @param API $api an instance of the api
+	 */
+	public function __construct(API $api){
+		$this->api = $api;
+	}
 
 
-        /**
-         * If an SecurityException is being caught, ajax requests return a JSON error
-         * response and non ajax requests redirect to the index
-         * @param Controller $controller the controller that is being called
-         * @param string $methodName the name of the method that will be called on
-         *                           the controller
-         * @param \Exception $exception the thrown exception
-         * @return Response a Response object or null in case that the exception could not be handled
-         */
-        public function afterException($controller, $methodName, \Exception $exception){
-                if($exception instanceof SecurityException){
+	/**
+	 * This runs all the security checks before a method call. The
+	 * security checks are determined by inspecting the controller method
+	 * annotations
+	 * @param string/Controller $controller the controllername or string
+	 * @param string $methodName the name of the method
+	 * @throws SecurityException when a security check fails
+	 */
+	public function beforeController($controller, $methodName){
 
-                        if($exception->isAjax()){
+		// get annotations from comments
+		$annotationReader = new MethodAnnotationReader($controller, $methodName);
 
-                                // ajax responses get an ajax error message
-                                $response = new JSONResponse();
-                                $response->setErrorMessage($exception->getMessage(),
-                                                get_class($controller) . '->' . $methodName);
-                                $this->api->log($exception->getMessage());
-                                return $response;
+		// this will set the current navigation entry of the app, use this only
+		// for normal HTML requests and not for AJAX requests
+		if(!$annotationReader->hasAnnotation('Ajax')){
+			$this->api->activateNavigationEntry();
+			$ajax = false;
+		} else {
+			$ajax = true;
+		}
 
-                        } else {
+		$exceptionMessage = null;
 
-                                // normal error messages link to the index page
-                                //$url = $this->api->linkToRoute('index')
-                                $url = $this->api->linkToAbsolute('index.php', ''); // TODO: replace with link to route
-                                $this->api->log('hi');
-                                $this->api->log($exception->getMessage());
-                                return new RedirectResponse($url);
-                        }
-                } else  {
-                        return null;
-                }
-        }
+		// security checks
+		if(!$annotationReader->hasAnnotation('IsLoggedInExemption')){
+			if(!$this->api->isLoggedIn()){
+				$exceptionMessage = 'Current user is not logged in';
+			}
+		}
+
+		if(!$annotationReader->hasAnnotation('CSRFExemption')){
+			if(!$this->api->passesCSRFCheck()){
+				$exceptionMessage = 'CSRF check failed';
+			}
+		}
+
+		if(!$annotationReader->hasAnnotation('IsAdminExemption')){
+			if(!$this->api->isAdminUser($this->api->getUserId())){
+				$exceptionMessage = 'Logged in user must be an admin';
+			}
+		}
+
+		if(!$annotationReader->hasAnnotation('IsSubAdminExemption')){
+			if(!$this->api->isSubAdminUser($this->api->getUserId())){
+				$exceptionMessage = 'Logged in user must be a subadmin';
+			}
+		}
+
+		if($exceptionMessage !== null){
+			throw new SecurityException($exceptionMessage, $ajax);
+		}
+
+	}
+
+
+	/**
+	 * If an SecurityException is being caught, ajax requests return a JSON error
+	 * response and non ajax requests redirect to the index
+	 * @param Controller $controller the controller that is being called
+	 * @param string $methodName the name of the method that will be called on
+	 *                           the controller
+	 * @param \Exception $exception the thrown exception
+	 * @return Response a Response object or null in case that the exception could not be handled
+	 */
+	public function afterException($controller, $methodName, \Exception $exception){
+		if($exception instanceof SecurityException){
+
+			if($exception->isAjax()){
+
+				// ajax responses get an ajax error message
+				$response = new JSONResponse();
+				$response->setErrorMessage($exception->getMessage(),
+						get_class($controller) . '->' . $methodName);
+				$this->api->log($exception->getMessage());
+				return $response;
+
+			} else {
+
+				// normal error messages link to the index page
+				//$url = $this->api->linkToRoute('index')
+				$url = $this->api->linkToAbsolute('index.php', ''); // TODO: replace with link to route
+				$this->api->log('hi');
+				$this->api->log($exception->getMessage());
+				return new RedirectResponse($url);
+			}
+		} else  {
+			return null;
+		}
+	}
 
 }

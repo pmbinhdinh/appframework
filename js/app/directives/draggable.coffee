@@ -23,10 +23,10 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 # Wrapper for jquery ui draggable
 angular.module('OC').directive 'ocDraggable', ->
 
-        return (scope, elm, attr) ->
-                options = scope.$eval(attr.ocDraggable)
+	return (scope, elm, attr) ->
+		options = scope.$eval(attr.ocDraggable)
 
-                if angular.isDefined(options)
-                        elm.draggable(options)
-                else
-                        elm.draggable()
+		if angular.isDefined(options)
+			elm.draggable(options)
+		else
+			elm.draggable()

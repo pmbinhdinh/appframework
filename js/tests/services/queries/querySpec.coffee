@@ -23,46 +23,46 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 describe '_Query', ->
 
 
-        beforeEach module 'OC'
+	beforeEach module 'OC'
 
-        beforeEach inject (_Query, _NotImplementedError) =>
-                @query = _Query
-                @error = _NotImplementedError
-
-
-        it 'should create a basic hash', =>
-                name = 'message'
-                args = [
-                        'a',
-                        1,
-                        1.3,
-                        true
-                ]
-                query = new @query(name, args)
-
-                expect(query.hashCode()).toBe('message_a_1_1.3_true')
+	beforeEach inject (_Query, _NotImplementedError) =>
+		@query = _Query
+		@error = _NotImplementedError
 
 
-        it 'should escape underlines of field names to avoid collissions', =>
-                query = new @query('message', ['test__a'])
-                expect(query.hashCode()).toBe('message_test____a')
+	it 'should create a basic hash', =>
+		name = 'message'
+		args = [
+			'a',
+			1,
+			1.3,
+			true
+		]
+		query = new @query(name, args)
+
+		expect(query.hashCode()).toBe('message_a_1_1.3_true')
 
 
-        it 'should throw an error when filtering', =>
-                expect =>
-                        new @query().exec()
-                .toThrow()
+	it 'should escape underlines of field names to avoid collissions', =>
+		query = new @query('message', ['test__a'])
+		expect(query.hashCode()).toBe('message_test____a')
 
 
-        it 'should have the same hash for two identical objects', =>
-                name = 'message'
-                args = [
-                        'a',
-                        1,
-                        1.3,
-                        true
-                ]
-                filter1 = new @query(name, args)
-                filter2 = new @query(name, args)
+	it 'should throw an error when filtering', =>
+		expect =>
+			new @query().exec()
+		.toThrow()
 
-                expect(filter1.hashCode()).toBe(filter2.hashCode())
+
+	it 'should have the same hash for two identical objects', =>
+		name = 'message'
+		args = [
+			'a',
+			1,
+			1.3,
+			true
+		]
+		filter1 = new @query(name, args)
+		filter2 = new @query(name, args)
+
+		expect(filter1.hashCode()).toBe(filter2.hashCode())

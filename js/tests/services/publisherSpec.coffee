@@ -22,48 +22,48 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 
 describe '_Publisher', ->
 
-        beforeEach module 'OC'
+	beforeEach module 'OC'
 
-        beforeEach =>
-                @modelMock =
-                        handle: jasmine.createSpy()
+	beforeEach =>
+		@modelMock =
+			handle: jasmine.createSpy()
 
-        beforeEach =>
-                inject (_Publisher) =>
-                        @publisher = new _Publisher()
-
-
-        it 'should publish data to subscribed model', =>
-                data =
-                        hi: 'test'
-
-                @publisher.subscribeObjectTo @modelMock, 'test'
-                @publisher.publishDataTo data, 'test'
-
-                expect(@modelMock.handle).toHaveBeenCalledWith(data)
+	beforeEach =>
+		inject (_Publisher) =>
+			@publisher = new _Publisher()
 
 
-        it 'should publish not to unsubscribed model', =>
-                data =
-                        hi: 'test'
+	it 'should publish data to subscribed model', =>
+		data =
+			hi: 'test'
 
-                @publisher.subscribeObjectTo @modelMock, 'test1'
-                @publisher.publishDataTo data, 'test'
+		@publisher.subscribeObjectTo @modelMock, 'test'
+		@publisher.publishDataTo data, 'test'
 
-                expect(@modelMock.handle).not.toHaveBeenCalledWith(data)
+		expect(@modelMock.handle).toHaveBeenCalledWith(data)
 
 
-        it 'should publish data to multiple subscribed models', =>
-                data =
-                        hi: 'test'
-                data2 =
-                        base: 'john'
-                @modelMock2 =
-                        handle: jasmine.createSpy()
+	it 'should publish not to unsubscribed model', =>
+		data =
+			hi: 'test'
 
-                @publisher.subscribeObjectTo @modelMock, 'test'
-                @publisher.subscribeObjectTo @modelMock2, 'test'
-                @publisher.publishDataTo data, 'test'
+		@publisher.subscribeObjectTo @modelMock, 'test1'
+		@publisher.publishDataTo data, 'test'
 
-                expect(@modelMock.handle).toHaveBeenCalledWith(data)
-                expect(@modelMock2.handle).toHaveBeenCalledWith(data)
+		expect(@modelMock.handle).not.toHaveBeenCalledWith(data)
+
+
+	it 'should publish data to multiple subscribed models', =>
+		data =
+			hi: 'test'
+		data2 =
+			base: 'john'
+		@modelMock2 =
+			handle: jasmine.createSpy()
+
+		@publisher.subscribeObjectTo @modelMock, 'test'
+		@publisher.subscribeObjectTo @modelMock2, 'test'
+		@publisher.publishDataTo data, 'test'
+
+		expect(@modelMock.handle).toHaveBeenCalledWith(data)
+		expect(@modelMock2.handle).toHaveBeenCalledWith(data)

@@ -31,12 +31,12 @@ namespace OCA\AppFramework\Db;
  */
 class MultipleObjectsReturnedException extends \Exception {
 
-        /**
-         * Constructor
-         * @param string $msg the error message
-         */
-        public function __construct($msg){
-                parent::__construct($msg);
-        }
+	/**
+	 * Constructor
+	 * @param string $msg the error message
+	 */
+	public function __construct($msg){
+		parent::__construct($msg);
+	}
 
 }

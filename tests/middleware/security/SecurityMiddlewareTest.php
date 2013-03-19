@@ -35,261 +35,261 @@ require_once(__DIR__ . "/../../classloader.php");
 
 class SecurityMiddlewareTest extends \PHPUnit_Framework_TestCase {
 
-        private $middleware;
-        private $controller;
-        private $secException;
-        private $secAjaxException;
+	private $middleware;
+	private $controller;
+	private $secException;
+	private $secAjaxException;
 
-        public function setUp() {
-                $api = $this->getMock('OCA\AppFramework\Core\API', array(), array('test'));
-                $this->controller = $this->getMock('OCA\AppFramework\Controller\Controller',
-                                array(), array($api, new Request()));
+	public function setUp() {
+		$api = $this->getMock('OCA\AppFramework\Core\API', array(), array('test'));
+		$this->controller = $this->getMock('OCA\AppFramework\Controller\Controller',
+				array(), array($api, new Request()));
 
-                $this->middleware = new SecurityMiddleware($api);
-                $this->secException = new SecurityException('hey', false);
-                $this->secAjaxException = new SecurityException('hey', true);
-        }
-
-
-        private function getAPI(){
-                return $this->getMock('OCA\AppFramework\Core\API',
-                                        array('isLoggedIn', 'passesCSRFCheck', 'isAdminUser',
-                                                        'isSubAdminUser', 'activateNavigationEntry',
-                                                        'getUserId'),
-                                        array('app'));
-        }
+		$this->middleware = new SecurityMiddleware($api);
+		$this->secException = new SecurityException('hey', false);
+		$this->secAjaxException = new SecurityException('hey', true);
+	}
 
 
-        private function checkNavEntry($method, $shouldBeActivated=false){
-                $api = $this->getAPI();
-
-                if($shouldBeActivated){
-                        $api->expects($this->once())
-                                ->method('activateNavigationEntry');
-                } else {
-                        $api->expects($this->never())
-                                ->method('activateNavigationEntry');
-                }
-
-                $sec = new SecurityMiddleware($api);
-                $sec->beforeController('\OCA\AppFramework\Middleware\Security\SecurityMiddlewareTest', $method);
-        }
+	private function getAPI(){
+		return $this->getMock('OCA\AppFramework\Core\API',
+					array('isLoggedIn', 'passesCSRFCheck', 'isAdminUser',
+							'isSubAdminUser', 'activateNavigationEntry',
+							'getUserId'),
+					array('app'));
+	}
 
 
-        /**
-         * @IsLoggedInExemption
-         * @CSRFExemption
-         * @IsAdminExemption
-         * @IsSubAdminExemption
-         */
-        public function testSetNavigationEntry(){
-                $this->checkNavEntry('testSetNavigationEntry', true);
-        }
+	private function checkNavEntry($method, $shouldBeActivated=false){
+		$api = $this->getAPI();
+
+		if($shouldBeActivated){
+			$api->expects($this->once())
+				->method('activateNavigationEntry');
+		} else {
+			$api->expects($this->never())
+				->method('activateNavigationEntry');
+		}
+
+		$sec = new SecurityMiddleware($api);
+		$sec->beforeController('\OCA\AppFramework\Middleware\Security\SecurityMiddlewareTest', $method);
+	}
 
 
-        /**
-         * @Ajax
-         * @IsLoggedInExemption
-         * @CSRFExemption
-         * @IsAdminExemption
-         * @IsSubAdminExemption
-         */
-        public function testSetNoNavigationEntry(){
-                $this->checkNavEntry('testSetNoNavigationEntry');
-        }
+	/**
+	 * @IsLoggedInExemption
+	 * @CSRFExemption
+	 * @IsAdminExemption
+	 * @IsSubAdminExemption
+	 */
+	public function testSetNavigationEntry(){
+		$this->checkNavEntry('testSetNavigationEntry', true);
+	}
 
 
-        private function ajaxExceptionCheck($method, $shouldBeAjax=false){
-                $api = $this->getAPI();
-                $api->expects($this->any())
-                                ->method('passesCSRFCheck')
-                                ->will($this->returnValue(false));
-
-                $sec = new SecurityMiddleware($api);
-
-                try {
-                        $sec->beforeController('\OCA\AppFramework\Middleware\Security\SecurityMiddlewareTest',
-                                        $method);
-                } catch (SecurityException $ex){
-                        if($shouldBeAjax){
-                                $this->assertTrue($ex->isAjax());
-                        } else {
-                                $this->assertFalse($ex->isAjax());
-                        }
-
-                }
-        }
+	/**
+	 * @Ajax
+	 * @IsLoggedInExemption
+	 * @CSRFExemption
+	 * @IsAdminExemption
+	 * @IsSubAdminExemption
+	 */
+	public function testSetNoNavigationEntry(){
+		$this->checkNavEntry('testSetNoNavigationEntry');
+	}
 
 
-        /**
-         * @Ajax
-         * @IsLoggedInExemption
-         * @CSRFExemption
-         * @IsAdminExemption
-         * @IsSubAdminExemption
-         */
-        public function testAjaxException(){
-                $this->ajaxExceptionCheck('testAjaxException');
-        }
+	private function ajaxExceptionCheck($method, $shouldBeAjax=false){
+		$api = $this->getAPI();
+		$api->expects($this->any())
+				->method('passesCSRFCheck')
+				->will($this->returnValue(false));
+
+		$sec = new SecurityMiddleware($api);
+
+		try {
+			$sec->beforeController('\OCA\AppFramework\Middleware\Security\SecurityMiddlewareTest',
+					$method);
+		} catch (SecurityException $ex){
+			if($shouldBeAjax){
+				$this->assertTrue($ex->isAjax());
+			} else {
+				$this->assertFalse($ex->isAjax());
+			}
+
+		}
+	}
 
 
-        /**
-         * @IsLoggedInExemption
-         * @CSRFExemption
-         * @IsAdminExemption
-         * @IsSubAdminExemption
-         */
-        public function testNoAjaxException(){
-                $this->ajaxExceptionCheck('testNoAjaxException');
-        }
+	/**
+	 * @Ajax
+	 * @IsLoggedInExemption
+	 * @CSRFExemption
+	 * @IsAdminExemption
+	 * @IsSubAdminExemption
+	 */
+	public function testAjaxException(){
+		$this->ajaxExceptionCheck('testAjaxException');
+	}
 
 
-        /**
-         * @IsLoggedInExemption
-         * @CSRFExemption
-         * @IsAdminExemption
-         * @IsSubAdminExemption
-         */
-        public function testNoChecks(){
-                $api = $this->getAPI();
-                $api->expects($this->never())
-                                ->method('passesCSRFCheck')
-                                ->will($this->returnValue(true));
-                $api->expects($this->never())
-                                ->method('isAdminUser')
-                                ->will($this->returnValue(true));
-                $api->expects($this->never())
-                                ->method('isSubAdminUser')
-                                ->will($this->returnValue(true));
-                $api->expects($this->never())
-                                ->method('isLoggedIn')
-                                ->will($this->returnValue(true));
-
-                $sec = new SecurityMiddleware($api);
-                $sec->beforeController('\OCA\AppFramework\Middleware\Security\SecurityMiddlewareTest',
-                                'testNoChecks');
-        }
+	/**
+	 * @IsLoggedInExemption
+	 * @CSRFExemption
+	 * @IsAdminExemption
+	 * @IsSubAdminExemption
+	 */
+	public function testNoAjaxException(){
+		$this->ajaxExceptionCheck('testNoAjaxException');
+	}
 
 
-        private function securityCheck($method, $expects, $shouldFail=false){
-                $api = $this->getAPI();
-                $api->expects($this->once())
-                                ->method($expects)
-                                ->will($this->returnValue(!$shouldFail));
+	/**
+	 * @IsLoggedInExemption
+	 * @CSRFExemption
+	 * @IsAdminExemption
+	 * @IsSubAdminExemption
+	 */
+	public function testNoChecks(){
+		$api = $this->getAPI();
+		$api->expects($this->never())
+				->method('passesCSRFCheck')
+				->will($this->returnValue(true));
+		$api->expects($this->never())
+				->method('isAdminUser')
+				->will($this->returnValue(true));
+		$api->expects($this->never())
+				->method('isSubAdminUser')
+				->will($this->returnValue(true));
+		$api->expects($this->never())
+				->method('isLoggedIn')
+				->will($this->returnValue(true));
 
-                $sec = new SecurityMiddleware($api);
-
-                if($shouldFail){
-                        $this->setExpectedException('\OCA\AppFramework\Middleware\Security\SecurityException');
-                }
-
-                $sec->beforeController('\OCA\AppFramework\Middleware\Security\SecurityMiddlewareTest', $method);
-        }
-
-
-        /**
-         * @IsLoggedInExemption
-         * @IsAdminExemption
-         * @IsSubAdminExemption
-         */
-        public function testCsrfCheck(){
-                $this->securityCheck('testCsrfCheck', 'passesCSRFCheck');
-        }
-
-
-        /**
-         * @IsLoggedInExemption
-         * @IsAdminExemption
-         * @IsSubAdminExemption
-         */
-        public function testFailCsrfCheck(){
-                $this->securityCheck('testFailCsrfCheck', 'passesCSRFCheck', true);
-        }
+		$sec = new SecurityMiddleware($api);
+		$sec->beforeController('\OCA\AppFramework\Middleware\Security\SecurityMiddlewareTest',
+				'testNoChecks');
+	}
 
 
-        /**
-         * @CSRFExemption
-         * @IsAdminExemption
-         * @IsSubAdminExemption
-         */
-        public function testLoggedInCheck(){
-                $this->securityCheck('testLoggedInCheck', 'isLoggedIn');
-        }
+	private function securityCheck($method, $expects, $shouldFail=false){
+		$api = $this->getAPI();
+		$api->expects($this->once())
+				->method($expects)
+				->will($this->returnValue(!$shouldFail));
+
+		$sec = new SecurityMiddleware($api);
+
+		if($shouldFail){
+			$this->setExpectedException('\OCA\AppFramework\Middleware\Security\SecurityException');
+		}
+
+		$sec->beforeController('\OCA\AppFramework\Middleware\Security\SecurityMiddlewareTest', $method);
+	}
 
 
-        /**
-         * @CSRFExemption
-         * @IsAdminExemption
-         * @IsSubAdminExemption
-         */
-        public function testFailLoggedInCheck(){
-                $this->securityCheck('testFailLoggedInCheck', 'isLoggedIn', true);
-        }
+	/**
+	 * @IsLoggedInExemption
+	 * @IsAdminExemption
+	 * @IsSubAdminExemption
+	 */
+	public function testCsrfCheck(){
+		$this->securityCheck('testCsrfCheck', 'passesCSRFCheck');
+	}
 
 
-        /**
-         * @IsLoggedInExemption
-         * @CSRFExemption
-         * @IsSubAdminExemption
-         */
-        public function testIsAdminCheck(){
-                $this->securityCheck('testIsAdminCheck', 'isAdminUser');
-        }
+	/**
+	 * @IsLoggedInExemption
+	 * @IsAdminExemption
+	 * @IsSubAdminExemption
+	 */
+	public function testFailCsrfCheck(){
+		$this->securityCheck('testFailCsrfCheck', 'passesCSRFCheck', true);
+	}
 
 
-        /**
-         * @IsLoggedInExemption
-         * @CSRFExemption
-         * @IsSubAdminExemption
-         */
-        public function testFailIsAdminCheck(){
-                $this->securityCheck('testFailIsAdminCheck', 'isAdminUser', true);
-        }
+	/**
+	 * @CSRFExemption
+	 * @IsAdminExemption
+	 * @IsSubAdminExemption
+	 */
+	public function testLoggedInCheck(){
+		$this->securityCheck('testLoggedInCheck', 'isLoggedIn');
+	}
 
 
-        /**
-         * @IsLoggedInExemption
-         * @CSRFExemption
-         * @IsAdminExemption
-         */
-        public function testIsSubAdminCheck(){
-                $this->securityCheck('testIsSubAdminCheck', 'isSubAdminUser');
-        }
+	/**
+	 * @CSRFExemption
+	 * @IsAdminExemption
+	 * @IsSubAdminExemption
+	 */
+	public function testFailLoggedInCheck(){
+		$this->securityCheck('testFailLoggedInCheck', 'isLoggedIn', true);
+	}
 
 
-        /**
-         * @IsLoggedInExemption
-         * @CSRFExemption
-         * @IsAdminExemption
-         */
-        public function testFailIsSubAdminCheck(){
-                $this->securityCheck('testFailIsSubAdminCheck', 'isSubAdminUser', true);
-        }
+	/**
+	 * @IsLoggedInExemption
+	 * @CSRFExemption
+	 * @IsSubAdminExemption
+	 */
+	public function testIsAdminCheck(){
+		$this->securityCheck('testIsAdminCheck', 'isAdminUser');
+	}
+
+
+	/**
+	 * @IsLoggedInExemption
+	 * @CSRFExemption
+	 * @IsSubAdminExemption
+	 */
+	public function testFailIsAdminCheck(){
+		$this->securityCheck('testFailIsAdminCheck', 'isAdminUser', true);
+	}
+
+
+	/**
+	 * @IsLoggedInExemption
+	 * @CSRFExemption
+	 * @IsAdminExemption
+	 */
+	public function testIsSubAdminCheck(){
+		$this->securityCheck('testIsSubAdminCheck', 'isSubAdminUser');
+	}
+
+
+	/**
+	 * @IsLoggedInExemption
+	 * @CSRFExemption
+	 * @IsAdminExemption
+	 */
+	public function testFailIsSubAdminCheck(){
+		$this->securityCheck('testFailIsSubAdminCheck', 'isSubAdminUser', true);
+	}
 
 
 
-        public function testAfterExceptionNotCaughtReturnsNull(){
-                $ex = new \Exception();
+	public function testAfterExceptionNotCaughtReturnsNull(){
+		$ex = new \Exception();
 
-                $this->assertEquals(null,
-                                $this->middleware->afterException($this->controller, 'test', $ex));
-        }
-
-
-        public function testAfterExceptionReturnsRedirect(){
-                $response = $this->middleware->afterException($this->controller, 'test',
-                                $this->secException);
-
-                $this->assertTrue($response instanceof RedirectResponse);
-        }
+		$this->assertEquals(null,
+				$this->middleware->afterException($this->controller, 'test', $ex));
+	}
 
 
-        public function testAfterAjaxExceptionReturnsJSONError(){
-                $response = $this->middleware->afterException($this->controller, 'test',
-                                $this->secAjaxException);
+	public function testAfterExceptionReturnsRedirect(){
+		$response = $this->middleware->afterException($this->controller, 'test',
+				$this->secException);
 
-                $this->assertTrue($response instanceof JSONResponse);
-        }
+		$this->assertTrue($response instanceof RedirectResponse);
+	}
+
+
+	public function testAfterAjaxExceptionReturnsJSONError(){
+		$response = $this->middleware->afterException($this->controller, 'test',
+				$this->secAjaxException);
+
+		$this->assertTrue($response instanceof JSONResponse);
+	}
 
 
 }

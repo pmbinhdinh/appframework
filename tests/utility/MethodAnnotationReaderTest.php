@@ -31,28 +31,28 @@ require_once(__DIR__ . "/../classloader.php");
 class MethodAnnotationReaderTest extends \PHPUnit_Framework_TestCase {
 
 
-        /**
-         * @Annotation
-         */
-        public function testReadAnnotation(){
-                $reader = new MethodAnnotationReader('\OCA\AppFramework\Utility\MethodAnnotationReaderTest',
-                                'testReadAnnotation');
+	/**
+	 * @Annotation
+	 */
+	public function testReadAnnotation(){
+		$reader = new MethodAnnotationReader('\OCA\AppFramework\Utility\MethodAnnotationReaderTest',
+				'testReadAnnotation');
 
-                $this->assertTrue($reader->hasAnnotation('Annotation'));
-        }
+		$this->assertTrue($reader->hasAnnotation('Annotation'));
+	}
 
 
-        /**
-         * @Annotation
-         * @param test
-         */
-        public function testReadAnnotationNoLowercase(){
-                $reader = new MethodAnnotationReader('\OCA\AppFramework\Utility\MethodAnnotationReaderTest',
-                                'testReadAnnotationNoLowercase');
+	/**
+	 * @Annotation
+	 * @param test
+	 */
+	public function testReadAnnotationNoLowercase(){
+		$reader = new MethodAnnotationReader('\OCA\AppFramework\Utility\MethodAnnotationReaderTest',
+				'testReadAnnotationNoLowercase');
 
-                $this->assertTrue($reader->hasAnnotation('Annotation'));
-                $this->assertFalse($reader->hasAnnotation('param'));
-        }
+		$this->assertTrue($reader->hasAnnotation('Annotation'));
+		$this->assertFalse($reader->hasAnnotation('param'));
+	}
 
 
 }

@@ -30,25 +30,25 @@ namespace OCA\AppFramework\Middleware\Security;
  */
 class SecurityException extends \Exception {
 
-        private $ajax;
+	private $ajax;
 
-        /**
-         * @param string $msg the security error message
-         * @param bool $ajax true if it resulted because of an ajax request
-         */
-        public function __construct($msg, $ajax){
-                parent::__construct($msg);
-                $this->ajax = $ajax;
-        }
+	/**
+	 * @param string $msg the security error message
+	 * @param bool $ajax true if it resulted because of an ajax request
+	 */
+	public function __construct($msg, $ajax){
+		parent::__construct($msg);
+		$this->ajax = $ajax;
+	}
 
 
-        /**
-         * Used to check if a security exception occured in an ajax request
-         * @return bool true if exception resulted because of an ajax request
-         */
-        public function isAjax(){
-                return $this->ajax;
-        }
+	/**
+	 * Used to check if a security exception occured in an ajax request
+	 * @return bool true if exception resulted because of an ajax request
+	 */
+	public function isAjax(){
+		return $this->ajax;
+	}
 
 
 }

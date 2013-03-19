@@ -25,40 +25,40 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 angular.module('OC').factory '_Publisher', ->
 
 
-        class Publisher
+	class Publisher
 
-                constructor: ->
-                        @_subscriptions = {}
-
-
-                # Use this to subscribe to a certain hashkey in the returned json data
-                # dictionary.
-                # If you send JSON from the server, you'll receive something like this
-                #
-                # 	{
-                #		data: {
-                #			modelName: {
-                #				create: [{id: 1, name: 'john'}, {id: 2, name: 'ron'}],
-                #               update: [],
-                #               delete: []
-                #           }
-                #		}
-                # 	}
-                #
-                # To get the array ['one', 'two'] passed to your object, just subscribe
-                # to the key:
-                #	Publisher.subscribeObjectTo('modelName', myModelInstance)
-                #
-                subscribeObjectTo: (object, name) ->
-                        @_subscriptions[name] or= []
-                        @_subscriptions[name].push(object)
+		constructor: ->
+			@_subscriptions = {}
 
 
-                # This will publish data from the server to all registered subscribers
-                # The parameter 'name' is the name under which subscribers have registered
-                publishDataTo: (data, name) ->
-                        for subscriber in @_subscriptions[name] || []
-                                subscriber.handle(data)
+		# Use this to subscribe to a certain hashkey in the returned json data
+		# dictionary.
+		# If you send JSON from the server, you'll receive something like this
+		#
+		# 	{
+		#		data: {
+		#			modelName: {
+		#				create: [{id: 1, name: 'john'}, {id: 2, name: 'ron'}],
+		#               update: [],
+		#               delete: []
+		#           }
+		#		}
+		# 	}
+		#
+		# To get the array ['one', 'two'] passed to your object, just subscribe
+		# to the key:
+		#	Publisher.subscribeObjectTo('modelName', myModelInstance)
+		#
+		subscribeObjectTo: (object, name) ->
+			@_subscriptions[name] or= []
+			@_subscriptions[name].push(object)
 
 
-        return Publisher
+		# This will publish data from the server to all registered subscribers
+		# The parameter 'name' is the name under which subscribers have registered
+		publishDataTo: (data, name) ->
+			for subscriber in @_subscriptions[name] || []
+				subscriber.handle(data)
+
+
+	return Publisher

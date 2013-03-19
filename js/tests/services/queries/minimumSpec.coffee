@@ -23,42 +23,42 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 describe '_MinimumQuery', ->
 
 
-        beforeEach module 'OC'
+	beforeEach module 'OC'
 
-        beforeEach inject (_MinimumQuery, _Model, _Query) =>
-                @query = _MinimumQuery
-                @q = _Query
-                @model = _Model
-
-
-        it 'should be a _Query subclass', =>
-                expect(new @query('id') instanceof @q).toBe(true)
+	beforeEach inject (_MinimumQuery, _Model, _Query) =>
+		@query = _MinimumQuery
+		@q = _Query
+		@model = _Model
 
 
-        it 'should have a correct hash', =>
-                expect(new @query('id').hashCode()).toBe('minimum_id')
+	it 'should be a _Query subclass', =>
+		expect(new @query('id') instanceof @q).toBe(true)
 
 
-        it 'should return undefined on empty list', =>
-                query = new @query('id')
-                expect(query.exec([])).toBe(undefined)
+	it 'should have a correct hash', =>
+		expect(new @query('id').hashCode()).toBe('minimum_id')
 
 
-        it 'should return the minimum', =>
-                data1 =
-                        id: 3
+	it 'should return undefined on empty list', =>
+		query = new @query('id')
+		expect(query.exec([])).toBe(undefined)
 
-                data2 =
-                        id: 1
 
-                data3 =
-                        id: 5
+	it 'should return the minimum', =>
+		data1 =
+			id: 3
 
-                data = [
-                        data1
-                        data2
-                        data3
-                ]
-                query = new @query('id')
+		data2 =
+			id: 1
 
-                expect(query.exec(data)).toBe(data2)
+		data3 =
+			id: 5
+
+		data = [
+			data1
+			data2
+			data3
+		]
+		query = new @query('id')
+
+		expect(query.exec(data)).toBe(data2)

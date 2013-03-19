@@ -22,50 +22,50 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 
 describe 'ocForwardClick', ->
 
-        beforeEach module 'OC'
+	beforeEach module 'OC'
 
 
-        beforeEach inject ($rootScope, $compile) =>
-                @$rootScope = $rootScope
-                @$compile = $compile
-                @host = $('<div id="host"></div>')
-                $('body').append(@host)
+	beforeEach inject ($rootScope, $compile) =>
+		@$rootScope = $rootScope
+		@$compile = $compile
+		@host = $('<div id="host"></div>')
+		$('body').append(@host)
 
 
-        @setOptions = (options) =>
-                if angular.isDefined(options.selector)
-                        json = JSON.stringify(options)
-                        optionsString = json.replace(/\"/g, '\'')
-                else
-                        optionsString = ""
+	@setOptions = (options) =>
+		if angular.isDefined(options.selector)
+			json = JSON.stringify(options)
+			optionsString = json.replace(/\"/g, '\'')
+		else
+			optionsString = ""
 
-                elm = '<div>' +
-                                '<div id="a" oc-forward-click="' + optionsString + '"></div>' +
-                                '<input onclick="this.value=\'clicked\'" value="not-clicked" ' +
-                                        'type="text" id="b" />' +
-                        '</div>'
+		elm = '<div>' +
+				'<div id="a" oc-forward-click="' + optionsString + '"></div>' +
+				'<input onclick="this.value=\'clicked\'" value="not-clicked" ' +
+					'type="text" id="b" />' +
+			'</div>'
 
-                @elm = angular.element(elm)
-                scope = @$rootScope
-                @$compile(@elm)(scope)
-                scope.$digest()
-                @host.append(@elm)
-
-
-        it 'should not forward clicks if no selector is given', =>
-                options = {}
-                @setOptions(options)
-                @elm.find('#a').trigger('click')
-                expect(@elm.find('#b').val()).toBe('not-clicked')
+		@elm = angular.element(elm)
+		scope = @$rootScope
+		@$compile(@elm)(scope)
+		scope.$digest()
+		@host.append(@elm)
 
 
-        it 'should forward click to item if selector is given', =>
-                options =
-                        selector: '#b'
-                @setOptions(options)
-                @elm.find('#a').trigger('click')
-                expect(@elm.find('#b').val()).toBe('clicked')
+	it 'should not forward clicks if no selector is given', =>
+		options = {}
+		@setOptions(options)
+		@elm.find('#a').trigger('click')
+		expect(@elm.find('#b').val()).toBe('not-clicked')
 
 
-        afterEach =>
-                @host.remove()
+	it 'should forward click to item if selector is given', =>
+		options =
+			selector: '#b'
+		@setOptions(options)
+		@elm.find('#a').trigger('click')
+		expect(@elm.find('#b').val()).toBe('clicked')
+
+
+	afterEach =>
+		@host.remove()

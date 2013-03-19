@@ -25,22 +25,22 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 angular.module('OC').factory '_MinimumQuery', ['_Query',
 (_Query) ->
 
-        class MinimumQuery extends _Query
+	class MinimumQuery extends _Query
 
-                constructor: (@_field) ->
-                        name = 'minimum'
-                        super(name, [@_field])
-
-
-                exec: (data) ->
-                        minimum = undefined
-                        for entry in data
-                                if angular.isUndefined(minimum) or
-                                entry[@_field] < minimum[@_field]
-                                        minimum = entry
-
-                        return minimum
+		constructor: (@_field) ->
+			name = 'minimum'
+			super(name, [@_field])
 
 
-        return MinimumQuery
+		exec: (data) ->
+			minimum = undefined
+			for entry in data
+				if angular.isUndefined(minimum) or
+				entry[@_field] < minimum[@_field]
+					minimum = entry
+
+			return minimum
+
+
+	return MinimumQuery
 ]

@@ -33,73 +33,73 @@ use OCA\AppFramework\Core\API;
  */
 abstract class Mapper {
 
-        /**
-         * @param API $api Instance of the API abstraction layer
-         */
-        public function __construct(API $api){
-                $this->api = $api;
-        }
+	/**
+	 * @param API $api Instance of the API abstraction layer
+	 */
+	public function __construct(API $api){
+		$this->api = $api;
+	}
 
 
-        /**
-         * Returns an db result by id
-         * @param string $tableName the name of the table to query
-         * @param int $id the id of the item
-         * @throws DoesNotExistException if the item does not exist
-         * @throws MultipleObjectsReturnedException if more than one item exist
-         * @return array the result as row
-         */
-        protected function findQuery($tableName, $id){
-                $sql = 'SELECT * FROM `' . $tableName . '` WHERE `id` = ?';
-                $params = array($id);
+	/**
+	 * Returns an db result by id
+	 * @param string $tableName the name of the table to query
+	 * @param int $id the id of the item
+	 * @throws DoesNotExistException if the item does not exist
+	 * @throws MultipleObjectsReturnedException if more than one item exist
+	 * @return array the result as row
+	 */
+	protected function findQuery($tableName, $id){
+		$sql = 'SELECT * FROM `' . $tableName . '` WHERE `id` = ?';
+		$params = array($id);
 
-                $result = $this->execute($sql, $params);
-                $row = $result->fetchRow();
+		$result = $this->execute($sql, $params);
+		$row = $result->fetchRow();
 
-                if($row === false){
-                        throw new DoesNotExistException('Item with id ' . $id . ' does not exist!');
-                } elseif($result->fetchRow() !== false) {
-                        throw new MultipleObjectsReturnedException('More than one result for Item with id ' . $id . '!');
-                } else {
-                        return $row;
-                }
-        }
-
-
-        /**
-         * Returns all entries of a table
-         * @param string $tableName the name of the table to query
-         * @return \PDOStatement the result
-         */
-        protected function findAllQuery($tableName){
-                $sql = 'SELECT * FROM `' . $tableName . '`';
-                return $this->execute($sql);
-        }
+		if($row === false){
+			throw new DoesNotExistException('Item with id ' . $id . ' does not exist!');
+		} elseif($result->fetchRow() !== false) {
+			throw new MultipleObjectsReturnedException('More than one result for Item with id ' . $id . '!');
+		} else {
+			return $row;
+		}
+	}
 
 
-        /**
-         * Deletes a row in a table by id
-         * @param string $tableName the name of the table to query
-         * @param int $id the id of the item
-         */
-        protected function deleteQuery($tableName, $id){
-                $sql = 'DELETE FROM `' . $tableName . '` WHERE `id` = ?';
-                $params = array($id);
-                $this->execute($sql, $params);
-        }
+	/**
+	 * Returns all entries of a table
+	 * @param string $tableName the name of the table to query
+	 * @return \PDOStatement the result
+	 */
+	protected function findAllQuery($tableName){
+		$sql = 'SELECT * FROM `' . $tableName . '`';
+		return $this->execute($sql);
+	}
 
 
-        /**
-         * Runs an sql query
-         * @param string $sql the prepare string
-         * @param array $params the params which should replace the ? in the sql query
-         * @param int $limit the maximum number of rows
-         * @param int $offset from which row we want to start
-         * @return \PDOStatement the database query result
-         */
-        protected function execute($sql, array $params=array(), $limit=null, $offset=null){
-                $query = $this->api->prepareQuery($sql);
-                return $query->execute($params);
-        }
+	/**
+	 * Deletes a row in a table by id
+	 * @param string $tableName the name of the table to query
+	 * @param int $id the id of the item
+	 */
+	protected function deleteQuery($tableName, $id){
+		$sql = 'DELETE FROM `' . $tableName . '` WHERE `id` = ?';
+		$params = array($id);
+		$this->execute($sql, $params);
+	}
+
+
+	/**
+	 * Runs an sql query
+	 * @param string $sql the prepare string
+	 * @param array $params the params which should replace the ? in the sql query
+	 * @param int $limit the maximum number of rows
+	 * @param int $offset from which row we want to start
+	 * @return \PDOStatement the database query result
+	 */
+	protected function execute($sql, array $params=array(), $limit=null, $offset=null){
+		$query = $this->api->prepareQuery($sql);
+		return $query->execute($params);
+	}
 
 }

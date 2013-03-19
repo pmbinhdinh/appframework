@@ -30,25 +30,25 @@ namespace OCA\AppFramework\Http;
  */
 class RedirectResponse extends Response {
 
-        private $redirectURL;
+	private $redirectURL;
 
-        /**
-         * Creates a response that redirects to a url
-         * @param string $redirectURL the url to redirect to
-         */
-        public function __construct($redirectURL){
-                parent::__construct();
-                $this->redirectURL = $redirectURL;
-                $this->addHeader('Location: ' . $redirectURL);
-        }
+	/**
+	 * Creates a response that redirects to a url
+	 * @param string $redirectURL the url to redirect to
+	 */
+	public function __construct($redirectURL){
+		parent::__construct();
+		$this->redirectURL = $redirectURL;
+		$this->addHeader('Location: ' . $redirectURL);
+	}
 
 
-        /**
-         * @return string the url to redirect
-         */
-        public function getRedirectURL(){
-                return $this->redirectURL;
-        }
+	/**
+	 * @return string the url to redirect
+	 */
+	public function getRedirectURL(){
+		return $this->redirectURL;
+	}
 
 
 }

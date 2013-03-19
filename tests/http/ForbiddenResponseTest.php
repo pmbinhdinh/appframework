@@ -30,14 +30,14 @@ require_once(__DIR__ . "/../classloader.php");
 
 class ForbidenResponseTest extends \PHPUnit_Framework_TestCase {
 
-        protected function setUp() {
-                $this->response = new ForbiddenResponse();
-        }
+	protected function setUp() {
+		$this->response = new ForbiddenResponse();
+	}
 
 
-        public function testReturnStatus() {
-                $this->assertContains('HTTP/1.1 403 Forbidden',
-                                                        $this->response->getHeaders());
-        }
+	public function testReturnStatus() {
+		$this->assertContains('HTTP/1.1 403 Forbidden',
+							$this->response->getHeaders());
+	}
 
 }

@@ -30,56 +30,56 @@ namespace OCA\AppFramework\Http;
  */
 class JSONResponse extends Response {
 
-        private $name;
-        private $data;
+	private $name;
+	private $data;
 
 
-        public function __construct() {
-                parent::__construct();
-                $this->data = array();
-                $this->error = false;
-                $this->data['status'] = 'success';
-                $this->addHeader('X-Content-Type-Options: nosniff');
-                $this->addHeader('Content-type: application/json');
-        }
+	public function __construct() {
+		parent::__construct();
+		$this->data = array();
+		$this->error = false;
+		$this->data['status'] = 'success';
+		$this->addHeader('X-Content-Type-Options: nosniff');
+		$this->addHeader('Content-type: application/json');
+	}
 
 
-        /**
-         * Sets values in the data json array
-         * @param array $params an array with key => value structure which will be
-         *                      transformed to JSON
-         */
-        public function setParams(array $params){
-                $this->data['data'] = $params;
-        }
+	/**
+	 * Sets values in the data json array
+	 * @param array $params an array with key => value structure which will be
+	 *                      transformed to JSON
+	 */
+	public function setParams(array $params){
+		$this->data['data'] = $params;
+	}
 
 
-        /**
-         * Used to get the set parameters
-         * @return array the params
-         */
-        public function getParams(){
-                return $this->data['data'];
-        }
+	/**
+	 * Used to get the set parameters
+	 * @return array the params
+	 */
+	public function getParams(){
+		return $this->data['data'];
+	}
 
 
-        /**
-         * in case we want to render an error message, also logs into the owncloud log
-         * @param string $message the error message
-         */
-        public function setErrorMessage($msg){
-                $this->error = true;
-                $this->data['msg'] = $msg;
-                $this->data['status'] = 'error';
-        }
+	/**
+	 * in case we want to render an error message, also logs into the owncloud log
+	 * @param string $message the error message
+	 */
+	public function setErrorMessage($msg){
+		$this->error = true;
+		$this->data['msg'] = $msg;
+		$this->data['status'] = 'error';
+	}
 
 
-        /**
-         * Returns the rendered json
-         * @return string the rendered json
-         */
-        public function render(){
-                return json_encode($this->data);
-        }
+	/**
+	 * Returns the rendered json
+	 * @return string the rendered json
+	 */
+	public function render(){
+		return json_encode($this->data);
+	}
 
 }

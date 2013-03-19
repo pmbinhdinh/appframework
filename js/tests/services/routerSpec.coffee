@@ -22,12 +22,12 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 
 describe 'Router', ->
 
-        beforeEach module 'OC'
+	beforeEach module 'OC'
 
-        beforeEach =>
-                inject (Router) =>
-                        @router = Router
+	beforeEach =>
+		inject (Router) =>
+			@router = Router
 
 
-        it 'should have a defined router', =>
-                expect(@router).toBeDefined()
+	it 'should have a defined router', =>
+		expect(@router).toBeDefined()

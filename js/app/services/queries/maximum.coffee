@@ -25,22 +25,22 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 angular.module('OC').factory '_MaximumQuery', ['_Query',
 (_Query) ->
 
-        class MaximumQuery extends _Query
+	class MaximumQuery extends _Query
 
-                constructor: (@_field) ->
-                        name = 'maximum'
-                        super(name, [@_field])
-
-
-                exec: (data) ->
-                        maximum = undefined
-                        for entry in data
-                                if angular.isUndefined(maximum) or
-                                entry[@_field] > maximum[@_field]
-                                        maximum = entry
-
-                        return maximum
+		constructor: (@_field) ->
+			name = 'maximum'
+			super(name, [@_field])
 
 
-        return MaximumQuery
+		exec: (data) ->
+			maximum = undefined
+			for entry in data
+				if angular.isUndefined(maximum) or
+				entry[@_field] > maximum[@_field]
+					maximum = entry
+
+			return maximum
+
+
+	return MaximumQuery
 ]

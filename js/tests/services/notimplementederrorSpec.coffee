@@ -23,13 +23,13 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 describe '_NotImplementedError', ->
 
 
-        beforeEach module 'OC'
+	beforeEach module 'OC'
 
-        beforeEach inject (_NotImplementedError) =>
-                @error = _NotImplementedError
+	beforeEach inject (_NotImplementedError) =>
+		@error = _NotImplementedError
 
 
-        it 'should set a message', =>
-                msg = 'message'
+	it 'should set a message', =>
+		msg = 'message'
 
-                expect(new @error(msg).getMessage()).toBe(msg)
+		expect(new @error(msg).getMessage()).toBe(msg)

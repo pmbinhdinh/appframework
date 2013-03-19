@@ -32,96 +32,96 @@ use OCA\AppFramework\Core\API;
  */
 class TemplateResponse extends Response {
 
-        protected $templateName;
-        protected $params;
-        protected $api;
-        protected $renderAs;
-        protected $appName;
+	protected $templateName;
+	protected $params;
+	protected $api;
+	protected $renderAs;
+	protected $appName;
 
-        /**
-         * @param API $api an API instance
-         * @param string $templateName the name of the template
-         * @param string $appName optional if you want to include a template from
-         *                        a different app
-         */
-        public function __construct(API $api, $templateName, $appName=null) {
-                parent::__construct();
-                $this->templateName = $templateName;
-                $this->appName = $appName;
-                $this->api = $api;
-                $this->params = array();
-                $this->renderAs = 'user';
-        }
-
-
-        /**
-         * Sets template parameters
-         * @param array $params an array with key => value structure which sets template
-         *                      variables
-         */
-        public function setParams(array $params){
-                $this->params = $params;
-        }
+	/**
+	 * @param API $api an API instance
+	 * @param string $templateName the name of the template
+	 * @param string $appName optional if you want to include a template from
+	 *                        a different app
+	 */
+	public function __construct(API $api, $templateName, $appName=null) {
+		parent::__construct();
+		$this->templateName = $templateName;
+		$this->appName = $appName;
+		$this->api = $api;
+		$this->params = array();
+		$this->renderAs = 'user';
+	}
 
 
-        /**
-         * Used for accessing the set parameters
-         * @return array the params
-         */
-        public function getParams(){
-                return $this->params;
-        }
+	/**
+	 * Sets template parameters
+	 * @param array $params an array with key => value structure which sets template
+	 *                      variables
+	 */
+	public function setParams(array $params){
+		$this->params = $params;
+	}
 
 
-        /**
-         * Used for accessing the name of the set template
-         * @return string the name of the used template
-         */
-        public function getTemplateName(){
-                return $this->templateName;
-        }
+	/**
+	 * Used for accessing the set parameters
+	 * @return array the params
+	 */
+	public function getParams(){
+		return $this->params;
+	}
 
 
-        /**
-         * Sets the template page
-         * @param string $renderAs admin, user or blank. Admin also prints the admin
-         *                         settings header and footer, user renders the normal
-         *                         normal page including footer and header and blank
-         *                         just renders the plain template
-         */
-        public function renderAs($renderAs){
-                $this->renderAs = $renderAs;
-        }
+	/**
+	 * Used for accessing the name of the set template
+	 * @return string the name of the used template
+	 */
+	public function getTemplateName(){
+		return $this->templateName;
+	}
 
 
-        /**
-         * Returns the set renderAs
-         * @return string the renderAs value
-         */
-        public function getRenderAs(){
-                return $this->renderAs;
-        }
+	/**
+	 * Sets the template page
+	 * @param string $renderAs admin, user or blank. Admin also prints the admin
+	 *                         settings header and footer, user renders the normal
+	 *                         normal page including footer and header and blank
+	 *                         just renders the plain template
+	 */
+	public function renderAs($renderAs){
+		$this->renderAs = $renderAs;
+	}
 
 
-        /**
-         * Returns the rendered html
-         * @return string the rendered html
-         */
-        public function render(){
+	/**
+	 * Returns the set renderAs
+	 * @return string the renderAs value
+	 */
+	public function getRenderAs(){
+		return $this->renderAs;
+	}
 
-                if($this->appName !== null){
-                        $appName = $this->appName;
-                } else {
-                        $appName = $this->api->getAppName();
-                }
 
-                $template = $this->api->getTemplate($this->templateName, $this->renderAs, $appName);
+	/**
+	 * Returns the rendered html
+	 * @return string the rendered html
+	 */
+	public function render(){
 
-                foreach($this->params as $key => $value){
-                        $template->assign($key, $value);
-                }
+		if($this->appName !== null){
+			$appName = $this->appName;
+		} else {
+			$appName = $this->api->getAppName();
+		}
 
-                return $template->fetchPage();
-        }
+		$template = $this->api->getTemplate($this->templateName, $this->renderAs, $appName);
+
+		foreach($this->params as $key => $value){
+			$template->assign($key, $value);
+		}
+
+		return $template->fetchPage();
+	}
 
 }

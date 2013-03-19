@@ -25,21 +25,21 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 angular.module('OC').factory '_UnequalQuery', ['_Query',
 (_Query) ->
 
-        class UnequalQuery extends _Query
+	class UnequalQuery extends _Query
 
-                constructor: (@field, @value) ->
-                        name = 'unequal'
-                        super(name, [@field, @value])
-
-
-                exec: (data) ->
-                        unequal = []
-                        for entry in data
-                                if entry[@field] != @value
-                                        unequal.push(entry)
-
-                        return unequal
+		constructor: (@field, @value) ->
+			name = 'unequal'
+			super(name, [@field, @value])
 
 
-        return UnequalQuery
+		exec: (data) ->
+			unequal = []
+			for entry in data
+				if entry[@field] != @value
+					unequal.push(entry)
+
+			return unequal
+
+
+	return UnequalQuery
 ]

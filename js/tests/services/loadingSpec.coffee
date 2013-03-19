@@ -22,33 +22,33 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 
 describe 'Loading', ->
 
-        beforeEach module 'OC'
+	beforeEach module 'OC'
 
-        beforeEach inject (Loading) =>
-                @loading = Loading
-
-
-        it 'should have an initial value of 0', =>
-                expect(@loading.getCount()).toBe(0)
+	beforeEach inject (Loading) =>
+		@loading = Loading
 
 
-        it 'should increase count when increase is called', =>
-                @loading.increase()
-                expect(@loading.getCount()).toBe(1)
+	it 'should have an initial value of 0', =>
+		expect(@loading.getCount()).toBe(0)
 
 
-        it 'should decrease count when decrease is called', =>
-                @loading.increase()
-                @loading.increase()
-                @loading.increase()
-                @loading.decrease()
-                expect(@loading.getCount()).toBe(2)
+	it 'should increase count when increase is called', =>
+		@loading.increase()
+		expect(@loading.getCount()).toBe(1)
 
 
-        it 'should return false when no loading is happening', =>
-                expect(@loading.isLoading()).toBe(false)
+	it 'should decrease count when decrease is called', =>
+		@loading.increase()
+		@loading.increase()
+		@loading.increase()
+		@loading.decrease()
+		expect(@loading.getCount()).toBe(2)
 
 
-        it 'should return true when loading is happening', =>
-                @loading.increase()
-                expect(@loading.isLoading()).toBe(true)
+	it 'should return false when no loading is happening', =>
+		expect(@loading.isLoading()).toBe(false)
+
+
+	it 'should return true when loading is happening', =>
+		@loading.increase()
+		expect(@loading.isLoading()).toBe(true)

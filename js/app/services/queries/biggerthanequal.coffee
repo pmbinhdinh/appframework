@@ -25,21 +25,21 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 angular.module('OC').factory '_BiggerThanEqualQuery', ['_Query',
 (_Query) ->
 
-        class BiggerThanEqualQuery extends _Query
+	class BiggerThanEqualQuery extends _Query
 
-                constructor: (@_field, @_value) ->
-                        name = 'biggerthanequal'
-                        super(name, [@_field, @_value])
-
-
-                exec: (data) ->
-                        filtered = []
-                        for entry in data
-                                if entry[@_field] >= @_value
-                                        filtered.push(entry)
-
-                        return filtered
+		constructor: (@_field, @_value) ->
+			name = 'biggerthanequal'
+			super(name, [@_field, @_value])
 
 
-        return BiggerThanEqualQuery
+		exec: (data) ->
+			filtered = []
+			for entry in data
+				if entry[@_field] >= @_value
+					filtered.push(entry)
+
+			return filtered
+
+
+	return BiggerThanEqualQuery
 ]

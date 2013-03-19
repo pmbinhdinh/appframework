@@ -25,26 +25,26 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 # fired
 angular.module('OC').factory 'Loading', ->
 
-        class Loading
+	class Loading
 
-                constructor: ->
-                        @_count = 0
-
-
-                increase: ->
-                        @_count += 1
+		constructor: ->
+			@_count = 0
 
 
-                decrease: ->
-                        @_count -= 1
+		increase: ->
+			@_count += 1
 
 
-                getCount: ->
-                        return @_count
+		decrease: ->
+			@_count -= 1
 
 
-                isLoading: ->
-                        return @_count > 0
+		getCount: ->
+			return @_count
 
 
-        return new Loading()
+		isLoading: ->
+			return @_count > 0
+
+
+	return new Loading()

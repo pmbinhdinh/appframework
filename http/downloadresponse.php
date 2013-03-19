@@ -30,24 +30,24 @@ namespace OCA\AppFramework\Http;
  */
 abstract class DownloadResponse extends Response {
 
-        private $content;
-        private $filename;
-        private $contentType;
+	private $content;
+	private $filename;
+	private $contentType;
 
-        /**
-         * Creates a response that prompts the user to download the file
-         * @param string $filename the name that the downloaded file should have
-         * @param string $contentType the mimetype that the downloaded file should have
-         */
-        public function __construct($filename, $contentType){
-                parent::__construct();
+	/**
+	 * Creates a response that prompts the user to download the file
+	 * @param string $filename the name that the downloaded file should have
+	 * @param string $contentType the mimetype that the downloaded file should have
+	 */
+	public function __construct($filename, $contentType){
+		parent::__construct();
 
-                $this->filename = $filename;
-                $this->contentType = $contentType;
+		$this->filename = $filename;
+		$this->contentType = $contentType;
 
-                $this->addHeader('Content-Disposition: attachment; filename="' . $filename . '"');
-                $this->addHeader('Content-Type: ' . $contentType);
-        }
+		$this->addHeader('Content-Disposition: attachment; filename="' . $filename . '"');
+		$this->addHeader('Content-Type: ' . $contentType);
+	}
 
 
 }

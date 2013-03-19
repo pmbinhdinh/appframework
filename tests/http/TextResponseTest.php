@@ -31,24 +31,24 @@ require_once(__DIR__ . "/../classloader.php");
 class TextResponseTest extends \PHPUnit_Framework_TestCase {
 
 
-        protected function setUp() {
-                $this->response = new TextResponse('sometext');
-        }
+	protected function setUp() {
+		$this->response = new TextResponse('sometext');
+	}
 
 
-        public function testRender() {
-                $this->assertEquals('sometext', $this->response->render());
-        }
+	public function testRender() {
+		$this->assertEquals('sometext', $this->response->render());
+	}
 
-        public function testContentTypeDefaultsToText(){
-                $this->assertContains('Content-type: text/plain', $this->response->getHeaders());
-        }
+	public function testContentTypeDefaultsToText(){
+		$this->assertContains('Content-type: text/plain', $this->response->getHeaders());
+	}
 
 
-        public function testContentTypeIsSetableViaConstructor(){
-                $response = new TextResponse('sometext', 'html');
+	public function testContentTypeIsSetableViaConstructor(){
+		$response = new TextResponse('sometext', 'html');
 
-                $this->assertContains('Content-type: text/html', $response->getHeaders());
-        }
+		$this->assertContains('Content-type: text/html', $response->getHeaders());
+	}
 
 }

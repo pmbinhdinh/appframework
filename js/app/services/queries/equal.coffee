@@ -25,21 +25,21 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 angular.module('OC').factory '_EqualQuery', ['_Query',
 (_Query) ->
 
-        class EqualQuery extends _Query
+	class EqualQuery extends _Query
 
-                constructor: (@_field, @_value) ->
-                        name = 'equal'
-                        super(name, [@_field, @_value])
-
-
-                exec: (data) ->
-                        equal = []
-                        for entry in data
-                                if entry[@_field] == @_value
-                                        equal.push(entry)
-
-                        return equal
+		constructor: (@_field, @_value) ->
+			name = 'equal'
+			super(name, [@_field, @_value])
 
 
-        return EqualQuery
+		exec: (data) ->
+			equal = []
+			for entry in data
+				if entry[@_field] == @_value
+					equal.push(entry)
+
+			return equal
+
+
+	return EqualQuery
 ]

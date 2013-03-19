@@ -32,126 +32,126 @@ require_once(__DIR__ . "/../classloader.php");
 
 class TemplateResponseTest extends \PHPUnit_Framework_TestCase {
 
-        private $tpl;
-        private $api;
+	private $tpl;
+	private $api;
 
-        protected function setUp() {
-                $this->api = $this->getMock('OCA\AppFramework\Core\API',
-                                                                array('getAppName'), array('test'));
-                $this->api->expects($this->any())
-                                ->method('getAppName')
-                                ->will($this->returnValue('app'));
+	protected function setUp() {
+		$this->api = $this->getMock('OCA\AppFramework\Core\API',
+								array('getAppName'), array('test'));
+		$this->api->expects($this->any())
+				->method('getAppName')
+				->will($this->returnValue('app'));
 
-                $this->tpl = new TemplateResponse($this->api, 'home');
-        }
-
-
-        public function testSetParams(){
-                $params = array('hi' => 'yo');
-                $this->tpl->setParams($params);
-
-                $this->assertEquals(array('hi' => 'yo'), $this->tpl->getParams());
-        }
+		$this->tpl = new TemplateResponse($this->api, 'home');
+	}
 
 
-        public function testGetTemplateName(){
-                $this->assertEquals('home', $this->tpl->getTemplateName());
-        }
+	public function testSetParams(){
+		$params = array('hi' => 'yo');
+		$this->tpl->setParams($params);
+
+		$this->assertEquals(array('hi' => 'yo'), $this->tpl->getParams());
+	}
 
 
-        public function testRender(){
-                $ocTpl = $this->getMock('Template', array('fetchPage'));
-                $ocTpl->expects($this->once())
-                                ->method('fetchPage');
-
-                $api = $this->getMock('OCA\AppFramework\Core\API',
-                                        array('getAppName', 'getTemplate'), array('app'));
-                $api->expects($this->any())
-                                ->method('getAppName')
-                                ->will($this->returnValue('app'));
-                $api->expects($this->once())
-                                ->method('getTemplate')
-                                ->with($this->equalTo('home'), $this->equalTo('user'), $this->equalTo('app'))
-                                ->will($this->returnValue($ocTpl));
-
-                $tpl = new TemplateResponse($api, 'home');
-
-                $tpl->render();
-        }
+	public function testGetTemplateName(){
+		$this->assertEquals('home', $this->tpl->getTemplateName());
+	}
 
 
-        public function testRenderAssignsParams(){
-                $params = array('john' => 'doe');
+	public function testRender(){
+		$ocTpl = $this->getMock('Template', array('fetchPage'));
+		$ocTpl->expects($this->once())
+				->method('fetchPage');
 
-                $ocTpl = $this->getMock('Template', array('assign', 'fetchPage'));
-                $ocTpl->expects($this->once())
-                                ->method('assign')
-                                ->with($this->equalTo('john'), $this->equalTo('doe'));
+		$api = $this->getMock('OCA\AppFramework\Core\API',
+					array('getAppName', 'getTemplate'), array('app'));
+		$api->expects($this->any())
+				->method('getAppName')
+				->will($this->returnValue('app'));
+		$api->expects($this->once())
+				->method('getTemplate')
+				->with($this->equalTo('home'), $this->equalTo('user'), $this->equalTo('app'))
+				->will($this->returnValue($ocTpl));
 
-                $api = $this->getMock('OCA\AppFramework\Core\API',
-                                        array('getAppName', 'getTemplate'), array('app'));
-                $api->expects($this->any())
-                                ->method('getAppName')
-                                ->will($this->returnValue('app'));
-                $api->expects($this->once())
-                                ->method('getTemplate')
-                                ->with($this->equalTo('home'), $this->equalTo('user'), $this->equalTo('app'))
-                                ->will($this->returnValue($ocTpl));
+		$tpl = new TemplateResponse($api, 'home');
 
-                $tpl = new TemplateResponse($api, 'home');
-                $tpl->setParams($params);
-
-                $tpl->render();
-        }
+		$tpl->render();
+	}
 
 
-        public function testRenderDifferentApp(){
-                $ocTpl = $this->getMock('Template', array('fetchPage'));
-                $ocTpl->expects($this->once())
-                                ->method('fetchPage');
+	public function testRenderAssignsParams(){
+		$params = array('john' => 'doe');
 
-                $api = $this->getMock('OCA\AppFramework\Core\API',
-                                        array('getAppName', 'getTemplate'), array('app'));
-                $api->expects($this->any())
-                                ->method('getAppName')
-                                ->will($this->returnValue('app'));
-                $api->expects($this->once())
-                                ->method('getTemplate')
-                                ->with($this->equalTo('home'), $this->equalTo('user'), $this->equalTo('app2'))
-                                ->will($this->returnValue($ocTpl));
+		$ocTpl = $this->getMock('Template', array('assign', 'fetchPage'));
+		$ocTpl->expects($this->once())
+				->method('assign')
+				->with($this->equalTo('john'), $this->equalTo('doe'));
 
-                $tpl = new TemplateResponse($api, 'home', 'app2');
+		$api = $this->getMock('OCA\AppFramework\Core\API',
+					array('getAppName', 'getTemplate'), array('app'));
+		$api->expects($this->any())
+				->method('getAppName')
+				->will($this->returnValue('app'));
+		$api->expects($this->once())
+				->method('getTemplate')
+				->with($this->equalTo('home'), $this->equalTo('user'), $this->equalTo('app'))
+				->will($this->returnValue($ocTpl));
 
-                $tpl->render();
-        }
+		$tpl = new TemplateResponse($api, 'home');
+		$tpl->setParams($params);
 
-
-        public function testRenderDifferentRenderAs(){
-                $ocTpl = $this->getMock('Template', array('fetchPage'));
-                $ocTpl->expects($this->once())
-                                ->method('fetchPage');
-
-                $api = $this->getMock('OCA\AppFramework\Core\API',
-                                        array('getAppName', 'getTemplate'), array('app'));
-                $api->expects($this->any())
-                                ->method('getAppName')
-                                ->will($this->returnValue('app'));
-                $api->expects($this->once())
-                                ->method('getTemplate')
-                                ->with($this->equalTo('home'), $this->equalTo('admin'), $this->equalTo('app'))
-                                ->will($this->returnValue($ocTpl));
-
-                $tpl = new TemplateResponse($api, 'home');
-                $tpl->renderAs('admin');
-
-                $tpl->render();
-        }
+		$tpl->render();
+	}
 
 
-        public function testGetRenderAs(){
-                $render = 'myrender';
-                $this->tpl->renderAs($render);
-                $this->assertEquals($render, $this->tpl->getRenderAs());
-        }
+	public function testRenderDifferentApp(){
+		$ocTpl = $this->getMock('Template', array('fetchPage'));
+		$ocTpl->expects($this->once())
+				->method('fetchPage');
+
+		$api = $this->getMock('OCA\AppFramework\Core\API',
+					array('getAppName', 'getTemplate'), array('app'));
+		$api->expects($this->any())
+				->method('getAppName')
+				->will($this->returnValue('app'));
+		$api->expects($this->once())
+				->method('getTemplate')
+				->with($this->equalTo('home'), $this->equalTo('user'), $this->equalTo('app2'))
+				->will($this->returnValue($ocTpl));
+
+		$tpl = new TemplateResponse($api, 'home', 'app2');
+
+		$tpl->render();
+	}
+
+
+	public function testRenderDifferentRenderAs(){
+		$ocTpl = $this->getMock('Template', array('fetchPage'));
+		$ocTpl->expects($this->once())
+				->method('fetchPage');
+
+		$api = $this->getMock('OCA\AppFramework\Core\API',
+					array('getAppName', 'getTemplate'), array('app'));
+		$api->expects($this->any())
+				->method('getAppName')
+				->will($this->returnValue('app'));
+		$api->expects($this->once())
+				->method('getTemplate')
+				->with($this->equalTo('home'), $this->equalTo('admin'), $this->equalTo('app'))
+				->will($this->returnValue($ocTpl));
+
+		$tpl = new TemplateResponse($api, 'home');
+		$tpl->renderAs('admin');
+
+		$tpl->render();
+	}
+
+
+	public function testGetRenderAs(){
+		$render = 'myrender';
+		$this->tpl->renderAs($render);
+		$this->assertEquals($render, $this->tpl->getRenderAs());
+	}
 
 }

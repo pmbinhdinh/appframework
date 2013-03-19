@@ -22,22 +22,22 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 
 describe 'ocDraggable', ->
 
-        beforeEach module 'OC'
+	beforeEach module 'OC'
 
-        beforeEach inject ($rootScope, $compile) =>
-                @options =
-                        revert: true
+	beforeEach inject ($rootScope, $compile) =>
+		@options =
+			revert: true
 
-                optionsString = JSON.stringify(@options).replace(/\"/g, '\'')
-                @elm = angular.element('<div oc-draggable="' + optionsString + '"></div>')
-                scope = $rootScope
-                $compile(@elm)(scope)
-                scope.$digest()
-
-
-        it 'should bind jquery draggable', =>
-                expect(@elm.is(':ui-draggable')).toBe(true)
+		optionsString = JSON.stringify(@options).replace(/\"/g, '\'')
+		@elm = angular.element('<div oc-draggable="' + optionsString + '"></div>')
+		scope = $rootScope
+		$compile(@elm)(scope)
+		scope.$digest()
 
 
-        it 'should bind options if passed', =>
-                expect(@elm.data('ui-draggable').options.revert).toBe(true)
+	it 'should bind jquery draggable', =>
+		expect(@elm.is(':ui-draggable')).toBe(true)
+
+
+	it 'should bind options if passed', =>
+		expect(@elm.data('ui-draggable').options.revert).toBe(true)

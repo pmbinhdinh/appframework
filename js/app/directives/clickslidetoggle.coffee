@@ -29,40 +29,40 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 angular.module('OC').directive 'ocClickSlideToggle',
 ['$rootScope', ($rootScope) ->
 
-        return (scope, elm, attr) ->
-                options = scope.$eval(attr.ocClickSlideToggle)
+	return (scope, elm, attr) ->
+		options = scope.$eval(attr.ocClickSlideToggle)
 
-                # get selected slide area
-                if angular.isDefined(options) and angular.isDefined(options.selector)
-                        slideArea = $(options.selector)
-                else
-                        slideArea = elm
+		# get selected slide area
+		if angular.isDefined(options) and angular.isDefined(options.selector)
+			slideArea = $(options.selector)
+		else
+			slideArea = elm
 
-                elm.click ->
-                        if slideArea.is(':visible') and not slideArea.is(':animated')
-                                slideArea.slideUp()
-                        else
-                                slideArea.slideDown()
+		elm.click ->
+			if slideArea.is(':visible') and not slideArea.is(':animated')
+				slideArea.slideUp()
+			else
+				slideArea.slideDown()
 
-                # if focus lost is set use broadcast to be sure that the currently
-                # active element doesnt get slid up
-                if angular.isDefined(options) and
-                angular.isDefined(options.hideOnFocusLost) and
-                options.hideOnFocusLost
-                        $(document.body).click ->
-                                $rootScope.$broadcast 'ocLostFocus'
+		# if focus lost is set use broadcast to be sure that the currently
+		# active element doesnt get slid up
+		if angular.isDefined(options) and
+		angular.isDefined(options.hideOnFocusLost) and
+		options.hideOnFocusLost
+			$(document.body).click ->
+				$rootScope.$broadcast 'ocLostFocus'
 
-                        $rootScope.$on 'ocLostFocus', (scope, params) ->
-                                if params != slideArea
-                                        if slideArea.is(':visible') and not slideArea.is(':animated')
-                                                slideArea.slideUp()
+			$rootScope.$on 'ocLostFocus', (scope, params) ->
+				if params != slideArea
+					if slideArea.is(':visible') and not slideArea.is(':animated')
+						slideArea.slideUp()
 
-                        slideArea.click (e) ->
-                                $rootScope.$broadcast 'ocLostFocus', slideArea
-                                e.stopPropagation()
+			slideArea.click (e) ->
+				$rootScope.$broadcast 'ocLostFocus', slideArea
+				e.stopPropagation()
 
-                        elm.click (e) ->
-                                $rootScope.$broadcast 'ocLostFocus', slideArea
-                                e.stopPropagation()
+			elm.click (e) ->
+				$rootScope.$broadcast 'ocLostFocus', slideArea
+				e.stopPropagation()
 
 ]

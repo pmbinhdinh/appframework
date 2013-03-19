@@ -24,100 +24,100 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 # Model which offers basic crud for storing your data
 angular.module('OC').factory '_Model', ->
 
-        class Model
+	class Model
 
-                constructor: ->
-                        @_data = []
-                        @_dataMap = {}
-                        @_filterCache = {}
-
-
-                handle: (data) ->
-                        ###
-                        Redirects to add method
-                        ###
-                        @add(data)
+		constructor: ->
+			@_data = []
+			@_dataMap = {}
+			@_filterCache = {}
 
 
-                add: (data) ->
-                        ###
-                        Adds a new entry or updates an entry if the id exists already
-                        ###
-                        @_invalidateCache()
-                        if angular.isDefined(@_dataMap[data.id])
-                                @update(data)
-                        else
-                                @_data.push(data)
-                                @_dataMap[data.id] = data
+		handle: (data) ->
+			###
+			Redirects to add method
+			###
+			@add(data)
 
 
-                update: (data) ->
-                        ###
-                        Update an entry by searching for its id
-                        ###
-                        @_invalidateCache()
-                        entry = @getById(data.id)
-                        for key, value of data
-                                if key == 'id'
-                                        continue
-                                else
-                                        entry[key] = value
+		add: (data) ->
+			###
+			Adds a new entry or updates an entry if the id exists already
+			###
+			@_invalidateCache()
+			if angular.isDefined(@_dataMap[data.id])
+				@update(data)
+			else
+				@_data.push(data)
+				@_dataMap[data.id] = data
 
 
-                getById: (id) ->
-                        ###
-                        Return an entry by its id
-                        ###
-                        return @_dataMap[id]
+		update: (data) ->
+			###
+			Update an entry by searching for its id
+			###
+			@_invalidateCache()
+			entry = @getById(data.id)
+			for key, value of data
+				if key == 'id'
+					continue
+				else
+					entry[key] = value
 
 
-                getAll: ->
-                        ###
-                        Returns all stored entries
-                        ###
-                        return @_data
+		getById: (id) ->
+			###
+			Return an entry by its id
+			###
+			return @_dataMap[id]
 
 
-                removeById: (id) ->
-                        ###
-                        Remove an entry by id
-                        ###
-                        for entry, counter in @_data
-                                if entry.id == id
-                                        @_data.splice(counter, 1)
-                                        delete @_dataMap[id]
-                                        @_invalidateCache()
-                                        break
+		getAll: ->
+			###
+			Returns all stored entries
+			###
+			return @_data
 
 
-                clear: ->
-                        ###
-                        Removes all cached elements
-                        ###
-                        @_data.length = 0
-                        @_dataMap = {}
-                        @_invalidateCache()
+		removeById: (id) ->
+			###
+			Remove an entry by id
+			###
+			for entry, counter in @_data
+				if entry.id == id
+					@_data.splice(counter, 1)
+					delete @_dataMap[id]
+					@_invalidateCache()
+					break
 
 
-                _invalidateCache: ->
-                        @_filterCache = {}
+		clear: ->
+			###
+			Removes all cached elements
+			###
+			@_data.length = 0
+			@_dataMap = {}
+			@_invalidateCache()
 
 
-                get: (query) ->
-                        ###
-                        Calls, caches and returns filtered results
-                        ###
-                        hash = query.hashCode()
-                        if not angular.isDefined(@_filterCache[hash])
-                                @_filterCache[hash] = query.exec(@_data)
-                        return @_filterCache[hash]
+		_invalidateCache: ->
+			@_filterCache = {}
 
 
-                size: ->
-                        ###
-                        Return the number of all stored entries
-                        ###
-                        return @_data.length
+		get: (query) ->
+			###
+			Calls, caches and returns filtered results
+			###
+			hash = query.hashCode()
+			if not angular.isDefined(@_filterCache[hash])
+				@_filterCache[hash] = query.exec(@_data)
+			return @_filterCache[hash]
 
 
-        return Model
+		size: ->
+			###
+			Return the number of all stored entries
+			###
+			return @_data.length
+
+
+	return Model

@@ -22,11 +22,11 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 
 describe 'Utils', ->
 
-        beforeEach module 'OC'
+	beforeEach module 'OC'
 
-        beforeEach =>
-                inject (@Utils) =>
+	beforeEach =>
+		inject (@Utils) =>
 
 
-        it 'should have defined utils', =>
-                expect(@Utils).toBeDefined()
+	it 'should have defined utils', =>
+		expect(@Utils).toBeDefined()

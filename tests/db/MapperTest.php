@@ -31,138 +31,138 @@ require_once(__DIR__ . "/../classloader.php");
 
 
 class ExampleMapper extends Mapper {
-        public function __construct(API $api){ parent::__construct($api); }
-        public function find($table, $id){ return $this->findQuery($table, $id); }
-        public function findAll($table){ return $this->findAllQuery($table); }
-        public function delete($table, $id){ $this->deleteQuery($table, $id); }
+	public function __construct(API $api){ parent::__construct($api); }
+	public function find($table, $id){ return $this->findQuery($table, $id); }
+	public function findAll($table){ return $this->findAllQuery($table); }
+	public function delete($table, $id){ $this->deleteQuery($table, $id); }
 }
 
 
 class MapperTest extends \PHPUnit_Framework_TestCase {
 
-        private $api;
+	private $api;
 
-        public function setUp(){
-                $this->api = $this->getMock('OCA\AppFramework\Core\API',
-                                                        array('getAppName', 'prepareQuery'),
-                                                        array('test'));
-        }
-
-
-
-        private function find($doesNotExist=false){
-                $sql = 'SELECT * FROM `hihi` WHERE `id` = ?';
-                $params = array(1);
-
-                $cursor = $this->getMock('cursor', array('fetchRow'));
-                $cursor->expects($this->at(0))
-                                ->method('fetchRow')
-                                ->will($this->returnValue(!$doesNotExist));
-
-                if($doesNotExist){
-                        $this->setExpectedException('\OCA\AppFramework\Db\DoesNotExistException');
-                } else {
-                        $cursor->expects($this->at(1))
-                                ->method('fetchRow')
-                                ->will($this->returnValue(false));
-                }
-
-                $query = $this->getMock('query', array('execute'));
-                $query->expects($this->once())
-                                ->method('execute')
-                                ->with($this->equalTo($params))
-                                ->will($this->returnValue($cursor));
-
-                $this->api->expects($this->once())
-                                ->method('prepareQuery')
-                                ->with($this->equalTo($sql))
-                                ->will($this->returnValue($query));
-
-                $mapper = new ExampleMapper($this->api);
+	public function setUp(){
+		$this->api = $this->getMock('OCA\AppFramework\Core\API',
+							array('getAppName', 'prepareQuery'),
+							array('test'));
+	}
 
 
-                $result = $mapper->find('hihi', $params[0]);
 
-                if($doesNotExist){
-                        $this->assertFalse($result);
-                } else {
-                        $this->assertTrue($result);
-                }
+	private function find($doesNotExist=false){
+		$sql = 'SELECT * FROM `hihi` WHERE `id` = ?';
+		$params = array(1);
 
-        }
+		$cursor = $this->getMock('cursor', array('fetchRow'));
+		$cursor->expects($this->at(0))
+				->method('fetchRow')
+				->will($this->returnValue(!$doesNotExist));
 
-        public function testFindThrowsExceptionWhenMoreThanOneResult(){
-                $sql = 'SELECT * FROM `hihi` WHERE `id` = ?';
-                $params = array(1);
+		if($doesNotExist){
+			$this->setExpectedException('\OCA\AppFramework\Db\DoesNotExistException');
+		} else {
+			$cursor->expects($this->at(1))
+				->method('fetchRow')
+				->will($this->returnValue(false));
+		}
 
-                $cursor = $this->getMock('cursor', array('fetchRow'));
-                $cursor->expects($this->at(0))
-                                ->method('fetchRow')
-                                ->will($this->returnValue(true));
-                $cursor->expects($this->at(1))
-                                ->method('fetchRow')
-                                ->will($this->returnValue(true));
+		$query = $this->getMock('query', array('execute'));
+		$query->expects($this->once())
+				->method('execute')
+				->with($this->equalTo($params))
+				->will($this->returnValue($cursor));
 
-                $query = $this->getMock('query', array('execute'));
-                $query->expects($this->once())
-                                ->method('execute')
-                                ->with($this->equalTo($params))
-                                ->will($this->returnValue($cursor));
+		$this->api->expects($this->once())
+				->method('prepareQuery')
+				->with($this->equalTo($sql))
+				->will($this->returnValue($query));
 
-                $this->api->expects($this->once())
-                                ->method('prepareQuery')
-                                ->with($this->equalTo($sql))
-                                ->will($this->returnValue($query));
-
-                $mapper = new ExampleMapper($this->api);
-
-                $this->setExpectedException('\OCA\AppFramework\Db\MultipleObjectsReturnedException');
-
-                $result = $mapper->find('hihi', $params[0]);
-
-        }
+		$mapper = new ExampleMapper($this->api);
 
 
-        public function testFind(){
-                $this->find();
-        }
+		$result = $mapper->find('hihi', $params[0]);
+
+		if($doesNotExist){
+			$this->assertFalse($result);
+		} else {
+			$this->assertTrue($result);
+		}
+
+	}
+
+	public function testFindThrowsExceptionWhenMoreThanOneResult(){
+		$sql = 'SELECT * FROM `hihi` WHERE `id` = ?';
+		$params = array(1);
+
+		$cursor = $this->getMock('cursor', array('fetchRow'));
+		$cursor->expects($this->at(0))
+				->method('fetchRow')
+				->will($this->returnValue(true));
+		$cursor->expects($this->at(1))
+				->method('fetchRow')
+				->will($this->returnValue(true));
+
+		$query = $this->getMock('query', array('execute'));
+		$query->expects($this->once())
+				->method('execute')
+				->with($this->equalTo($params))
+				->will($this->returnValue($cursor));
+
+		$this->api->expects($this->once())
+				->method('prepareQuery')
+				->with($this->equalTo($sql))
+				->will($this->returnValue($query));
+
+		$mapper = new ExampleMapper($this->api);
+
+		$this->setExpectedException('\OCA\AppFramework\Db\MultipleObjectsReturnedException');
+
+		$result = $mapper->find('hihi', $params[0]);
+
+	}
 
 
-        public function testFindDoesNotExist(){
-                $this->find(true);
-        }
+	public function testFind(){
+		$this->find();
+	}
 
 
-        private function query($method, $sql, $params=array()){
-
-                $query = $this->getMock('query', array('execute'));
-
-                $query->expects($this->once())
-                                ->method('execute')
-                                ->with($this->equalTo($params));
-
-                $this->api->expects($this->once())
-                                ->method('prepareQuery')
-                                ->with($this->equalTo($sql))
-                                ->will($this->returnValue($query));
-
-                $mapper = new ExampleMapper($this->api);
-
-                if(count($params) > 0){
-                        $mapper->$method('hihi', $params[0]);
-                } else {
-                        $mapper->$method('hihi');
-                }
-        }
+	public function testFindDoesNotExist(){
+		$this->find(true);
+	}
 
 
-        public function testFindAll(){
-                $this->query('findAll', 'SELECT * FROM `hihi`');
-        }
+	private function query($method, $sql, $params=array()){
+
+		$query = $this->getMock('query', array('execute'));
+
+		$query->expects($this->once())
+				->method('execute')
+				->with($this->equalTo($params));
+
+		$this->api->expects($this->once())
+				->method('prepareQuery')
+				->with($this->equalTo($sql))
+				->will($this->returnValue($query));
+
+		$mapper = new ExampleMapper($this->api);
+
+		if(count($params) > 0){
+			$mapper->$method('hihi', $params[0]);
+		} else {
+			$mapper->$method('hihi');
+		}
+	}
 
 
-        public function testDelete(){
-                $this->query('delete', 'DELETE FROM `hihi` WHERE `id` = ?', array(1));
-        }
+	public function testFindAll(){
+		$this->query('findAll', 'SELECT * FROM `hihi`');
+	}
+
+
+	public function testDelete(){
+		$this->query('delete', 'DELETE FROM `hihi` WHERE `id` = ?', array(1));
+	}
 
 }

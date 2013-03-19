@@ -23,41 +23,41 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 describe '_MaximumQuery', ->
 
 
-        beforeEach module 'OC'
+	beforeEach module 'OC'
 
-        beforeEach inject (_MaximumQuery, _Model, _Query) =>
-                @query = _MaximumQuery
-                @q = _Query
-                @model = _Model
-
-
-        it 'should be a _Query subclass', =>
-                expect(new @query('id') instanceof @q).toBe(true)
-
-        it 'should have a correct hash', =>
-                expect(new @query('id').hashCode()).toBe('maximum_id')
+	beforeEach inject (_MaximumQuery, _Model, _Query) =>
+		@query = _MaximumQuery
+		@q = _Query
+		@model = _Model
 
 
-        it 'should return undefined on empty list', =>
-                query = new @query('id')
-                expect(query.exec([])).toBe(undefined)
+	it 'should be a _Query subclass', =>
+		expect(new @query('id') instanceof @q).toBe(true)
+
+	it 'should have a correct hash', =>
+		expect(new @query('id').hashCode()).toBe('maximum_id')
 
 
-        it 'should return the minimum', =>
-                data1 =
-                        id: 3
+	it 'should return undefined on empty list', =>
+		query = new @query('id')
+		expect(query.exec([])).toBe(undefined)
 
-                data2 =
-                        id: 1
 
-                data3 =
-                        id: 5
+	it 'should return the minimum', =>
+		data1 =
+			id: 3
 
-                data = [
-                        data1
-                        data3
-                        data2
-                ]
-                query = new @query('id')
+		data2 =
+			id: 1
 
-                expect(query.exec(data)).toBe(data3)
+		data3 =
+			id: 5
+
+		data = [
+			data1
+			data3
+			data2
+		]
+		query = new @query('id')
+
+		expect(query.exec(data)).toBe(data3)

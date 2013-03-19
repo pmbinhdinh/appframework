@@ -23,54 +23,54 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 describe '_EqualQuery', ->
 
 
-        beforeEach module 'OC'
+	beforeEach module 'OC'
 
-        beforeEach inject (_EqualQuery, _Model, _Query) =>
-                @query = _EqualQuery
-                @q = _Query
-                @model = _Model
-                data1 =
-                        id: 3
-                        name: 'donovan'
+	beforeEach inject (_EqualQuery, _Model, _Query) =>
+		@query = _EqualQuery
+		@q = _Query
+		@model = _Model
+		data1 =
+			id: 3
+			name: 'donovan'
 
-                data2 =
-                        id: 5
-                        name: 'donovan'
+		data2 =
+			id: 5
+			name: 'donovan'
 
-                data3 =
-                        id: 2
-                        name: 'jack'
+		data3 =
+			id: 2
+			name: 'jack'
 
-                @data = [
-                        data1
-                        data2
-                        data3
-                ]
-
-
-        it 'should be a _ModelFilter subclass', =>
-                expect(new @query('id') instanceof @q).toBe(true)
+		@data = [
+			data1
+			data2
+			data3
+		]
 
 
-        it 'should return an empty list on empty list', =>
-                query = new @query('id', 3)
-                expect(query.exec([]).length).toBe(0)
+	it 'should be a _ModelFilter subclass', =>
+		expect(new @query('id') instanceof @q).toBe(true)
 
 
-        it 'should query on one', =>
-                query = new @query('id', 5)
-
-                expect(query.exec(@data)).toContain(@data[1])
-
-
-        it 'should return an empty list if no element is matched', =>
-                query = new @query('name', 5)
-
-                expect(query.exec(@data).length).toBe(0)
+	it 'should return an empty list on empty list', =>
+		query = new @query('id', 3)
+		expect(query.exec([]).length).toBe(0)
 
 
-        it 'should return list with multiple elements if an element is matched', =>
-                query = new @query('name', 'donovan')
+	it 'should query on one', =>
+		query = new @query('id', 5)
 
-                expect(query.exec(@data)).toContain(@data[0])
-                expect(query.exec(@data)).toContain(@data[1])
+		expect(query.exec(@data)).toContain(@data[1])
+
+
+	it 'should return an empty list if no element is matched', =>
+		query = new @query('name', 5)
+
+		expect(query.exec(@data).length).toBe(0)
+
+
+	it 'should return list with multiple elements if an element is matched', =>
+		query = new @query('name', 'donovan')
+
+		expect(query.exec(@data)).toContain(@data[0])
+		expect(query.exec(@data)).toContain(@data[1])

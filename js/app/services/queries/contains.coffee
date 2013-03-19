@@ -25,21 +25,21 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 angular.module('OC').factory '_ContainsQuery', ['_Query',
 (_Query) ->
 
-        class ContainsQuery extends _Query
+	class ContainsQuery extends _Query
 
-                constructor: (@_field, @_value) ->
-                        name = 'contains'
-                        super(name, [@_field, @_value])
-
-
-                exec: (data) ->
-                        filtered = []
-                        for entry in data
-                                if entry[@_field].indexOf(@_value) != -1
-                                        filtered.push(entry)
-
-                        return filtered
+		constructor: (@_field, @_value) ->
+			name = 'contains'
+			super(name, [@_field, @_value])
 
 
-        return ContainsQuery
+		exec: (data) ->
+			filtered = []
+			for entry in data
+				if entry[@_field].indexOf(@_value) != -1
+					filtered.push(entry)
+
+			return filtered
+
+
+	return ContainsQuery
 ]

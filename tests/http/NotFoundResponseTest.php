@@ -30,14 +30,14 @@ require_once(__DIR__ . "/../classloader.php");
 
 class NotFoundResponseTest extends \PHPUnit_Framework_TestCase {
 
-        protected function setUp() {
-                $this->response = new NotFoundResponse();
-        }
+	protected function setUp() {
+		$this->response = new NotFoundResponse();
+	}
 
 
-        public function testReturnStatus() {
-                $this->assertContains('HTTP/1.1 404 Not Found',
-                                                        $this->response->getHeaders());
-        }
+	public function testReturnStatus() {
+		$this->assertContains('HTTP/1.1 404 Not Found',
+							$this->response->getHeaders());
+	}
 
 }

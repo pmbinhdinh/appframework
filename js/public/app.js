@@ -298,14 +298,14 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 
       Model.prototype.handle = function(data) {
         /*
-				Redirects to add method
+        			Redirects to add method
         */
         return this.add(data);
       };
 
       Model.prototype.add = function(data) {
         /*
-				Adds a new entry or updates an entry if the id exists already
+        			Adds a new entry or updates an entry if the id exists already
         */
         this._invalidateCache();
         if (angular.isDefined(this._dataMap[data.id])) {
@@ -318,7 +318,7 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 
       Model.prototype.update = function(data) {
         /*
-				Update an entry by searching for its id
+        			Update an entry by searching for its id
         */
 
         var entry, key, value, _results;
@@ -338,21 +338,21 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 
       Model.prototype.getById = function(id) {
         /*
-				Return an entry by its id
+        			Return an entry by its id
         */
         return this._dataMap[id];
       };
 
       Model.prototype.getAll = function() {
         /*
-				Returns all stored entries
+        			Returns all stored entries
         */
         return this._data;
       };
 
       Model.prototype.removeById = function(id) {
         /*
-				Remove an entry by id
+        			Remove an entry by id
         */
 
         var counter, entry, _i, _len, _ref, _results;
@@ -374,7 +374,7 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 
       Model.prototype.clear = function() {
         /*
-				Removes all cached elements
+        			Removes all cached elements
         */
         this._data.length = 0;
         this._dataMap = {};
@@ -387,7 +387,7 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 
       Model.prototype.get = function(query) {
         /*
-				Calls, caches and returns filtered results
+        			Calls, caches and returns filtered results
         */
 
         var hash;
@@ -400,7 +400,7 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 
       Model.prototype.size = function() {
         /*
-				Return the number of all stored entries
+        			Return the number of all stored entries
         */
         return this._data.length;
       };
@@ -1302,16 +1302,16 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
           data = {};
         }
         /*
-				Wrapper to do a normal request to the server. This needs to
-				be done to hook the publisher into the requests and to handle
-				requests, that come in before routes have been loaded
-
-				route: the routename data can contain the following
-				data.routeParams: object with parameters for the route
-				data.data: ajax data objec which is passed to PHP
-				data.onSuccess: callback for successful requests
-				data.onFailure: callback for failed requests
-				data.config: a config which should be passed to $http
+        			Wrapper to do a normal request to the server. This needs to
+        			be done to hook the publisher into the requests and to handle
+        			requests, that come in before routes have been loaded
+        
+        			route: the routename data can contain the following
+        			data.routeParams: object with parameters for the route
+        			data.data: ajax data objec which is passed to PHP
+        			data.onSuccess: callback for successful requests
+        			data.onFailure: callback for failed requests
+        			data.config: a config which should be passed to $http
         */
 
         defaultData = {
@@ -1352,7 +1352,7 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
           data = {};
         }
         /*
-				Request shortcut which sets the method to POST
+        			Request shortcut which sets the method to POST
         */
 
         data.config || (data.config = {});
@@ -1365,7 +1365,7 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
           data = {};
         }
         /*
-				Request shortcut which sets the method to GET
+        			Request shortcut which sets the method to GET
         */
 
         data.config || (data.config = {});
@@ -1378,7 +1378,7 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
           data = {};
         }
         /*
-				Request shortcut which sets the method to GET
+        			Request shortcut which sets the method to GET
         */
 
         data.config || (data.config = {});
@@ -1391,7 +1391,7 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
           data = {};
         }
         /*
-				Request shortcut which sets the method to GET
+        			Request shortcut which sets the method to GET
         */
 
         data.config || (data.config = {});
@@ -1401,7 +1401,7 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 
       Request.prototype._shelveRequest = function(route, data) {
         /*
-				Saves requests for later if the routes have not been loaded
+        			Saves requests for later if the routes have not been loaded
         */
 
         var request;
@@ -1414,8 +1414,8 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 
       Request.prototype._executeShelvedRequests = function() {
         /*
-				Run all saved requests that were done before routes were fully
-				loaded
+        			Run all saved requests that were done before routes were fully
+        			loaded
         */
 
         var r, _i, _len, _ref, _results;

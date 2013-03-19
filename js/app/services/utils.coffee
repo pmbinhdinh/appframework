@@ -23,4 +23,4 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 
 # Inject router into angular to make testing easier
 angular.module('OC').factory 'Utils', ->
-        return OC
+	return OC

@@ -30,32 +30,32 @@ namespace OCA\AppFramework\Utility;
  */
 class MethodAnnotationReader {
 
-        private $annotations;
+	private $annotations;
 
-        /**
-         * @param object $object an object or classname
-         * @param string $method the method which we want to inspect for annotations
-         */
-        public function __construct($object, $method){
-                $this->annotations = array();
+	/**
+	 * @param object $object an object or classname
+	 * @param string $method the method which we want to inspect for annotations
+	 */
+	public function __construct($object, $method){
+		$this->annotations = array();
 
-                $reflection = new \ReflectionMethod($object, $method);
-                $docs = $reflection->getDocComment();
+		$reflection = new \ReflectionMethod($object, $method);
+		$docs = $reflection->getDocComment();
 
-                // extract everythin prefixed by @ and first letter uppercase
-                preg_match_all('/@([A-Z]\w+)/', $docs, $matches);
-                $this->annotations = $matches[1];
-        }
+		// extract everythin prefixed by @ and first letter uppercase
+		preg_match_all('/@([A-Z]\w+)/', $docs, $matches);
+		$this->annotations = $matches[1];
+	}
 
 
-        /**
-         * Check if a method contains an annotation
-         * @param string $name the name of the annotation
-         * @return bool true if the annotation is found
-         */
-        public function hasAnnotation($name){
-                return in_array($name, $this->annotations);
-        }
+	/**
+	 * Check if a method contains an annotation
+	 * @param string $name the name of the annotation
+	 * @return bool true if the annotation is found
+	 */
+	public function hasAnnotation($name){
+		return in_array($name, $this->annotations);
+	}
 
 
 }

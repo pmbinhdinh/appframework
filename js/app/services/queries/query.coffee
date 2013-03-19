@@ -25,25 +25,25 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 angular.module('OC').factory '_Query', ['_NotImplementedError',
 (_NotImplementedError) ->
 
-        class Query
+	class Query
 
-                constructor: (@_name, @_args=[]) ->
-
-
-                exec: (data) ->
-                        throw new _NotImplementedError('Not implemented')
+		constructor: (@_name, @_args=[]) ->
 
 
-                hashCode: (filter) ->
-                        hash = @_name
-                        for arg in @_args
-                                if angular.isString(arg)
-                                        arg = arg.replace(/_/gi, '__')
-                                hash += '_' + arg
-
-                        return hash
+		exec: (data) ->
+			throw new _NotImplementedError('Not implemented')
 
 
-        return Query
+		hashCode: (filter) ->
+			hash = @_name
+			for arg in @_args
+				if angular.isString(arg)
+					arg = arg.replace(/_/gi, '__')
+				hash += '_' + arg
+
+			return hash
+
+
+	return Query
 
 ]

@@ -34,54 +34,54 @@ namespace OCA\AppFramework;
 class App {
 
 
-        /**
-         * Shortcut for calling a controller method and printing the result
-         * @param string $controllerName the name of the controller under which it is
-         *                               stored in the DI container
-         * @param string $methodName the method that you want to call
-         * @param array $urlParams an array with variables extracted from the routes
-         * @param Pimple $container an instance of a pimple container.
-         */
-        public static function main($controllerName, $methodName, array $urlParams, \Pimple $container){
+	/**
+	 * Shortcut for calling a controller method and printing the result
+	 * @param string $controllerName the name of the controller under which it is
+	 *                               stored in the DI container
+	 * @param string $methodName the method that you want to call
+	 * @param array $urlParams an array with variables extracted from the routes
+	 * @param Pimple $container an instance of a pimple container.
+	 */
+	public static function main($controllerName, $methodName, array $urlParams, \Pimple $container){
 
-                $container['urlParams'] = $urlParams;
-                $controller = $container[$controllerName];
+		$container['urlParams'] = $urlParams;
+		$controller = $container[$controllerName];
 
-                // initialize the dispatcher and run all the middleware before the controller
-                $middlewareDispatcher = $container['MiddlewareDispatcher'];
+		// initialize the dispatcher and run all the middleware before the controller
+		$middlewareDispatcher = $container['MiddlewareDispatcher'];
 
-                // create response and run middleware that receives the response
-                // if an exception appears, the middleware is checked to handle the exception
-                // and to create a response. If no response is created, it is assumed that
-                // theres no middleware who can handle it and the error is thrown again
-                try {
-                        $middlewareDispatcher->beforeController($controller, $methodName);
-                        $response = $controller->$methodName();
-                } catch(\Exception $exception){
-                        $response = $middlewareDispatcher->afterException($controller, $methodName, $exception);
-                        if($response === null){
-                                throw $exception;
-                        }
-                }
+		// create response and run middleware that receives the response
+		// if an exception appears, the middleware is checked to handle the exception
+		// and to create a response. If no response is created, it is assumed that
+		// theres no middleware who can handle it and the error is thrown again
+		try {
+			$middlewareDispatcher->beforeController($controller, $methodName);
+			$response = $controller->$methodName();
+		} catch(\Exception $exception){
+			$response = $middlewareDispatcher->afterException($controller, $methodName, $exception);
+			if($response === null){
+				throw $exception;
+			}
+		}
 
-                // this can be used to modify or exchange a response object
-                $response = $middlewareDispatcher->afterController($controller, $methodName, $response);
+		// this can be used to modify or exchange a response object
+		$response = $middlewareDispatcher->afterController($controller, $methodName, $response);
 
-                // get the output which should be printed and run the after output middleware
-                // to modify the response
-                $output = $response->render();
-                $output = $middlewareDispatcher->beforeOutput($controller, $methodName, $output);
+		// get the output which should be printed and run the after output middleware
+		// to modify the response
+		$output = $response->render();
+		$output = $middlewareDispatcher->beforeOutput($controller, $methodName, $output);
 
-                // output headers and echo content
-                foreach($response->getHeaders() as $header){
-                        header($header);
-                }
+		// output headers and echo content
+		foreach($response->getHeaders() as $header){
+			header($header);
+		}
 
-                if($output !== null){
-                        echo $output;
-                }
+		if($output !== null){
+			echo $output;
+		}
 
-        }
+	}
 
 
 }

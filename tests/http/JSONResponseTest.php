@@ -31,52 +31,52 @@ require_once(__DIR__ . "/../classloader.php");
 
 class JSONResponseTest extends \PHPUnit_Framework_TestCase {
 
-        private $json;
+	private $json;
 
-        protected function setUp() {
-                $this->json = new JSONResponse();
-        }
-
-
-        public function testHeader(){
-                $headers = $this->json->getHeaders();
-                $this->assertTrue(in_array('Content-type: application/json', $headers));
-        }
+	protected function setUp() {
+		$this->json = new JSONResponse();
+	}
 
 
-        public function testSetParams(){
-                $params = array('hi', 'yo');
-                $this->json->setParams($params);
-
-                $this->assertEquals(array('hi', 'yo'), $this->json->getParams());
-        }
+	public function testHeader(){
+		$headers = $this->json->getHeaders();
+		$this->assertTrue(in_array('Content-type: application/json', $headers));
+	}
 
 
-        public function testRender(){
-                $params = array('test' => 'hi');
-                $this->json->setParams($params);
+	public function testSetParams(){
+		$params = array('hi', 'yo');
+		$this->json->setParams($params);
 
-                $expected = '{"status":"success","data":{"test":"hi"}}';
-
-                $this->assertEquals($expected, $this->json->render());
-        }
+		$this->assertEquals(array('hi', 'yo'), $this->json->getParams());
+	}
 
 
-        public function testRenderError(){
-                $params = array('test' => 'hi');
-                $this->json->setParams($params);
-                $this->json->setErrorMessage('kaputt');
+	public function testRender(){
+		$params = array('test' => 'hi');
+		$this->json->setParams($params);
 
-                $expected = '{"status":"error","data":{"test":"hi"},"msg":"kaputt"}';
+		$expected = '{"status":"success","data":{"test":"hi"}}';
 
-                $this->assertEquals($expected, $this->json->render());
-        }
-
+		$this->assertEquals($expected, $this->json->render());
+	}
 
 
-        public function testShouldHaveXContentHeaderByDefault(){
-                $this->assertContains('X-Content-Type-Options: nosniff',
-                        $this->json->getHeaders());
-        }
+	public function testRenderError(){
+		$params = array('test' => 'hi');
+		$this->json->setParams($params);
+		$this->json->setErrorMessage('kaputt');
+
+		$expected = '{"status":"error","data":{"test":"hi"},"msg":"kaputt"}';
+
+		$this->assertEquals($expected, $this->json->render());
+	}
+
+
+
+	public function testShouldHaveXContentHeaderByDefault(){
+		$this->assertContains('X-Content-Type-Options: nosniff',
+			$this->json->getHeaders());
+	}
 
 }

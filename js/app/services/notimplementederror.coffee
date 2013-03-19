@@ -24,12 +24,12 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 # Model which offers basic crud for storing your data
 angular.module('OC').factory '_NotImplementedError', ->
 
-        class NotImplementedError
+	class NotImplementedError
 
-                constructor: (@_msg) ->
+		constructor: (@_msg) ->
 
-                getMessage: ->
-                        return @_msg
+		getMessage: ->
+			return @_msg
 
 
-        return NotImplementedError
+	return NotImplementedError

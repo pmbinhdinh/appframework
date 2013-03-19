@@ -27,9 +27,9 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 # otherwise this will end in endless recursion
 angular.module('OC').directive 'ocForwardClick', ->
 
-        return (scope, elm, attr) ->
-                options = scope.$eval(attr.ocForwardClick)
+	return (scope, elm, attr) ->
+		options = scope.$eval(attr.ocForwardClick)
 
-                if angular.isDefined(options) and angular.isDefined(options.selector)
-                        $(elm).click ->
-                                $(options.selector).trigger('click')
+		if angular.isDefined(options) and angular.isDefined(options.selector)
+			$(elm).click ->
+				$(options.selector).trigger('click')

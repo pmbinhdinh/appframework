@@ -37,107 +37,107 @@ require_once(__DIR__ . "/../../classloader.php");
 class TwigMiddlewareTest extends \PHPUnit_Framework_TestCase {
 
 
-        public function setUp(){
-                $this->api = $this->getMock('OCA\AppFramework\Core\API', array('getTemplate'), array('hi'));
-        $this->twig = $this->getMock('Twig', array('render'));
-        $this->middleware = new TwigMiddleware($this->api, $this->twig);
-        $this->octpl = $this->getMock('OC\Template', array('assign', 'fetchPage'));
-        }
+	public function setUp(){
+		$this->api = $this->getMock('OCA\AppFramework\Core\API', array('getTemplate'), array('hi'));
+	$this->twig = $this->getMock('Twig', array('render'));
+	$this->middleware = new TwigMiddleware($this->api, $this->twig);
+	$this->octpl = $this->getMock('OC\Template', array('assign', 'fetchPage'));
+	}
 
 
-        public function testAfterControllerNoTemplateResponse(){
-                $response = $this->middleware->afterController('a', 'b', new JSONResponse());
-                $this->assertTrue($response instanceof JSONResponse);
-        }
+	public function testAfterControllerNoTemplateResponse(){
+		$response = $this->middleware->afterController('a', 'b', new JSONResponse());
+		$this->assertTrue($response instanceof JSONResponse);
+	}
 
 
-        public function testAfterControllerExchangesTemplateResponse(){
-                $response = $this->middleware->afterController('a', 'b', new TemplateResponse($this->api, 'a'));
-                $this->assertTrue($response instanceof TwigResponse);
-        }
+	public function testAfterControllerExchangesTemplateResponse(){
+		$response = $this->middleware->afterController('a', 'b', new TemplateResponse($this->api, 'a'));
+		$this->assertTrue($response instanceof TwigResponse);
+	}
 
 
-        public function testAfterControllerHeadersAreTransferred(){
-                $tpl = new TemplateResponse($this->api, 'a');
-                $tpl->addHeader('john');
-                $tpl->addHeader('tom');
-                $response = $this->middleware->afterController('a', 'b', $tpl);
-                $this->assertContains('john', $response->getHeaders());
-                $this->assertContains('tom', $response->getHeaders());
-        }
+	public function testAfterControllerHeadersAreTransferred(){
+		$tpl = new TemplateResponse($this->api, 'a');
+		$tpl->addHeader('john');
+		$tpl->addHeader('tom');
+		$response = $this->middleware->afterController('a', 'b', $tpl);
+		$this->assertContains('john', $response->getHeaders());
+		$this->assertContains('tom', $response->getHeaders());
+	}
 
 
-        public function testAfterControllerTplNameIsTransferred(){
-                $tpl = new TemplateResponse($this->api, 'hohohoho');
-                $response = $this->middleware->afterController('a', 'b', $tpl);
-                $this->assertEquals('hohohoho.php', $response->getTemplateName());
-        }
+	public function testAfterControllerTplNameIsTransferred(){
+		$tpl = new TemplateResponse($this->api, 'hohohoho');
+		$response = $this->middleware->afterController('a', 'b', $tpl);
+		$this->assertEquals('hohohoho.php', $response->getTemplateName());
+	}
 
-        public function testAfterControllerParamsAreTransferred(){
-                $params = array('john' => 'doe', 'frank' => 'john');
-                $tpl = new TemplateResponse($this->api, 'a');
-                $tpl->setParams($params);
-                $response = $this->middleware->afterController('a', 'b', $tpl);
-                $this->assertEquals($params, $response->getParams());
-        }
-
-
-        public function testBeforeOutputRenderBlankReturnsOutput(){
-                $tpl = new TemplateResponse($this->api, 'a');
-                $tpl->renderAs('blank');
-                $this->middleware->afterController('a', 'b', $tpl);
-                $out = $this->middleware->beforeOutput('a', 'b', 'out');
-                $this->assertEquals('out', $out);
-        }
+	public function testAfterControllerParamsAreTransferred(){
+		$params = array('john' => 'doe', 'frank' => 'john');
+		$tpl = new TemplateResponse($this->api, 'a');
+		$tpl->setParams($params);
+		$response = $this->middleware->afterController('a', 'b', $tpl);
+		$this->assertEquals($params, $response->getParams());
+	}
 
 
-        public function testBeforeOutputOutputIsAltered(){
-                $this->api->expects($this->once())
-                                ->method('getTemplate')
-                                ->with($this->equalTo('twig'), $this->equalTo('mager'), $this->equalTo('appframework'))
-                                ->will($this->returnValue($this->octpl));
-
-                $this->octpl->expects($this->once())
-                                ->method('fetchPage')
-                                ->will($this->returnValue('testsss'));
-
-                $tpl = new TemplateResponse($this->api, 'a');
-                $tpl->renderAs('mager');
-                $this->middleware->afterController('a', 'b', $tpl);
-                $out = $this->middleware->beforeOutput('a', 'b', 'out');
-                $this->assertEquals('testsss', $out);
-        }
+	public function testBeforeOutputRenderBlankReturnsOutput(){
+		$tpl = new TemplateResponse($this->api, 'a');
+		$tpl->renderAs('blank');
+		$this->middleware->afterController('a', 'b', $tpl);
+		$out = $this->middleware->beforeOutput('a', 'b', 'out');
+		$this->assertEquals('out', $out);
+	}
 
 
-        public function testBeforeOutputTemplateIsAssignedCorrectly(){
-                $this->api->expects($this->once())
-                                ->method('getTemplate')
-                                ->with($this->equalTo('twig'), $this->equalTo('mager'), $this->equalTo('appframework'))
-                                ->will($this->returnValue($this->octpl));
+	public function testBeforeOutputOutputIsAltered(){
+		$this->api->expects($this->once())
+				->method('getTemplate')
+				->with($this->equalTo('twig'), $this->equalTo('mager'), $this->equalTo('appframework'))
+				->will($this->returnValue($this->octpl));
 
-                $this->octpl->expects($this->once())
-                                ->method('assign')
-                                ->with($this->equalTo('twig'), $this->equalTo('out'), $this->equalTo(false))
-                                ->will($this->returnValue('testsss'));
+		$this->octpl->expects($this->once())
+				->method('fetchPage')
+				->will($this->returnValue('testsss'));
 
-                $tpl = new TemplateResponse($this->api, 'a');
-                $tpl->renderAs('mager');
-                $this->middleware->afterController('a', 'b', $tpl);
-                $this->middleware->beforeOutput('a', 'b', 'out');
-        }
+		$tpl = new TemplateResponse($this->api, 'a');
+		$tpl->renderAs('mager');
+		$this->middleware->afterController('a', 'b', $tpl);
+		$out = $this->middleware->beforeOutput('a', 'b', 'out');
+		$this->assertEquals('testsss', $out);
+	}
 
 
-        public function testBeforeOutputTemplateIsInstantiatedCorrectly(){
-                $this->api->expects($this->once())
-                                ->method('getTemplate')
-                                ->with($this->equalTo('twig'), $this->equalTo('mager'), $this->equalTo('appframework'))
-                                ->will($this->returnValue($this->octpl));
+	public function testBeforeOutputTemplateIsAssignedCorrectly(){
+		$this->api->expects($this->once())
+				->method('getTemplate')
+				->with($this->equalTo('twig'), $this->equalTo('mager'), $this->equalTo('appframework'))
+				->will($this->returnValue($this->octpl));
 
-                $tpl = new TemplateResponse($this->api, 'a');
-                $tpl->renderAs('mager');
-                $this->middleware->afterController('a', 'b', $tpl);
-                $this->middleware->beforeOutput('a', 'b', 'out');
-        }
+		$this->octpl->expects($this->once())
+				->method('assign')
+				->with($this->equalTo('twig'), $this->equalTo('out'), $this->equalTo(false))
+				->will($this->returnValue('testsss'));
+
+		$tpl = new TemplateResponse($this->api, 'a');
+		$tpl->renderAs('mager');
+		$this->middleware->afterController('a', 'b', $tpl);
+		$this->middleware->beforeOutput('a', 'b', 'out');
+	}
+
+
+	public function testBeforeOutputTemplateIsInstantiatedCorrectly(){
+		$this->api->expects($this->once())
+				->method('getTemplate')
+				->with($this->equalTo('twig'), $this->equalTo('mager'), $this->equalTo('appframework'))
+				->will($this->returnValue($this->octpl));
+
+		$tpl = new TemplateResponse($this->api, 'a');
+		$tpl->renderAs('mager');
+		$this->middleware->afterController('a', 'b', $tpl);
+		$this->middleware->beforeOutput('a', 'b', 'out');
+	}
 
 
 }
