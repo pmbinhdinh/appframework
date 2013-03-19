@@ -39,11 +39,12 @@ angular.module('OC').factory '_Model', ->
 			@add(data)
 
 
-		add: (data) ->
+		add: (data, clearCache=true) ->
 			###
 			Adds a new entry or updates an entry if the id exists already
 			###
-			@_invalidateCache()
+			if clearCache
+				@_invalidateCache()
 			if angular.isDefined(@_dataMap[data.id])
 				@update(data)
 			else
@@ -51,11 +52,12 @@ angular.module('OC').factory '_Model', ->
 				@_dataMap[data.id] = data
 
 
-		update: (data) ->
+		update: (data, clearCache=true) ->
 			###
 			Update an entry by searching for its id
 			###
-			@_invalidateCache()
+			if clearCache
+				@_invalidateCache()
 			entry = @getById(data.id)
 			for key, value of data
 				if key == 'id'
@@ -78,7 +80,7 @@ angular.module('OC').factory '_Model', ->
 			return @_data
 
 
-		removeById: (id) ->
+		removeById: (id, clearCache=true) ->
 			###
 			Remove an entry by id
 			###
@@ -86,7 +88,8 @@ angular.module('OC').factory '_Model', ->
 				if entry.id == id
 					@_data.splice(counter, 1)
 					delete @_dataMap[id]
-					@_invalidateCache()
+					if clearCache
+						@_invalidateCache()
 					break
 
 

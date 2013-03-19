@@ -303,11 +303,17 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
         return this.add(data);
       };
 
-      Model.prototype.add = function(data) {
+      Model.prototype.add = function(data, clearCache) {
+        if (clearCache == null) {
+          clearCache = true;
+        }
         /*
         			Adds a new entry or updates an entry if the id exists already
         */
-        this._invalidateCache();
+
+        if (clearCache) {
+          this._invalidateCache();
+        }
         if (angular.isDefined(this._dataMap[data.id])) {
           return this.update(data);
         } else {
@@ -316,13 +322,18 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
         }
       };
 
-      Model.prototype.update = function(data) {
+      Model.prototype.update = function(data, clearCache) {
+        var entry, key, value, _results;
+        if (clearCache == null) {
+          clearCache = true;
+        }
         /*
         			Update an entry by searching for its id
         */
 
-        var entry, key, value, _results;
-        this._invalidateCache();
+        if (clearCache) {
+          this._invalidateCache();
+        }
         entry = this.getById(data.id);
         _results = [];
         for (key in data) {
@@ -350,12 +361,15 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
         return this._data;
       };
 
-      Model.prototype.removeById = function(id) {
+      Model.prototype.removeById = function(id, clearCache) {
+        var counter, entry, _i, _len, _ref, _results;
+        if (clearCache == null) {
+          clearCache = true;
+        }
         /*
         			Remove an entry by id
         */
 
-        var counter, entry, _i, _len, _ref, _results;
         _ref = this._data;
         _results = [];
         for (counter = _i = 0, _len = _ref.length; _i < _len; counter = ++_i) {
@@ -363,7 +377,9 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
           if (entry.id === id) {
             this._data.splice(counter, 1);
             delete this._dataMap[id];
-            this._invalidateCache();
+            if (clearCache) {
+              this._invalidateCache();
+            }
             break;
           } else {
             _results.push(void 0);

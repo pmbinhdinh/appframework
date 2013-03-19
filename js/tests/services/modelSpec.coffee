@@ -194,3 +194,27 @@ describe '_Model', ->
 
 		expect(mocks[0].exec).toHaveBeenCalled()
 		expect(mocks[1].exec).toHaveBeenCalled()
+
+
+	it 'should not clear the cache on remove when false passed as 2nd param', =>
+		mocks = @testClearCache =>
+			@model.removeById(1, false)
+
+		expect(mocks[0].exec).toHaveBeenCalled()
+		expect(mocks[1].exec).not.toHaveBeenCalled()
+
+
+	it 'should not clear the cache on update when false passed as 2nd param', =>
+		mocks = @testClearCache =>
+			@model.update({id: 1}, false)
+
+		expect(mocks[0].exec).toHaveBeenCalled()
+		expect(mocks[1].exec).not.toHaveBeenCalled()
+
+
+	it 'should not clear the cache on add when false passed as 2nd param', =>
+		mocks = @testClearCache =>
+			@model.add({id: 4}, false)
+
+		expect(mocks[0].exec).toHaveBeenCalled()
+		expect(mocks[1].exec).not.toHaveBeenCalled()
