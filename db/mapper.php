@@ -33,11 +33,24 @@ use OCA\AppFramework\Core\API;
  */
 abstract class Mapper {
 
+	private $tableName;
+
 	/**
 	 * @param API $api Instance of the API abstraction layer
+	 * @param string $tableName the name of the table. set this to allow entity 
+	 * queries without using sql
 	 */
-	public function __construct(API $api){
+	public function __construct(API $api, $tableName=null){
 		$this->api = $api;
+		$this->tableName = '*dbprefix*' . $tableName;
+	}
+
+
+	/**
+	 * @return string the table name
+	 */
+	public function getTableName(){
+		return $this->tableName;
 	}
 
 
@@ -86,6 +99,11 @@ abstract class Mapper {
 		$sql = 'DELETE FROM `' . $tableName . '` WHERE `id` = ?';
 		$params = array($id);
 		$this->execute($sql, $params);
+	}
+
+
+	public function delete(Entity $entity){
+		$this->deleteQuery($entity->getTableName(), $entity->getId());
 	}
 
 

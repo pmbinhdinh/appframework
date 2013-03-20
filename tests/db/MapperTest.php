@@ -31,7 +31,7 @@ require_once(__DIR__ . "/../classloader.php");
 
 
 class ExampleMapper extends Mapper {
-	public function __construct(API $api){ parent::__construct($api); }
+	public function __construct(API $api){ parent::__construct($api, 'table'); }
 	public function find($table, $id){ return $this->findQuery($table, $id); }
 	public function findAll($table){ return $this->findAllQuery($table); }
 	public function delete($table, $id){ $this->deleteQuery($table, $id); }
@@ -41,11 +41,13 @@ class ExampleMapper extends Mapper {
 class MapperTest extends \PHPUnit_Framework_TestCase {
 
 	private $api;
+	private $mapper;
 
 	public function setUp(){
 		$this->api = $this->getMock('OCA\AppFramework\Core\API',
 							array('getAppName', 'prepareQuery'),
 							array('test'));
+		$this->mapper = new ExampleMapper($this->api);
 	}
 
 
@@ -163,6 +165,10 @@ class MapperTest extends \PHPUnit_Framework_TestCase {
 
 	public function testDelete(){
 		$this->query('delete', 'DELETE FROM `hihi` WHERE `id` = ?', array(1));
+	}
+
+	public function testMapperShouldSetTableName(){
+		$this->assertEquals('*dbprefix*table', $this->mapper->getTableName());
 	}
 
 }
