@@ -59,7 +59,8 @@ abstract class Mapper {
 	 * @param Entity $enttiy the entity that should be deleted
 	 */
 	public function delete(Entity $entity){
-		$this->deleteQuery($this->tableName, $entity->getId());
+		$sql = 'DELETE FROM `' . $this->tableName . '` WHERE `id` = ?';
+		$this->execute($sql, array($entity->getId()));
 	}
 
 
@@ -99,13 +100,15 @@ abstract class Mapper {
 				$columns . ') VALUES(' . $values . ')';
 		
 		$this->execute($sql, $params);
-		//$entity->setId($api->getInsertId($this->tableName));
+
+		$entity->setId($this->api->getInsertId($this->tableName));
 		return $entity;
 	}
 
 
 	/**
 	 * Returns an db result by id
+	 * @deprecated will be removed with the next version after ownCloud 6.0
 	 * @param string $tableName the name of the table to query
 	 * @param int $id the id of the item
 	 * @throws DoesNotExistException if the item does not exist
@@ -131,6 +134,7 @@ abstract class Mapper {
 
 	/**
 	 * Returns all entries of a table
+	 * @deprecated will be removed with the next version after ownCloud 6.0
 	 * @param string $tableName the name of the table to query
 	 * @return \PDOStatement the result
 	 */
@@ -142,6 +146,7 @@ abstract class Mapper {
 
 	/**
 	 * Deletes a row in a table by id
+	 * @deprecated will be removed with the next version after ownCloud 6.0
 	 * @param string $tableName the name of the table to query
 	 * @param int $id the id of the item
 	 */

@@ -55,7 +55,6 @@ class MapperTest extends MapperTestUtility {
 	}
 
 
-
 	private function find($doesNotExist=false){
 		$sql = 'SELECT * FROM `hihi` WHERE `id` = ?';
 		$params = array(1);
@@ -167,6 +166,12 @@ class MapperTest extends MapperTestUtility {
 
 
 	public function testCreate(){
+		$this->api->expects($this->once())
+			->method('getInsertId')
+			->with($this->equalTo('*dbprefix*table'))
+			->will($this->returnValue(3));
+		$this->mapper = new ExampleMapper($this->api);
+
 		$sql = 'INSERT INTO `*dbprefix*table`(`pre_name`,`email`) ' .
 				'VALUES(?,?)';
 		$params = array('john', 'my@email');
@@ -181,14 +186,11 @@ class MapperTest extends MapperTestUtility {
 
 
 	public function testCreateShouldReturnItemWithCorrectInsertId(){
-		$api = $this->getMock('\OCA\AppFramework\Core\API', 
-				array('prepareQuery', 'getInsertId'),
-				array('a'));
-		$api->expects($this->once())
+		$this->api->expects($this->once())
 			->method('getInsertId')
 			->with($this->equalTo('*dbprefix*table'))
 			->will($this->returnValue(3));
-		$this->beforeEach($api);
+		$this->mapper = new ExampleMapper($this->api);
 
 		$sql = 'INSERT INTO `*dbprefix*table`(`pre_name`,`email`) ' .
 				'VALUES(?,?)';
