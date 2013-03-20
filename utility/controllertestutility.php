@@ -30,20 +30,7 @@ use OCA\AppFramework\Http\Response;
 /**
  * Simple utility class for testing controllers
  */
-abstract class ControllerTestUtility extends \PHPUnit_Framework_TestCase {
-
-
-	/**
-	 * Boilerplate function for getting an API Mock class
-	 * @param string $apiClass the class inclusive namespace of the api that we
-	 *                          want to use
-	 * @param array $constructor constructor parameters of the api class
-	 */
-	protected function getAPIMock($apiClass='OCA\AppFramework\Core\API',
-									array $constructor=array('appname')){
-		$methods = get_class_methods($apiClass);
-		return $this->getMock($apiClass, $methods, $constructor);
-	}
+abstract class ControllerTestUtility extends TestUtility {
 
 
 	/**

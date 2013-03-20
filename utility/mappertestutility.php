@@ -30,9 +30,8 @@ use OCA\AppFramework\Core\Api;
 /**
  * Simple utility class for testing mappers
  */
-abstract class MapperTestUtility extends \PHPUnit_Framework_TestCase {
+abstract class MapperTestUtility extends TestUtility {
 
-	protected $api;
 
 	/**
 	 * Run this function before the actual test to either set or initialize the
