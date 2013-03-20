@@ -106,6 +106,42 @@ abstract class Mapper {
 	}
 
 
+
+	/**
+	 * Updates an entry in the db from an entity
+	 * @param Entity $enttiy the entity that should be created
+	 */
+	public function update(Entity $entity){
+		// get updated fields to save, fields have to be set using a setter to
+		// be saved
+		$properties = $entity->getUpdatedFields();
+		$columns = '';
+		$params = array();
+
+		// build the fields
+		$i = 0;
+		foreach($properties as $property => $updated) {
+			$column = $entity->propertyToColumn($property);
+			$getter = 'get' . ucfirst($property);
+			
+			$columns .= '`' . $column . '` = ?';
+
+			// only append column if there are more entries
+			if($i < count($properties)-1){
+				$columns .= ',';
+			}
+
+			array_push($params, $entity->$getter());
+			$i++;
+		}
+
+		$sql = 'UPDATE `' . $this->tableName . '` SET ' . 
+				$columns . ' WHERE `id` = ?';
+		
+		$this->execute($sql, $params);
+	}
+
+
 	/**
 	 * Returns an db result by id
 	 * @deprecated will be removed with the next version after ownCloud 6.0

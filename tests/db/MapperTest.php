@@ -206,4 +206,22 @@ class MapperTest extends MapperTestUtility {
 		$this->assertEquals(3, $result->getId());
 	}
 
+
+	public function testUpdate(){
+		$sql = 'UPDATE `*dbprefix*table` ' .
+				'SET ' .
+				'`pre_name` = ?,'.
+				'`email` = ? ' .
+				'WHERE `id` = ?';
+
+		$params = array('john', 'my@email');
+		$entity = new MapperTestEntity();
+		$entity->setPreName($params[0]);
+		$entity->setEmail($params[1]);
+
+		$this->setMapperResult($sql, $params);
+
+		$this->mapper->update($entity);
+	}
+
 }
