@@ -77,17 +77,29 @@ abstract class Mapper {
 		$params = array();
 
 		// build the fields
-		for($i=0; $i<count($properties)-2; $i++) {
-			$column = $entity->propertyToColumn($properties[$i]);
-			$columns .= '`' . $column . '`,';
-			$values .= '?,';
+		$i = 0;
+		foreach($properties as $property => $updated) {
+			$column = $entity->propertyToColumn($property);
+			$getter = 'get' . ucfirst($property);
+			
+			$columns .= '`' . $column . '`';
+			$values .= '?';
+
+			// only append column if there are more entries
+			if($i < count($properties)-1){
+				$columns .= ',';
+				$values .= ',';
+			}
+
+			array_push($params, $entity->$getter());
+			$i++;
 		}
 
-		$sql = 'INSERT INTO ' . $this->tableName . '`(' .
+		$sql = 'INSERT INTO `' . $this->tableName . '`(' .
 				$columns . ') VALUES(' . $values . ')';
 		
 		$this->execute($sql, $params);
-		$entity->setId($api->getInsertId($this->tableName));
+		//$entity->setId($api->getInsertId($this->tableName));
 		return $entity;
 	}
 

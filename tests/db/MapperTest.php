@@ -100,24 +100,7 @@ class MapperTest extends MapperTestUtility {
 		$sql = 'SELECT * FROM `hihi` WHERE `id` = ?';
 		$params = array(1);
 
-		$cursor = $this->getMock('cursor', array('fetchRow'));
-		$cursor->expects($this->at(0))
-				->method('fetchRow')
-				->will($this->returnValue(true));
-		$cursor->expects($this->at(1))
-				->method('fetchRow')
-				->will($this->returnValue(true));
-
-		$query = $this->getMock('query', array('execute'));
-		$query->expects($this->once())
-				->method('execute')
-				->with($this->equalTo($params))
-				->will($this->returnValue($cursor));
-
-		$this->api->expects($this->once())
-				->method('prepareQuery')
-				->with($this->equalTo($sql))
-				->will($this->returnValue($query));
+		$this->setMapperResult($sql, $params, array(1, 2));
 
 		$this->setExpectedException('\OCA\AppFramework\Db\MultipleObjectsReturnedException');
 
@@ -185,7 +168,7 @@ class MapperTest extends MapperTestUtility {
 
 	public function testCreate(){
 		$sql = 'INSERT INTO `*dbprefix*table`(`pre_name`,`email`) ' .
-				' VALUES(?,?)';
+				'VALUES(?,?)';
 		$params = array('john', 'my@email');
 		$entity = new MapperTestEntity();
 		$entity->setPreName($params[0]);
@@ -196,5 +179,29 @@ class MapperTest extends MapperTestUtility {
 		$this->mapper->insert($entity);
 	}
 
+
+	public function testCreateShouldReturnItemWithCorrectInsertId(){
+		$api = $this->getMock('\OCA\AppFramework\Core\API', 
+				array('prepareQuery', 'getInsertId'),
+				array('a'));
+		$api->expects($this->once())
+			->method('getInsertId')
+			->with($this->equalTo('*dbprefix*table'))
+			->will($this->returnValue(3));
+		$this->beforeEach($api);
+
+		$sql = 'INSERT INTO `*dbprefix*table`(`pre_name`,`email`) ' .
+				'VALUES(?,?)';
+		$params = array('john', 'my@email');
+		$entity = new MapperTestEntity();
+		$entity->setPreName($params[0]);
+		$entity->setEmail($params[1]);
+
+		$this->setMapperResult($sql, $params);
+
+		$result = $this->mapper->insert($entity);
+
+		$this->assertEquals(3, $result->getId());
+	}
 
 }
