@@ -32,6 +32,14 @@ abstract class Entity {
 	private $updatedFields;
 
 	public function __construct(){
+		$this->resetUpdatedFields();
+	}
+
+
+	/**
+	 * Marks the entity as clean needed for setting the id after the insertion
+	 */
+	public function resetUpdatedFields(){
 		$this->updatedFields = array();
 	}
 

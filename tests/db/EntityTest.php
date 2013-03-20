@@ -43,6 +43,15 @@ class EntityTest extends \PHPUnit_Framework_TestCase {
 	}
 
 
+	public function testResetUpdatedFields(){
+		$entity = new TestEntity();
+		$entity->setId(3);
+		$entity->resetUpdatedFields();
+
+		$this->assertEquals(array(), $entity->getUpdatedFields());
+	}
+
+
 	public function testFromRow(){
 		$row = array(
 			'pre_name' => 'john', 

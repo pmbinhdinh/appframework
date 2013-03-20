@@ -32,7 +32,7 @@ require_once(__DIR__ . "/../classloader.php");
 
 
 class MapperTestEntity extends Entity {
-	public $name;
+	public $preName;
 	public $email;
 };
 
@@ -180,6 +180,20 @@ class MapperTest extends MapperTestUtility {
 		$entity->setId($params[0]);
 
 		$this->mapper->delete($entity);
+	}
+
+
+	public function testCreate(){
+		$sql = 'INSERT INTO `*dbprefix*table`(`pre_name`,`email`) ' .
+				' VALUES(?,?)';
+		$params = array('john', 'my@email');
+		$entity = new MapperTestEntity();
+		$entity->setPreName($params[0]);
+		$entity->setEmail($params[1]);
+
+		$this->setMapperResult($sql, $params);
+
+		$this->mapper->insert($entity);
 	}
 
 

@@ -64,6 +64,35 @@ abstract class Mapper {
 
 
 	/**
+	 * Creates a new entry in the db from an entity
+	 * @param Entity $enttiy the entity that should be created
+	 * @return the saved entity with the set id
+	 */
+	public function insert(Entity $entity){
+		// get updated fields to save, fields have to be set using a setter to
+		// be saved
+		$properties = $entity->getUpdatedFields();
+		$values = '';
+		$columns = '';
+		$params = array();
+
+		// build the fields
+		for($i=0; $i<count($properties)-2; $i++) {
+			$column = $entity->propertyToColumn($properties[$i]);
+			$columns .= '`' . $column . '`,';
+			$values .= '?,';
+		}
+
+		$sql = 'INSERT INTO ' . $this->tableName . '`(' .
+				$columns . ') VALUES(' . $values . ')';
+		
+		$this->execute($sql, $params);
+		$entity->setId($api->getInsertId($this->tableName));
+		return $entity;
+	}
+
+
+	/**
 	 * Returns an db result by id
 	 * @param string $tableName the name of the table to query
 	 * @param int $id the id of the item

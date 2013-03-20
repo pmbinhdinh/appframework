@@ -64,11 +64,11 @@ abstract class MapperTestUtility extends \PHPUnit_Framework_TestCase {
 	 */
 	protected function setMapperResult($sql, $arguments=array(), 
 										$returnRows=null,
-										$returnSecondFetch=true){
+										$returnSecondFetch=false){
 		$pdoResult = $this->getMock('Result', 
 			array('fetchRow'));
 
-		if($returnSecondFetch === true && $returnRows !== null){
+		if($returnSecondFetch === false && $returnRows !== null){
 			$pdoResult->expects($this->once())
 				->method('fetchRow')
 				->will($this->returnValue($returnRows));
