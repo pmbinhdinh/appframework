@@ -33,6 +33,9 @@ use OCA\AppFramework\Core\Api;
 abstract class MapperTestUtility extends TestUtility {
 
 
+	protected $api;
+	
+
 	/**
 	 * Run this function before the actual test to either set or initialize the
 	 * api. After this the api can be accessed by using $this->api

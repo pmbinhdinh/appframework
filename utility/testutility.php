@@ -29,7 +29,6 @@ namespace OCA\AppFramework\Utility;
  */
 abstract class TestUtility extends \PHPUnit_Framework_TestCase {
 
-	protected $api;
 
 	/**
 	 * Boilerplate function for getting an API Mock class
