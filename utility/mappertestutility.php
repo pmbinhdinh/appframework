@@ -59,27 +59,20 @@ abstract class MapperTestUtility extends \PHPUnit_Framework_TestCase {
 	 * @param array $returnRows the rows that should be returned for the result
 	 * of the database query. If not provided, it wont be assumed that fetchRow
 	 * will be called on the result
-	 * @param boolean $returnSecondFetch set to true to expect a second fetchRow
-	 * call. Useful to test for MultipleObjectsReturnedExceptions
 	 */
-	protected function setMapperResult($sql, $arguments=array(), 
-										$returnRows=null,
-										$returnSecondFetch=false){
+	protected function setMapperResult($sql, $arguments=array(), $returnRows=array()){
 		$pdoResult = $this->getMock('Result', 
 			array('fetchRow'));
 
-		if($returnSecondFetch === false && $returnRows !== null){
-			$pdoResult->expects($this->once())
-				->method('fetchRow')
-				->will($this->returnValue($returnRows));
-		} elseif($returnRows !== null) {
-			$pdoResult->expects($this->at(0))
-				->method('fetchRow')
-				->will($this->returnValue($returnRows));
-			$pdoResult->expects($this->at(1))
-				->method('fetchRow')
-				->will($this->returnValue($returnRows));
-		}
+		$iterator = new ArgumentIterator($returnRows);
+		$pdoResult->expects($this->any())
+		    ->method('fetchRow')
+		    ->will($this->returnCallback(
+		      function() use ($iterator){
+			return $iterator->next();
+		      }
+		    ));
+			
 
 		$query = $this->getMock('Query', 
 			array('execute'));
@@ -94,8 +87,25 @@ abstract class MapperTestUtility extends \PHPUnit_Framework_TestCase {
 			->will(($this->returnValue($query)));
 
 	}
-
-
+	
 }
 
+
+class ArgumentIterator {
+
+	private $arguments;
+	
+	public function __construct($arguments){
+		$this->arguments = $arguments;
+	}
+	
+	public function next(){
+		$result = array_shift($this->arguments);
+		if($result === null){
+			return false;
+		} else {
+			return $result;
+		}
+	}
+}
 
