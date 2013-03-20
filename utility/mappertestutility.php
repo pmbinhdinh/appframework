@@ -57,19 +57,22 @@ abstract class MapperTestUtility extends \PHPUnit_Framework_TestCase {
 	 * @param array $arguments the expected arguments for the prepare query
 	 * method
 	 * @param array $returnRows the rows that should be returned for the result
-	 * of the database query
+	 * of the database query. If not provided, it wont be assumed that fetchRow
+	 * will be called on the result
+	 * @param boolean $returnSecondFetch set to true to expect a second fetchRow
+	 * call. Useful to test for MultipleObjectsReturnedExceptions
 	 */
 	protected function setMapperResult($sql, $arguments=array(), 
-										$returnRows=array(),
-										$returnSecondFetch=null){
+										$returnRows=null,
+										$returnSecondFetch=true){
 		$pdoResult = $this->getMock('Result', 
 			array('fetchRow'));
 
-		if($returnSecondFetch === null){
+		if($returnSecondFetch === true && $returnRows !== null){
 			$pdoResult->expects($this->once())
 				->method('fetchRow')
 				->will($this->returnValue($returnRows));
-		} else {
+		} elseif($returnRows !== null) {
 			$pdoResult->expects($this->at(0))
 				->method('fetchRow')
 				->will($this->returnValue($returnRows));

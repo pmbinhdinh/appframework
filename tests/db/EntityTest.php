@@ -31,10 +31,6 @@ require_once(__DIR__ . "/../classloader.php");
 class TestEntity extends Entity {
 	public $name;
 	public $email;
-
-	public function __construct(){
-		parent::__construct('entity');
-	}
 };
 
 

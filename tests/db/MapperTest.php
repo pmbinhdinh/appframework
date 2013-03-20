@@ -25,28 +25,32 @@
 namespace OCA\AppFramework\Db;
 
 use OCA\AppFramework\Core\API;
+use OCA\AppFramework\Utility\MapperTestUtility;
 
 
 require_once(__DIR__ . "/../classloader.php");
+
+
+class MapperTestEntity extends Entity {
+	public $name;
+	public $email;
+};
 
 
 class ExampleMapper extends Mapper {
 	public function __construct(API $api){ parent::__construct($api, 'table'); }
 	public function find($table, $id){ return $this->findQuery($table, $id); }
 	public function findAll($table){ return $this->findAllQuery($table); }
-	public function delete($table, $id){ $this->deleteQuery($table, $id); }
+	public function pDeleteQuery($table, $id){ $this->deleteQuery($table, $id); }
 }
 
 
-class MapperTest extends \PHPUnit_Framework_TestCase {
+class MapperTest extends MapperTestUtility {
 
-	private $api;
 	private $mapper;
 
 	public function setUp(){
-		$this->api = $this->getMock('OCA\AppFramework\Core\API',
-							array('getAppName', 'prepareQuery'),
-							array('test'));
+		$this->beforeEach();
 		$this->mapper = new ExampleMapper($this->api);
 	}
 
@@ -80,10 +84,8 @@ class MapperTest extends \PHPUnit_Framework_TestCase {
 				->with($this->equalTo($sql))
 				->will($this->returnValue($query));
 
-		$mapper = new ExampleMapper($this->api);
 
-
-		$result = $mapper->find('hihi', $params[0]);
+		$result = $this->mapper->find('hihi', $params[0]);
 
 		if($doesNotExist){
 			$this->assertFalse($result);
@@ -92,6 +94,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase {
 		}
 
 	}
+
 
 	public function testFindThrowsExceptionWhenMoreThanOneResult(){
 		$sql = 'SELECT * FROM `hihi` WHERE `id` = ?';
@@ -116,11 +119,9 @@ class MapperTest extends \PHPUnit_Framework_TestCase {
 				->with($this->equalTo($sql))
 				->will($this->returnValue($query));
 
-		$mapper = new ExampleMapper($this->api);
-
 		$this->setExpectedException('\OCA\AppFramework\Db\MultipleObjectsReturnedException');
 
-		$result = $mapper->find('hihi', $params[0]);
+		$result = $this->mapper->find('hihi', $params[0]);
 
 	}
 
@@ -148,12 +149,10 @@ class MapperTest extends \PHPUnit_Framework_TestCase {
 				->with($this->equalTo($sql))
 				->will($this->returnValue($query));
 
-		$mapper = new ExampleMapper($this->api);
-
 		if(count($params) > 0){
-			$mapper->$method('hihi', $params[0]);
+			$this->mapper->$method('hihi', $params[0]);
 		} else {
-			$mapper->$method('hihi');
+			$this->mapper->$method('hihi');
 		}
 	}
 
@@ -163,12 +162,25 @@ class MapperTest extends \PHPUnit_Framework_TestCase {
 	}
 
 
-	public function testDelete(){
-		$this->query('delete', 'DELETE FROM `hihi` WHERE `id` = ?', array(1));
+	public function testDeleteQuery(){
+		$this->query('pDeleteQuery', 'DELETE FROM `hihi` WHERE `id` = ?', array(1));
 	}
 
 	public function testMapperShouldSetTableName(){
 		$this->assertEquals('*dbprefix*table', $this->mapper->getTableName());
 	}
+
+
+	public function testDelete(){
+		$sql = 'DELETE FROM `*dbprefix*table` WHERE `id` = ?';
+		$params = array(2);
+
+		$this->setMapperResult($sql, $params);
+		$entity = new MapperTestEntity();
+		$entity->setId($params[0]);
+
+		$this->mapper->delete($entity);
+	}
+
 
 }
