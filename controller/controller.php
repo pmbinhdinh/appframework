@@ -173,10 +173,11 @@ abstract class Controller {
 	/**
 	 * Shortcut for rendering a JSON response
 	 * @param array $data the PHP array that will be put into the JSON data index
+	 * empty by default
 	 * @param string $errorMsg If you want to return an error message, pass one
 	 * @return \OCA\AppFramework\Http\JSONResponse containing the values
 	 */
-	public function renderJSON(array $data, $errorMsg=null){
+	public function renderJSON(array $data=array(), $errorMsg=null){
 		$response = new JSONResponse();
 		$response->setParams($data);
 
