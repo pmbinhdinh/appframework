@@ -1,11 +1,9 @@
 <?php
 
 /**
-* ownCloud - News
+* ownCloud - App Framework
 *
-* @author Alessandro Copyright
 * @author Bernhard Posselt
-* @copyright 2012 Alessandro Cosentino cosenal@gmail.com
 * @copyright 2012 Bernhard Posselt nukeawhale@gmail.com
 *
 * This library is free software; you can redistribute it and/or
