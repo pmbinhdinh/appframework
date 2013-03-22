@@ -39,7 +39,7 @@ class MapperTestEntity extends Entity {
 
 class ExampleMapper extends Mapper {
 	public function __construct(API $api){ parent::__construct($api, 'table'); }
-	public function find($table, $id){ return $this->findQuery($table, $id); }
+	public function find($table, $id){ return $this->findOneQuery($table, $id); }
 	public function findAll($table){ return $this->findAllQuery($table); }
 	public function pDeleteQuery($table, $id){ $this->deleteQuery($table, $id); }
 }

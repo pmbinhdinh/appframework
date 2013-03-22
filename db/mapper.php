@@ -151,7 +151,7 @@ abstract class Mapper {
 	 * @throws MultipleObjectsReturnedException if more than one item exist
 	 * @return array the result as row
 	 */
-	protected function findQuery($sql, $params){
+	protected function findOneQuery($sql, $params){
 		$result = $this->execute($sql, $params);
 		$row = $result->fetchRow();
 
