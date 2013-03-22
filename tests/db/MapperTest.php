@@ -55,101 +55,43 @@ class MapperTest extends MapperTestUtility {
 	}
 
 
-	private function find($doesNotExist=false){
-		$sql = 'SELECT * FROM `hihi` WHERE `id` = ?';
-		$params = array(1);
-
-		$cursor = $this->getMock('cursor', array('fetchRow'));
-		$cursor->expects($this->at(0))
-				->method('fetchRow')
-				->will($this->returnValue(!$doesNotExist));
-
-		if($doesNotExist){
-			$this->setExpectedException('\OCA\AppFramework\Db\DoesNotExistException');
-		} else {
-			$cursor->expects($this->at(1))
-				->method('fetchRow')
-				->will($this->returnValue(false));
-		}
-
-		$query = $this->getMock('query', array('execute'));
-		$query->expects($this->once())
-				->method('execute')
-				->with($this->equalTo($params))
-				->will($this->returnValue($cursor));
-
-		$this->api->expects($this->once())
-				->method('prepareQuery')
-				->with($this->equalTo($sql))
-				->will($this->returnValue($query));
-
-
-		$result = $this->mapper->find('hihi', $params[0]);
-
-		if($doesNotExist){
-			$this->assertFalse($result);
-		} else {
-			$this->assertTrue($result);
-		}
-
-	}
-
-
-	public function testFindThrowsExceptionWhenMoreThanOneResult(){
-		$sql = 'SELECT * FROM `hihi` WHERE `id` = ?';
-		$params = array(1);
-
-		$this->setMapperResult($sql, $params, array(1, 2));
-
-		$this->setExpectedException('\OCA\AppFramework\Db\MultipleObjectsReturnedException');
-
-		$result = $this->mapper->find('hihi', $params[0]);
-
-	}
-
-
-	public function testFind(){
-		$this->find();
-	}
-
-
-	public function testFindDoesNotExist(){
-		$this->find(true);
-	}
-
-
-	private function query($method, $sql, $params=array()){
-
-		$query = $this->getMock('query', array('execute'));
-
-		$query->expects($this->once())
-				->method('execute')
-				->with($this->equalTo($params));
-
-		$this->api->expects($this->once())
-				->method('prepareQuery')
-				->with($this->equalTo($sql))
-				->will($this->returnValue($query));
-
-		if(count($params) > 0){
-			$this->mapper->$method('hihi', $params[0]);
-		} else {
-			$this->mapper->$method('hihi');
-		}
-	}
-
-
-	public function testFindAll(){
-		$this->query('findAll', 'SELECT * FROM `hihi`');
-	}
-
-
-	public function testDeleteQuery(){
-		$this->query('pDeleteQuery', 'DELETE FROM `hihi` WHERE `id` = ?', array(1));
-	}
-
 	public function testMapperShouldSetTableName(){
 		$this->assertEquals('*dbprefix*table', $this->mapper->getTableName());
+	}
+
+
+	public function testFindQuery(){
+		$sql = 'hi';
+		$params = array('jo');
+		$rows = array(
+			array('hi')
+		);
+		$row = $this->setMapperResult($sql, $params, $rows);		
+		$this->mapper->find($sql, $params);
+	}
+
+
+	public function testFindNotFound(){
+		$sql = 'hi';
+		$params = array('jo');
+		$rows = array();
+		$row = $this->setMapperResult($sql, $params, $rows);		
+		$this->setExpectedException(
+			'\OCA\AppFramework\Db\DoesNotExistException');
+		$this->mapper->find($sql, $params);
+	}
+
+
+	public function testFindMultiple(){
+		$sql = 'hi';
+		$params = array('jo');
+		$rows = array(
+			array('jo'), array('ho')
+		);
+		$row = $this->setMapperResult($sql, $params, $rows);		
+		$this->setExpectedException(
+			'\OCA\AppFramework\Db\MultipleObjectsReturnedException');
+		$this->mapper->find($sql, $params);
 	}
 
 

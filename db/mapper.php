@@ -40,7 +40,7 @@ abstract class Mapper {
 	 * @param string $tableName the name of the table. set this to allow entity 
 	 * queries without using sql
 	 */
-	public function __construct(API $api, $tableName=null){
+	public function __construct(API $api, $tableName){
 		$this->api = $api;
 		$this->tableName = '*dbprefix*' . $tableName;
 	}
@@ -143,53 +143,25 @@ abstract class Mapper {
 
 
 	/**
-	 * Returns an db result by id
-	 * @deprecated will be removed with the next version after ownCloud 6.0
-	 * @param string $tableName the name of the table to query
-	 * @param int $id the id of the item
+	 * Returns an db result and throws exceptions when there are more or less
+	 * results
+	 * @param string $sql the sql query
+	 * @param array $params the parameters of the sql query
 	 * @throws DoesNotExistException if the item does not exist
 	 * @throws MultipleObjectsReturnedException if more than one item exist
 	 * @return array the result as row
 	 */
-	protected function findQuery($tableName, $id){
-		$sql = 'SELECT * FROM `' . $tableName . '` WHERE `id` = ?';
-		$params = array($id);
-
+	protected function findQuery($sql, $params){
 		$result = $this->execute($sql, $params);
 		$row = $result->fetchRow();
 
 		if($row === false){
-			throw new DoesNotExistException('Item with id ' . $id . ' does not exist!');
+			throw new DoesNotExistException('No matching entry found');
 		} elseif($result->fetchRow() !== false) {
-			throw new MultipleObjectsReturnedException('More than one result for Item with id ' . $id . '!');
+			throw new MultipleObjectsReturnedException('More than one result');
 		} else {
 			return $row;
 		}
-	}
-
-
-	/**
-	 * Returns all entries of a table
-	 * @deprecated will be removed with the next version after ownCloud 6.0
-	 * @param string $tableName the name of the table to query
-	 * @return \PDOStatement the result
-	 */
-	protected function findAllQuery($tableName){
-		$sql = 'SELECT * FROM `' . $tableName . '`';
-		return $this->execute($sql);
-	}
-
-
-	/**
-	 * Deletes a row in a table by id
-	 * @deprecated will be removed with the next version after ownCloud 6.0
-	 * @param string $tableName the name of the table to query
-	 * @param int $id the id of the item
-	 */
-	protected function deleteQuery($tableName, $id){
-		$sql = 'DELETE FROM `' . $tableName . '` WHERE `id` = ?';
-		$params = array($id);
-		$this->execute($sql, $params);
 	}
 
 
