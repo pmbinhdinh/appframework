@@ -42,7 +42,7 @@ abstract class Mapper {
 	 */
 	public function __construct(API $api, $tableName){
 		$this->api = $api;
-		$this->tableName = '*dbprefix*' . $tableName;
+		$this->tableName = '*PREFIX*' . $tableName;
 	}
 
 

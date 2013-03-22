@@ -56,7 +56,7 @@ class MapperTest extends MapperTestUtility {
 
 
 	public function testMapperShouldSetTableName(){
-		$this->assertEquals('*dbprefix*table', $this->mapper->getTableName());
+		$this->assertEquals('*PREFIX*table', $this->mapper->getTableName());
 	}
 
 
@@ -96,7 +96,7 @@ class MapperTest extends MapperTestUtility {
 
 
 	public function testDelete(){
-		$sql = 'DELETE FROM `*dbprefix*table` WHERE `id` = ?';
+		$sql = 'DELETE FROM `*PREFIX*table` WHERE `id` = ?';
 		$params = array(2);
 
 		$this->setMapperResult($sql, $params);
@@ -110,11 +110,11 @@ class MapperTest extends MapperTestUtility {
 	public function testCreate(){
 		$this->api->expects($this->once())
 			->method('getInsertId')
-			->with($this->equalTo('*dbprefix*table'))
+			->with($this->equalTo('*PREFIX*table'))
 			->will($this->returnValue(3));
 		$this->mapper = new ExampleMapper($this->api);
 
-		$sql = 'INSERT INTO `*dbprefix*table`(`pre_name`,`email`) ' .
+		$sql = 'INSERT INTO `*PREFIX*table`(`pre_name`,`email`) ' .
 				'VALUES(?,?)';
 		$params = array('john', 'my@email');
 		$entity = new MapperTestEntity();
@@ -130,11 +130,11 @@ class MapperTest extends MapperTestUtility {
 	public function testCreateShouldReturnItemWithCorrectInsertId(){
 		$this->api->expects($this->once())
 			->method('getInsertId')
-			->with($this->equalTo('*dbprefix*table'))
+			->with($this->equalTo('*PREFIX*table'))
 			->will($this->returnValue(3));
 		$this->mapper = new ExampleMapper($this->api);
 
-		$sql = 'INSERT INTO `*dbprefix*table`(`pre_name`,`email`) ' .
+		$sql = 'INSERT INTO `*PREFIX*table`(`pre_name`,`email`) ' .
 				'VALUES(?,?)';
 		$params = array('john', 'my@email');
 		$entity = new MapperTestEntity();
@@ -150,7 +150,7 @@ class MapperTest extends MapperTestUtility {
 
 
 	public function testUpdate(){
-		$sql = 'UPDATE `*dbprefix*table` ' .
+		$sql = 'UPDATE `*PREFIX*table` ' .
 				'SET ' .
 				'`pre_name` = ?,'.
 				'`email` = ? ' .
