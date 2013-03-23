@@ -24,8 +24,8 @@ describe 'Loading', ->
 
 	beforeEach module 'OC'
 
-	beforeEach inject (Loading) =>
-		@loading = Loading
+	beforeEach inject (_Loading) =>
+		@loading = new _Loading()
 
 
 	it 'should have an initial value of 0', =>

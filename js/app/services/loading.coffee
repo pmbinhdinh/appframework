@@ -23,7 +23,7 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 
 # Simple class which can be used to show loading events when ajax events are
 # fired
-angular.module('OC').factory 'Loading', ->
+angular.module('OC').factory '_Loading', ->
 
 	class Loading
 
@@ -47,4 +47,4 @@ angular.module('OC').factory 'Loading', ->
 			return @_count > 0
 
 
-	return new Loading()
+	return Loading
