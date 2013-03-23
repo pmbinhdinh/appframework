@@ -86,7 +86,7 @@ abstract class Mapper {
 			$columns .= '`' . $column . '`';
 			$values .= '?';
 
-			// only append column if there are more entries
+			// only append colon if there are more entries
 			if($i < count($properties)-1){
 				$columns .= ',';
 				$values .= ',';
@@ -129,7 +129,7 @@ abstract class Mapper {
 			
 			$columns .= '`' . $column . '` = ?';
 
-			// only append column if there are more entries
+			// only append colon if there are more entries
 			if($i < count($properties)-1){
 				$columns .= ',';
 			}
