@@ -121,6 +121,9 @@ abstract class Mapper {
 		// build the fields
 		$i = 0;
 		foreach($properties as $property => $updated) {
+			// dont update the id field
+			if($property === 'id') continue;
+
 			$column = $entity->propertyToColumn($property);
 			$getter = 'get' . ucfirst($property);
 			
