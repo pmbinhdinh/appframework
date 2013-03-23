@@ -73,6 +73,10 @@ angular.module('OC').factory '_Request', ->
 			# overwrite default values from passed in config
 			angular.extend(defaultConfig, defaultData.config)
 
+			# use params array instead of data when using get
+			if defaultConfig.method == 'GET'
+				defaultConfig.params = defaultConfig.data
+
 			@_$http(defaultConfig)
 				.success (data, status, headers, config) =>
 					defaultData.onSuccess(data, status, headers, config)

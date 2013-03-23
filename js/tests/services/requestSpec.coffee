@@ -217,16 +217,21 @@ describe '_Request', ->
 		http = jasmine.createSpy('http').andReturn(success)
 		req = new @request(http, @publisher, @router)
 
-		defaultConfig =
+		data =
 			config:
 				url: 'wonderurl'
-				method: 'GET'
-				data:
-					test: 2
+			data:
+				test: 2
 
-		req.post('test', defaultConfig)
+		expected =
+			url: 'wonderurl'
+			data: data.data
+			method: 'GET'
+			params: data.data
 
-		expect(http).toHaveBeenCalledWith(defaultConfig.config)
+		req.get('test', data)
+
+		expect(http).toHaveBeenCalledWith(expected)
 
 
 	it 'should have a put shortcut', =>

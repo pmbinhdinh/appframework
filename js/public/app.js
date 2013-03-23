@@ -1348,6 +1348,9 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
           data: defaultData.data
         };
         angular.extend(defaultConfig, defaultData.config);
+        if (defaultConfig.method === 'GET') {
+          defaultConfig.params = defaultConfig.data;
+        }
         return this._$http(defaultConfig).success(function(data, status, headers, config) {
           var name, value, _ref, _results;
           defaultData.onSuccess(data, status, headers, config);
