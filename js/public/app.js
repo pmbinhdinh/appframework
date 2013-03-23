@@ -1333,8 +1333,8 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
         defaultData = {
           routeParams: {},
           data: {},
-          onSuccess: angular.noop,
-          onFailure: angular.noop,
+          onSuccess: function() {},
+          onFailure: function() {},
           config: {}
         };
         angular.extend(defaultData, data);

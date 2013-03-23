@@ -52,8 +52,8 @@ angular.module('OC').factory '_Request', ->
 			defaultData =
 				routeParams: {}
 				data: {}
-				onSuccess: angular.noop
-				onFailure: angular.noop
+				onSuccess: ->
+				onFailure: ->
 				config: {}
 
 			angular.extend(defaultData, data)
