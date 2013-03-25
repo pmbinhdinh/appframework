@@ -36,7 +36,8 @@ angular.module('OC').factory '_Model', ->
 			###
 			Redirects to add method
 			###
-			@add(data)
+			for item in data
+				@add(item)
 
 
 		add: (data, clearCache=true) ->

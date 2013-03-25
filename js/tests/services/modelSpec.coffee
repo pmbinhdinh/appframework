@@ -99,13 +99,11 @@ describe '_Model', ->
 
 
 	it 'should call add when handle is called', =>
-		data =
-			id: 10
-			name: 'bruce'
+		data = [{ id: 10, name: 'bruce'}]
 
 		@model.handle(data)
 
-		expect(@model.getById(10)).toBe(data)
+		expect(@model.getById(10)).toBe(data[0])
 
 
 	it 'should return all entries on getAll', =>

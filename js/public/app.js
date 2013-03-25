@@ -300,7 +300,14 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
         /*
         			Redirects to add method
         */
-        return this.add(data);
+
+        var item, _i, _len, _results;
+        _results = [];
+        for (_i = 0, _len = data.length; _i < _len; _i++) {
+          item = data[_i];
+          _results.push(this.add(item));
+        }
+        return _results;
       };
 
       Model.prototype.add = function(data, clearCache) {
