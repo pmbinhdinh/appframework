@@ -144,8 +144,8 @@ describe '_Request', ->
 		req.request(null)
 
 		expect(publisher.publishDataTo).toHaveBeenCalledWith(
-			'files',
-			fromServer.data.files
+			fromServer.data.files,
+			'files'
 		)
 
 
