@@ -109,20 +109,29 @@ abstract class Mapper {
 
 	/**
 	 * Updates an entry in the db from an entity
+	 * @throws \InvalidArgumentException if entity has no id
 	 * @param Entity $enttiy the entity that should be created
 	 */
 	public function update(Entity $entity){
+		// entity needs an id
+		$id = $entity->getId();
+		if($id === null){
+			throw new \InvalidArgumentException(
+				'Entity which should be updated has no id');
+		}
+
 		// get updated fields to save, fields have to be set using a setter to
 		// be saved
 		$properties = $entity->getUpdatedFields();
+		// dont update the id field
+		unset($properties['id']);
+
 		$columns = '';
 		$params = array();
 
 		// build the fields
 		$i = 0;
 		foreach($properties as $property => $updated) {
-			// dont update the id field
-			if($property === 'id') continue;
 
 			$column = $entity->propertyToColumn($property);
 			$getter = 'get' . ucfirst($property);
@@ -140,7 +149,8 @@ abstract class Mapper {
 
 		$sql = 'UPDATE `' . $this->tableName . '` SET ' . 
 				$columns . ' WHERE `id` = ?';
-		
+		array_push($params, $id);
+
 		$this->execute($sql, $params);
 	}
 

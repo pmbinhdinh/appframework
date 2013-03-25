@@ -156,14 +156,33 @@ class MapperTest extends MapperTestUtility {
 				'`email` = ? ' .
 				'WHERE `id` = ?';
 
+		$params = array('john', 'my@email', 1);
+		$entity = new MapperTestEntity();
+		$entity->setPreName($params[0]);
+		$entity->setEmail($params[1]);
+		$entity->setId($params[2]);
+
+		$this->setMapperResult($sql, $params);
+
+		$this->mapper->update($entity);
+	}
+
+
+	public function testUpdateNoId(){
+		$sql = 'UPDATE `*PREFIX*table` ' .
+				'SET ' .
+				'`pre_name` = ?,'.
+				'`email` = ? ' .
+				'WHERE `id` = ?';
+
 		$params = array('john', 'my@email');
 		$entity = new MapperTestEntity();
 		$entity->setPreName($params[0]);
 		$entity->setEmail($params[1]);
 
-		$this->setMapperResult($sql, $params);
+		$this->setExpectedException('InvalidArgumentException');
 
-		$this->mapper->update($entity);
+		$this->mapper->update($entity);	
 	}
 
 }
