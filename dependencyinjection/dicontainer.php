@@ -58,8 +58,12 @@ class DIContainer extends \Pimple {
 		});
 
 		$this['Request'] = $this->share(function($c){
-			return new Request(json_decode(file_get_contents('php://input')), $_FILES,
-				$_SERVER, $_ENV, $_SESSION, $_COOKIE, $c['urlParams']);
+			$params = json_decode(file_get_contents('php://input'), true);
+			if($params === null){
+				$params = array();
+			}
+			return new Request($params, $_FILES, $_SERVER, $_ENV, $_SESSION, 
+				$_COOKIE, $c['urlParams']);
 		});
 
 
