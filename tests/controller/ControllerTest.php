@@ -42,7 +42,6 @@ class ControllerTest extends \PHPUnit_Framework_TestCase {
 	protected function setUp(){
 		$request = new Request(
 			array('get'=>'getvalue'),
-			array('post'=>'postvalue'),
 			array('file'=>'filevalue'),
 			array('REQUEST_METHOD' => 'hi'),
 			array('PATH' => 'daheim'),
@@ -60,19 +59,6 @@ class ControllerTest extends \PHPUnit_Framework_TestCase {
 		$this->controller = new ChildController($this->api, $request);
 	}
 
-
-
-	public function testParamsPreferPostOverGet(){
-		$request = new Request(array('post'=>'getvalue'), array('post'=>'postvalue'));
-		$this->controller = new ChildController($this->api, $request);
-
-		$this->assertEquals('postvalue', $this->controller->params('post'));
-	}
-
-
-	public function testParamsPostDefault(){
-		$this->assertEquals('default', $this->controller->params('posts', 'default'));
-	}
 
 
 	public function testParamsGet(){
@@ -104,9 +90,8 @@ class ControllerTest extends \PHPUnit_Framework_TestCase {
 	public function testGetParams(){
 		$urlParams = array('url' => 'something');
 		$get = array('get'=>'getvalue');
-		$post = array('post'=>'postvalue');
 
-		$this->assertEquals(array_merge($urlParams, $get, $post), $this->controller->getParams());
+		$this->assertEquals(array_merge($urlParams, $get), $this->controller->getParams());
 	}
 
 

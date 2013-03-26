@@ -30,8 +30,7 @@ namespace OCA\AppFramework\Http;
  */
 class Request {
 
-	private $get;
-	private $post;
+	private $params;
 	private $files;
 	private $server;
 	private $env;
@@ -40,8 +39,7 @@ class Request {
 	private $urlParams;
 
 	/**
-	 * @param array $get the $_GET array
-	 * @param array $post the $_POST array
+	 * @param array $params the parsed json array
 	 * @param array $files the $_FILES array
 	 * @param array $server the $_SERVER array
 	 * @param array $env the $_ENV array
@@ -49,13 +47,11 @@ class Request {
 	 * @param array $cookie the $_COOKIE array
 	 * @param array $urlParams the parameters which were matched from the URL
 	 */
-	public function __construct(array $get=array(), array $post=array(),
-								array $files=array(), array $server=array(),
-								array $env=array(), array $session=array(),
-								array $cookie=array(),
+	public function __construct(array $params=array(), array $files=array(), 
+								array $server=array(), array $env=array(), 
+								array $session=array(),	array $cookie=array(),
 								array $urlParams=array()) {
-		$this->get = $get;
-		$this->post = $post;
+		$this->params = $params;
 		$this->files = $files;
 		$this->server = $server;
 		$this->env = $env;
@@ -70,38 +66,24 @@ class Request {
 	 * @return array the merged array
 	 */
 	public function getRequestParams(){
-		return array_merge($this->urlParams, $this->get, $this->post);
+		return array_merge($this->urlParams, $this->params);
 	}
 
 
 	/**
-	 * Returns the get value or the default if not found
+	 * Returns the request params value or the default if not found
 	 * @param string $key the array key that should be looked up
 	 * @param string $default if the key is not found, return this value
 	 * @return mixed the value of the stored array or the default
 	 */
-	public function getGET($key, $default=null){
-		if(array_key_exists($key, $this->get)){
-			return $this->get[$key];
+	public function getParams($key, $default=null){
+		if(array_key_exists($key, $this->params)){
+			return $this->params[$key];
 		} else {
 			return $default;
 		}
 	}
 
-
-	/**
-	 * Returns the get value or the default if not found
-	 * @param string $key the array key that should be looked up
-	 * @param string $default if the key is not found, return this value
-	 * @return mixed the value of the stored array or the default
-	 */
-	public function getPOST($key, $default=null){
-		if(array_key_exists($key, $this->post)){
-			return $this->post[$key];
-		} else {
-			return $default;
-		}
-	}
 
 	/**
 	 * Returns the get value of the files array

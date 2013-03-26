@@ -32,35 +32,11 @@ require_once(__DIR__ . "/../classloader.php");
 class RequestTest extends \PHPUnit_Framework_TestCase {
 
 
-	public function testGetPOST(){
-		$post = array('test' => 'somevalue');
-		$request = new Request(array(), $post);
-
-		$this->assertEquals('somevalue', $request->getPOST('test'));
-	}
-
-
-	public function testGetPOSTEmpty(){
-		$post = array();
-		$request = new Request(array(), $post);
-
-		$this->assertEquals('', $request->getPOST('test'));
-	}
-
-
-	public function testGetPOSTDefault(){
-		$post = array();
-		$request = new Request(array(), $post);
-
-		$this->assertEquals('default', $request->getPOST('test', 'default'));
-	}
-
-
 	public function testGetGET(){
 		$get = array('test' => 'somevalue');
 		$request = new Request($get);
 
-		$this->assertEquals('somevalue', $request->getGET('test'));
+		$this->assertEquals('somevalue', $request->getParams('test'));
 	}
 
 
@@ -68,7 +44,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase {
 		$get = array();
 		$request = new Request($get);
 
-		$this->assertEquals('', $request->getGET('test'));
+		$this->assertEquals('', $request->getParams('test'));
 	}
 
 
@@ -76,13 +52,13 @@ class RequestTest extends \PHPUnit_Framework_TestCase {
 		$get = array();
 		$request = new Request($get);
 
-		$this->assertEquals('default', $request->getGET('test', 'default'));
+		$this->assertEquals('default', $request->getParams('test', 'default'));
 	}
 
 
 	public function testGetFILE(){
 		$files = array('test' => 'somevalue');
-		$request = new Request(array(), array(), $files);
+		$request = new Request(array(), $files);
 
 		$this->assertEquals('somevalue', $request->getFILES('test'));
 	}
@@ -97,19 +73,18 @@ class RequestTest extends \PHPUnit_Framework_TestCase {
 
 	public function testRequestParams(){
 		$get = array('johnny' => 'begood');
-		$post = array('also' => 'rockit');
 		$urlParams = array('aaa' => 'bbb');
-		$request = new Request($get, $post, array(), array(),
+		$request = new Request($get, array(), array(),
 					array(), array(), array(), $urlParams);
 
-		$this->assertEquals(array_merge($get, $post, $urlParams),
+		$this->assertEquals(array_merge($get, $urlParams),
 				$request->getRequestParams());
 	}
 
 	// server
 	public function testGetSERVER(){
 		$server = array('test' => 'somevalue');
-		$request = new Request(array(), array(), array(), $server);
+		$request = new Request(array(), array(), $server);
 
 		$this->assertEquals('somevalue', $request->getSERVER('test'));
 	}
@@ -117,7 +92,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase {
 
 	public function testGetSERVEREmpty(){
 		$server = array();
-		$request = new Request(array(), array(), array(), $server);
+		$request = new Request(array(), array(), $server);
 
 		$this->assertEquals('', $request->getSERVER('test'));
 	}
@@ -125,7 +100,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase {
 
 	public function testGetSERVERDefault(){
 		$server = array();
-		$request = new Request(array(), array(), array(), $server);
+		$request = new Request(array(), array(), $server);
 
 		$this->assertEquals('default', $request->getSERVER('test', 'default'));
 	}
@@ -134,7 +109,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase {
 	// env
 	public function testGetENV(){
 		$ENV = array('test' => 'somevalue');
-		$request = new Request(array(), array(), array(), array(), $ENV);
+		$request = new Request(array(), array(), array(), $ENV);
 
 		$this->assertEquals('somevalue', $request->getENV('test'));
 	}
@@ -142,7 +117,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase {
 
 	public function testGetENVEmpty(){
 		$ENV = array();
-		$request = new Request(array(), array(), array(), array(), $ENV);
+		$request = new Request(array(), array(), array(), $ENV);
 
 		$this->assertEquals('', $request->getENV('test'));
 	}
@@ -150,7 +125,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase {
 
 	public function testGetENVDefault(){
 		$ENV = array();
-		$request = new Request(array(), array(), array(), array(), $ENV);
+		$request = new Request(array(), array(), array(), $ENV);
 
 		$this->assertEquals('default', $request->getENV('test', 'default'));
 	}
@@ -159,7 +134,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase {
 	// session
 	public function testGetSESSION(){
 		$SESSION = array('test' => 'somevalue');
-		$request = new Request(array(), array(), array(), array(), array(),
+		$request = new Request(array(), array(), array(), array(),
 								$SESSION);
 
 		$this->assertEquals('somevalue', $request->getSESSION('test'));
@@ -168,7 +143,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase {
 
 	public function testGetSESSIONEmpty(){
 		$SESSION = array();
-		$request = new Request(array(), array(), array(), array(), array(),
+		$request = new Request(array(), array(), array(), array(),
 								$SESSION);
 
 		$this->assertEquals('', $request->getSESSION('test'));
@@ -177,7 +152,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase {
 
 	public function testGetSESSIONDefault(){
 		$SESSION = array();
-		$request = new Request(array(), array(), array(), array(), array(),
+		$request = new Request(array(), array(), array(), array(),
 								$SESSION);
 
 		$this->assertEquals('default', $request->getSESSION('test', 'default'));
@@ -187,7 +162,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase {
 	// cookie
 	public function testGetCOOKIE(){
 		$COOKIE = array('test' => 'somevalue');
-		$request = new Request(array(), array(), array(), array(), array(),
+		$request = new Request(array(), array(), array(), array(),
 								array(), $COOKIE);
 
 		$this->assertEquals('somevalue', $request->getCOOKIE('test'));
@@ -196,7 +171,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase {
 
 	public function testGetCOOKIEEmpty(){
 		$COOKIE = array();
-		$request = new Request(array(), array(), array(), array(), array(),
+		$request = new Request(array(), array(), array(), array(),
 								array(), $COOKIE);
 
 		$this->assertEquals('', $request->getCOOKIE('test'));
@@ -205,7 +180,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase {
 
 	public function testGetCOOKIEDefault(){
 		$COOKIE = array();
-		$request = new Request(array(), array(), array(), array(), array(),
+		$request = new Request(array(), array(), array(), array(),
 								array(), $COOKIE);
 
 		$this->assertEquals('default', $request->getCOOKIE('test', 'default'));
@@ -216,7 +191,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase {
 	// urlParams
 	public function testGeturlParams(){
 		$urlParams = array('test' => 'somevalue');
-		$request = new Request(array(), array(), array(), array(), array(),
+		$request = new Request(array(), array(), array(), array(),
 								array(), array(), $urlParams);
 
 		$this->assertEquals('somevalue', $request->getURLParams('test'));
@@ -225,7 +200,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase {
 
 	public function testGeturlParamsEmpty(){
 		$urlParams = array();
-		$request = new Request(array(), array(), array(), array(), array(),
+		$request = new Request(array(), array(), array(), array(),
 								array(), array(), $urlParams);
 
 		$this->assertEquals('', $request->getURLParams('test'));
@@ -234,7 +209,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase {
 
 	public function testGeturlParamsDefault(){
 		$urlParams = array();
-		$request = new Request(array(), array(), array(), array(), array(),
+		$request = new Request(array(), array(), array(), array(),
 								array(), array(), $urlParams);
 
 		$this->assertEquals('default', $request->getURLParams('test', 'default'));
@@ -243,7 +218,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase {
 
 	public function testGetMethod(){
 		$server = array('REQUEST_METHOD' => 'hi');
-		$request = new Request(array(), array(), array(), $server);
+		$request = new Request(array(), array(), $server);
 
 		$this->assertEquals('hi', $request->getMethod());
 	}

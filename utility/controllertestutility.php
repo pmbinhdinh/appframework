@@ -84,11 +84,13 @@ abstract class ControllerTestUtility extends TestUtility {
 	 * @return Request a request instance
 	 */
 	protected function getRequest(array $params) {
-		if(!array_key_exists('get', $params)){
-			$params['get'] = array();
+		if(array_key_exists('get', $params)){
+			$params['params'] = $params['get'];
+		} else {
+			$params['params'] = array();
 		} 
-		if(!array_key_exists('post', $params)){
-			$params['post'] = array();
+		if(array_key_exists('post', $params) && count($params['params']) === 0){
+			$params['params'] = $params['post'];
 		} 
 		if(!array_key_exists('files', $params)){
 			$params['files'] = array();
@@ -109,7 +111,7 @@ abstract class ControllerTestUtility extends TestUtility {
 			$params['urlParams'] = array();
 		}
 
-		return new Request( $params['get'], $params['post'],
+		return new Request( $params['params'], 
 							$params['files'], $params['server'],
 							$params['env'], $params['session'],
 							$params['cookie'], $params['urlParams']);

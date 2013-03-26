@@ -39,15 +39,7 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 
   angular.module('OC', []).config([
     '$httpProvider', function($httpProvider) {
-      $httpProvider.defaults.headers.common['requesttoken'] = oc_requesttoken;
-      $httpProvider.defaults.headers.common['Content-Type'] = 'application/x-www-form-urlencoded';
-      return $httpProvider.defaults.transformRequest = function(data) {
-        if (angular.isUndefined(data)) {
-          return data;
-        } else {
-          return $.param(data);
-        }
-      };
+      return $httpProvider.defaults.headers.common['requesttoken'] = oc_requesttoken;
     }
   ]);
 

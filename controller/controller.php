@@ -64,20 +64,15 @@ abstract class Controller {
 	 * @return mixed the content of the array
 	 */
 	public function params($key, $default=null){
-		$postValue = $this->request->getPOST($key);
-		$getValue = $this->request->getGET($key);
+		$paramsValue = $this->request->getParams($key);
 		$urlValue = $this->request->getURLParams($key);
 
 		if($urlValue !== null){
 			return $urlValue;
 		}
 
-		if($postValue !== null){
-			return $postValue;
-		}
-
-		if($getValue !== null){
-			return $getValue;
+		if($paramsValue !== null){
+			return $paramsValue;
 		}
 
 		return $default;
