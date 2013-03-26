@@ -27,11 +27,9 @@ namespace OCA\AppFramework\Db;
 abstract class Entity {
 
 	public $id;
-	private $updatedFields;
 
-	public function __construct(){
-		$this->resetUpdatedFields();
-	}
+	private $updatedFields = array();
+	private $fieldTypes = array('id' => 'int');
 
 
 	/**
@@ -142,12 +140,26 @@ abstract class Entity {
 
 
 	/**
+	 * Adds type information for a field so that its automatically casted to
+	 * that value once its being returned from the database
+	 * @param string $fieldName the name of the attribute
+	 * @param string $type the type which will be used to call settype()
+	 */
+	protected function addType($fieldName, $type){
+		$this->fieldTypes[$fieldName] = $type;
+	}
+
+
+	/**
 	 * Maps the keys of the row array to the attributes
 	 * @param array $row the row to map onto the entity
 	 */
 	public function fromRow(array $row){
 		foreach($row as $key => $value){
 			$prop = $this->columnToProperty($key);
+			if(array_key_exists($prop, $this->fieldTypes)){
+				settype($value, $this->fieldTypes[$prop]);
+			}
 			$this->$prop = $value;
 		}
 	}

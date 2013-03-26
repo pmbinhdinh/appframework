@@ -31,6 +31,11 @@ require_once(__DIR__ . "/../classloader.php");
 class TestEntity extends Entity {
 	public $name;
 	public $email;
+	public $testId;
+
+	public function __construct(){
+		$this->addType('testId', 'int');		
+	}
 };
 
 
@@ -133,6 +138,22 @@ class EntityTest extends \PHPUnit_Framework_TestCase {
 	}
 
 
-	
+	public function testIdGetsConvertedToInt(){
+		$row = array('id' => '4');
+		$entity = new TestEntity();
+
+		$this->entity->fromRow($row);
+		$this->assertTrue(4 === $this->entity->getId());
+	}
+
+
+	public function testSetType(){
+		$row = array('testId' => '4');
+		$entity = new TestEntity();
+
+		$this->entity->fromRow($row);
+		$this->assertTrue(4 === $this->entity->getTestId());
+	}
+
 
 }
