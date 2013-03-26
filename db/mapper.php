@@ -186,8 +186,7 @@ abstract class Mapper {
 	 * @param int $offset from which row we want to start
 	 * @return \PDOStatement the database query result
 	 */
-	protected function execute($sql, array $params=array(), $limit=null, 
-									$offset=null){
+	protected function execute($sql, array $params=array(), $limit=null, $offset=null){
 		$query = $this->api->prepareQuery($sql, $limit, $offset);
 		return $query->execute($params);
 	}
