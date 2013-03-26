@@ -62,6 +62,7 @@ class DIContainer extends \Pimple {
 			if($params === null){
 				$params = array();
 			}
+			$params = array_merge($params, $_GET, $_POST);
 			return new Request($params, $_FILES, $_SERVER, $_ENV, $_SESSION, 
 				$_COOKIE, $c['urlParams']);
 		});
