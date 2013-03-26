@@ -101,7 +101,7 @@ abstract class Mapper {
 		
 		$this->execute($sql, $params);
 
-		$entity->setId($this->api->getInsertId($this->tableName));
+		$entity->setId((int) $this->api->getInsertId($this->tableName));
 		return $entity;
 	}
 
