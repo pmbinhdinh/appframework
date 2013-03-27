@@ -84,37 +84,7 @@ abstract class ControllerTestUtility extends TestUtility {
 	 * @return Request a request instance
 	 */
 	protected function getRequest(array $params) {
-		if(array_key_exists('get', $params)){
-			$params['params'] = $params['get'];
-		} else {
-			$params['params'] = array();
-		} 
-		if(array_key_exists('post', $params) && count($params['params']) === 0){
-			$params['params'] = $params['post'];
-		} 
-		if(!array_key_exists('files', $params)){
-			$params['files'] = array();
-		} 
-		if(!array_key_exists('server', $params)){
-			$params['server'] = array();
-		} 
-		if(!array_key_exists('env', $params)){
-			$params['env'] = array();
-		} 
-		if(!array_key_exists('session', $params)){
-			$params['session'] = array();
-		} 
-		if(!array_key_exists('cookie', $params)){
-			$params['cookie'] = array();
-		} 
-		if(!array_key_exists('urlParams', $params)){
-			$params['urlParams'] = array();
-		}
-
-		return new Request( $params['params'], 
-							$params['files'], $params['server'],
-							$params['env'], $params['session'],
-							$params['cookie'], $params['urlParams']);
+		return new Request($params);
 	}
 
 }
