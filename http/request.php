@@ -87,6 +87,7 @@ class Request implements \ArrayAccess, \Countable {
 		}
 
 		$this->items['parameters'] = array_merge(
+			$this->items['params'],
 			$this->items['get'],
 			$this->items['post'],
 			$this->items['urlParams']
