@@ -1387,15 +1387,13 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
           defaultConfig.params = defaultConfig.data;
         }
         return this._$http(defaultConfig).success(function(data, status, headers, config) {
-          var name, value, _ref, _results;
-          defaultData.onSuccess(data, status, headers, config);
+          var name, value, _ref;
           _ref = data.data;
-          _results = [];
           for (name in _ref) {
             value = _ref[name];
-            _results.push(_this._publisher.publishDataTo(value, name));
+            _this._publisher.publishDataTo(value, name);
           }
-          return _results;
+          return defaultData.onSuccess(data, status, headers, config);
         }).error(function(data, status, headers, config) {
           return defaultData.onFailure(data, status, headers, config);
         });

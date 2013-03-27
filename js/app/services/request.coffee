@@ -79,11 +79,13 @@ angular.module('OC').factory '_Request', ->
 
 			@_$http(defaultConfig)
 				.success (data, status, headers, config) =>
-					defaultData.onSuccess(data, status, headers, config)
 
 					# publish data to models
 					for name, value of data.data
 						@_publisher.publishDataTo(value, name)
+
+					defaultData.onSuccess(data, status, headers, config)
+
 
 				.error (data, status, headers, config) ->
 					defaultData.onFailure(data, status, headers, config)
