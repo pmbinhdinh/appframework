@@ -39,7 +39,7 @@ describe '_ContainsQuery', ->
 
 		data3 =
 			id: 2
-			name: 'jack'
+			name: 'jAck'
 
 		@data = [
 			data1
@@ -53,7 +53,7 @@ describe '_ContainsQuery', ->
 
 
 	it 'should have a correct hash', =>
-		expect(new @query('id', 3).hashCode()).toBe('contains_id_3')
+		expect(new @query('id', 3).hashCode()).toBe('contains_id_3_false')
 
 
 	it 'should return an empty list on empty list', =>
@@ -62,7 +62,7 @@ describe '_ContainsQuery', ->
 
 
 	it 'should query on one', =>
-		query = new @query('name', 'jack')
+		query = new @query('name', 'jAck')
 
 		expect(query.exec(@data)).toContain(@data[2])
 
@@ -78,3 +78,9 @@ describe '_ContainsQuery', ->
 
 		expect(query.exec(@data)).toContain(@data[0])
 		expect(query.exec(@data)).toContain(@data[1])
+
+
+	it 'should also provide a case insensitive options', =>
+		query = new @query('name', 'jack', true)
+
+		expect(query.exec(@data)).toContain(@data[2])

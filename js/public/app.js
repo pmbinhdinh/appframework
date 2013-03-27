@@ -728,20 +728,29 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 
         __extends(ContainsQuery, _super);
 
-        function ContainsQuery(_field, _value) {
+        function ContainsQuery(_field, _value, _caseInsensitive) {
           var name;
           this._field = _field;
           this._value = _value;
+          this._caseInsensitive = _caseInsensitive != null ? _caseInsensitive : false;
           name = 'contains';
-          ContainsQuery.__super__.constructor.call(this, name, [this._field, this._value]);
+          ContainsQuery.__super__.constructor.call(this, name, [this._field, this._value, this._caseInsensitive]);
         }
 
         ContainsQuery.prototype.exec = function(data) {
-          var entry, filtered, _i, _len;
+          var entry, field, filtered, _i, _len;
           filtered = [];
+          if (this._caseInsensitive) {
+            this._value = this._value.toLowerCase();
+          }
           for (_i = 0, _len = data.length; _i < _len; _i++) {
             entry = data[_i];
-            if (entry[this._field].indexOf(this._value) !== -1) {
+            if (this._caseInsensitive) {
+              field = entry[this._field].toLowerCase();
+            } else {
+              field = entry[this._field];
+            }
+            if (field.indexOf(this._value) !== -1) {
               filtered.push(entry);
             }
           }
@@ -792,20 +801,29 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 
         __extends(DoesNotContainQuery, _super);
 
-        function DoesNotContainQuery(_field, _value) {
+        function DoesNotContainQuery(_field, _value, _caseInsensitive) {
           var name;
           this._field = _field;
           this._value = _value;
+          this._caseInsensitive = _caseInsensitive != null ? _caseInsensitive : false;
           name = 'doesnotcontain';
-          DoesNotContainQuery.__super__.constructor.call(this, name, [this._field, this._value]);
+          DoesNotContainQuery.__super__.constructor.call(this, name, [this._field, this._value, this._caseInsensitive]);
         }
 
         DoesNotContainQuery.prototype.exec = function(data) {
-          var entry, filtered, _i, _len;
+          var entry, field, filtered, _i, _len;
           filtered = [];
+          if (this._caseInsensitive) {
+            this._value = this._value.toLowerCase();
+          }
           for (_i = 0, _len = data.length; _i < _len; _i++) {
             entry = data[_i];
-            if (entry[this._field].indexOf(this._value) === -1) {
+            if (this._caseInsensitive) {
+              field = entry[this._field].toLowerCase();
+            } else {
+              field = entry[this._field];
+            }
+            if (field.indexOf(this._value) === -1) {
               filtered.push(entry);
             }
           }
@@ -856,20 +874,29 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 
         __extends(EqualQuery, _super);
 
-        function EqualQuery(_field, _value) {
+        function EqualQuery(_field, _value, _caseInsensitive) {
           var name;
           this._field = _field;
           this._value = _value;
+          this._caseInsensitive = _caseInsensitive != null ? _caseInsensitive : false;
           name = 'equal';
-          EqualQuery.__super__.constructor.call(this, name, [this._field, this._value]);
+          EqualQuery.__super__.constructor.call(this, name, [this._field, this._value, this._caseInsensitive]);
         }
 
         EqualQuery.prototype.exec = function(data) {
-          var entry, equal, _i, _len;
+          var entry, equal, field, _i, _len;
           equal = [];
+          if (this._caseInsensitive) {
+            this._value = this._value.toLowerCase();
+          }
           for (_i = 0, _len = data.length; _i < _len; _i++) {
             entry = data[_i];
-            if (entry[this._field] === this._value) {
+            if (this._caseInsensitive) {
+              field = entry[this._field].toLowerCase();
+            } else {
+              field = entry[this._field];
+            }
+            if (field === this._value) {
               equal.push(entry);
             }
           }
@@ -1237,24 +1264,33 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 
         __extends(UnequalQuery, _super);
 
-        function UnequalQuery(field, value) {
+        function UnequalQuery(_field, _value, _caseInsensitive) {
           var name;
-          this.field = field;
-          this.value = value;
+          this._field = _field;
+          this._value = _value;
+          this._caseInsensitive = _caseInsensitive != null ? _caseInsensitive : false;
           name = 'unequal';
-          UnequalQuery.__super__.constructor.call(this, name, [this.field, this.value]);
+          UnequalQuery.__super__.constructor.call(this, name, [this._field, this._value, this._caseInsensitive]);
         }
 
         UnequalQuery.prototype.exec = function(data) {
-          var entry, unequal, _i, _len;
-          unequal = [];
+          var entry, equal, field, _i, _len;
+          equal = [];
+          if (this._caseInsensitive) {
+            this._value = this._value.toLowerCase();
+          }
           for (_i = 0, _len = data.length; _i < _len; _i++) {
             entry = data[_i];
-            if (entry[this.field] !== this.value) {
-              unequal.push(entry);
+            if (this._caseInsensitive) {
+              field = entry[this._field].toLowerCase();
+            } else {
+              field = entry[this._field];
+            }
+            if (field !== this._value) {
+              equal.push(entry);
             }
           }
-          return unequal;
+          return equal;
         };
 
         return UnequalQuery;

@@ -35,7 +35,7 @@ describe '_EqualQuery', ->
 
 		data2 =
 			id: 5
-			name: 'donovan'
+			name: 'donOvan'
 
 		data3 =
 			id: 2
@@ -71,6 +71,13 @@ describe '_EqualQuery', ->
 
 	it 'should return list with multiple elements if an element is matched', =>
 		query = new @query('name', 'donovan')
+
+		expect(query.exec(@data)).toContain(@data[0])
+		expect(query.exec(@data)).not.toContain(@data[1])
+
+
+	it 'should also provide a case insensitive options', =>
+		query = new @query('name', 'donovan', true)
 
 		expect(query.exec(@data)).toContain(@data[0])
 		expect(query.exec(@data)).toContain(@data[1])

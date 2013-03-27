@@ -27,18 +27,27 @@ angular.module('OC').factory '_UnequalQuery', ['_Query',
 
 	class UnequalQuery extends _Query
 
-		constructor: (@field, @value) ->
+		constructor: (@_field, @_value, @_caseInsensitive=false) ->
 			name = 'unequal'
-			super(name, [@field, @value])
+			super(name, [@_field, @_value, @_caseInsensitive])
 
 
 		exec: (data) ->
-			unequal = []
-			for entry in data
-				if entry[@field] != @value
-					unequal.push(entry)
+			equal = []
 
-			return unequal
+			if @_caseInsensitive
+				@_value = @_value.toLowerCase()
+
+			for entry in data
+				if @_caseInsensitive
+					field = entry[@_field].toLowerCase()
+				else 
+					field = entry[@_field]
+
+				if field != @_value
+					equal.push(entry)
+
+			return equal
 
 
 	return UnequalQuery

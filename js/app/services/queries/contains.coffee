@@ -27,15 +27,24 @@ angular.module('OC').factory '_ContainsQuery', ['_Query',
 
 	class ContainsQuery extends _Query
 
-		constructor: (@_field, @_value) ->
+		constructor: (@_field, @_value, @_caseInsensitive=false) ->
 			name = 'contains'
-			super(name, [@_field, @_value])
+			super(name, [@_field, @_value, @_caseInsensitive])
 
 
 		exec: (data) ->
 			filtered = []
+
+			if @_caseInsensitive
+				@_value = @_value.toLowerCase()
+
 			for entry in data
-				if entry[@_field].indexOf(@_value) != -1
+				if @_caseInsensitive
+					field = entry[@_field].toLowerCase()
+				else 
+					field = entry[@_field]
+
+				if field.indexOf(@_value) != -1
 					filtered.push(entry)
 
 			return filtered

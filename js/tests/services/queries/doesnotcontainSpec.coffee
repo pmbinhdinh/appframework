@@ -39,7 +39,7 @@ describe '_DoesNotContainQuery', ->
 
 		data3 =
 			id: 2
-			name: 'jackn'
+			name: 'jacKn'
 
 		@data = [
 			data1
@@ -53,7 +53,7 @@ describe '_DoesNotContainQuery', ->
 
 
 	it 'should have a correct hash', =>
-		expect(new @query('id', 3).hashCode()).toBe('doesnotcontain_id_3')
+		expect(new @query('id', 3).hashCode()).toBe('doesnotcontain_id_3_false')
 
 
 	it 'should return an empty list on empty list', =>
@@ -78,3 +78,12 @@ describe '_DoesNotContainQuery', ->
 
 		expect(query.exec(@data)).toContain(@data[0])
 		expect(query.exec(@data)).toContain(@data[1])
+		expect(query.exec(@data)).toContain(@data[2])
+
+
+	it 'should also provide a case insensitive options', =>
+		query = new @query('name', 'jack', true)
+
+		expect(query.exec(@data)).toContain(@data[0])
+		expect(query.exec(@data)).toContain(@data[1])
+		expect(query.exec(@data)).not.toContain(@data[2])
