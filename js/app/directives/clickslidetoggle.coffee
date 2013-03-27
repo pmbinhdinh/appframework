@@ -25,6 +25,7 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 # Used to slide up an area and can be customized by passing an expression.
 # If selector is defined, a different area is slid up on click
 # If hideOnFocusLost is defined, the slid up area will hide when the focus is
+# If cssClass is defined this class will be applied to the element
 # lost
 angular.module('OC').directive 'ocClickSlideToggle',
 ['$rootScope', ($rootScope) ->
@@ -38,11 +39,21 @@ angular.module('OC').directive 'ocClickSlideToggle',
 		else
 			slideArea = elm
 
+		# get css class for element
+		if angular.isDefined(options) and angular.isDefined(options.cssClass)
+			cssClass = options.cssClass
+		else
+			cssClass = false
+
 		elm.click ->
 			if slideArea.is(':visible') and not slideArea.is(':animated')
 				slideArea.slideUp()
+				if cssClass != false
+					elm.removeClass('opened')
 			else
 				slideArea.slideDown()
+				if cssClass != false
+					elm.addClass('opened')
 
 		# if focus lost is set use broadcast to be sure that the currently
 		# active element doesnt get slid up
@@ -56,6 +67,9 @@ angular.module('OC').directive 'ocClickSlideToggle',
 				if params != slideArea
 					if slideArea.is(':visible') and not slideArea.is(':animated')
 						slideArea.slideUp()
+						
+						if cssClass != false
+							elm.removeClass('opened')
 
 			slideArea.click (e) ->
 				$rootScope.$broadcast 'ocLostFocus', slideArea

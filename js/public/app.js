@@ -74,18 +74,29 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
   angular.module('OC').directive('ocClickSlideToggle', [
     '$rootScope', function($rootScope) {
       return function(scope, elm, attr) {
-        var options, slideArea;
+        var cssClass, options, slideArea;
         options = scope.$eval(attr.ocClickSlideToggle);
         if (angular.isDefined(options) && angular.isDefined(options.selector)) {
           slideArea = $(options.selector);
         } else {
           slideArea = elm;
         }
+        if (angular.isDefined(options) && angular.isDefined(options.cssClass)) {
+          cssClass = options.cssClass;
+        } else {
+          cssClass = false;
+        }
         elm.click(function() {
           if (slideArea.is(':visible') && !slideArea.is(':animated')) {
-            return slideArea.slideUp();
+            slideArea.slideUp();
+            if (cssClass !== false) {
+              return elm.removeClass('opened');
+            }
           } else {
-            return slideArea.slideDown();
+            slideArea.slideDown();
+            if (cssClass !== false) {
+              return elm.addClass('opened');
+            }
           }
         });
         if (angular.isDefined(options) && angular.isDefined(options.hideOnFocusLost) && options.hideOnFocusLost) {
@@ -95,7 +106,10 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
           $rootScope.$on('ocLostFocus', function(scope, params) {
             if (params !== slideArea) {
               if (slideArea.is(':visible') && !slideArea.is(':animated')) {
-                return slideArea.slideUp();
+                slideArea.slideUp();
+                if (cssClass !== false) {
+                  return elm.removeClass('opened');
+                }
               }
             }
           });
