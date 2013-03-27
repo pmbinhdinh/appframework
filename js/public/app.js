@@ -314,7 +314,7 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
           this._invalidateCache();
         }
         if (angular.isDefined(this._dataMap[data.id])) {
-          return this.update(data);
+          return this.update(data, clearCache);
         } else {
           this._data.push(data);
           return this._dataMap[data.id] = data;

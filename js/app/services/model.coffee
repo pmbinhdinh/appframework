@@ -47,7 +47,7 @@ angular.module('OC').factory '_Model', ->
 			if clearCache
 				@_invalidateCache()
 			if angular.isDefined(@_dataMap[data.id])
-				@update(data)
+				@update(data, clearCache)
 			else
 				@_data.push(data)
 				@_dataMap[data.id] = data
