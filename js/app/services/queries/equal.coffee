@@ -41,7 +41,7 @@ angular.module('OC').factory '_EqualQuery', ['_Query',
 			for entry in data
 				if @_caseInsensitive
 					field = entry[@_field].toLowerCase()
-				else 
+				else
 					field = entry[@_field]
 
 				if field == @_value
