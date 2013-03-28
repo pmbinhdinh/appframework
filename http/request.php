@@ -31,7 +31,7 @@ class Request implements \ArrayAccess, \Countable {
 
 	protected $items = array();
 
-	protected $varnames = array('get', 'post', 'files', 'server', 'env', 'session', 'cookies', 'urlParams', 'params', 'parameters');
+	protected $varnames = array('get', 'post', 'files', 'server', 'env', 'session', 'cookies', 'urlParams', 'params', 'parameters', 'method');
 
 	/**
 	 * @param array $vars And associative array with the following optional	values:
@@ -49,39 +49,38 @@ class Request implements \ArrayAccess, \Countable {
 	public function __construct(array $vars = array()) {
 
 		foreach($this->varnames as $name) {
-			$this->items[$name] = array();
-		}
-
-		foreach($vars as $name => $var) {
-			//echo $name . ' ' . print_r($var, true);
 			switch($name) {
 				case 'get':
-					$this->items[$name] = $var ? $var : $_GET;
+					$this->items[$name] = isset($vars[$name]) ? $vars[$name] : $_GET;
 					break;
 				case 'post':
-					$this->items[$name] = $var ? $var : $_POST;
+					$this->items[$name] = isset($vars[$name]) ? $vars[$name] : $_POST;
 					break;
 				case 'files':
-					$this->items[$name] = $var ? $var : $_FILES;
+					$this->items[$name] = isset($vars[$name]) ? $vars[$name] : $_FILES;
 					break;
 				case 'server':
-					$this->items[$name] = $var ? $var : $_SERVER;
+					$this->items[$name] = isset($vars[$name]) ? $vars[$name] : $_SERVER;
 					break;
 				case 'env':
-					$this->items[$name] = $var ? $var : $_ENV;
+					$this->items[$name] = isset($vars[$name]) ? $vars[$name] : $_ENV;
 					break;
 				case 'session':
-					$this->items[$name] = $var ? $var : $_SESSION;
+					$this->items[$name] = isset($vars[$name])
+						? $vars[$name]
+						: (isset($_SESSION) ? $_SESSION : array());
 					break;
 				case 'cookies':
-					$this->items[$name] = $var ? $var : $_COOKIE;
+					$this->items[$name] = isset($vars[$name]) ? $vars[$name] : $_COOKIE;
 					break;
 				case 'method':
-					$this->items[$name] = $var ? $var : $_SERVER['REQUEST_METHOD'];
+					$this->items[$name] = isset($vars[$name])
+						? $vars[$name]
+						: (isset($_SERVER) && isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : array());
 					break;
 				case 'urlParams':
 				case 'params':
-					$this->items[$name] = $var ? $var : array();
+					$this->items[$name] = isset($vars[$name]) ? $vars[$name] : array();
 					break;
 			}
 		}
