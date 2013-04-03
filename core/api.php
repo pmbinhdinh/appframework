@@ -396,9 +396,44 @@ class API {
 		return new \OC_EventSource();
 	}
 
+	/**
+	 * @brief connects a function to a hook
+	 * @param string $signalClass class name of emitter
+	 * @param string $signalName name of signal
+	 * @param string $slotClass class name of slot
+	 * @param string $slotName name of slot, in another word, this is the
+	 *               name of the method that will be called when registered
+	 *               signal is emitted.
+	 * @return bool, always true
+	 */
+	public function connectHook($signalClass, $signalName, $slotClass, $slotName) {
+		return \OCP\Util::connectHook($signalClass, $signalName, $slotClass, $slotName);
+	}
 
 	/**
-	 * Gets the content of an URL by using CURL or a fallback if it is not 
+	 * @brief Emits a signal. To get data from the slot use references!
+	 * @param string $signalClass class name of emitter
+	 * @param string $signalName name of signal
+	 * @param array $params defautl: array() array with additional data
+	 * @return bool, true if slots exists or false if not
+	 */
+	public function emitHook($signalClass, $signalName, $params = array()) {
+		return  \OCP\Util::emitHook($signalClass, $signalName, $params);
+	}
+
+	/**
+	 * @brief clear hooks
+	 * @param string $signalClass
+	 * @param string $signalName
+	 */
+	public function clearHook($signalClass=false $signalName=false) {
+		if ($signalClass) {
+			\OC_Hook::clear($signalClass, $signalName);
+		}
+	}
+
+	/**
+	 * Gets the content of an URL by using CURL or a fallback if it is not
 	 * installed
 	 * @param string $url the url that should be fetched
 	 * @return string the content of the webpage
@@ -407,17 +442,15 @@ class API {
 		return \OC_Util::getUrlContent($url);
 	}
 
-
 	/**
 	 * Register a backgroundjob task
 	 * @param string $className full namespace and class name of the class
-	 * @param string $methodName the name of the static method that should be 
+	 * @param string $methodName the name of the static method that should be
 	 * called
 	 */
 	public function addRegularTask($className, $methodName) {
 		\OCP\Backgroundjob::addRegularTask($className, $methodName);
 	}
-
 
 	/**
 	 * Tells ownCloud to include a template in the admin overview
