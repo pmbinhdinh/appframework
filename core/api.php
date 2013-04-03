@@ -339,7 +339,7 @@ class API {
 	 * @return bool true if app is enabled
 	 */
 	public function isAppEnabled($appName){
-		\OCP\App::isEnabled($appName);
+		return \OCP\App::isEnabled($appName);
 	}
 
 
