@@ -417,18 +417,19 @@ class API {
 	 * @param array $params defautl: array() array with additional data
 	 * @return bool, true if slots exists or false if not
 	 */
-	public function emitHook($signalCalss, $signalName, $params = array()) {
+	public function emitHook($signalClass, $signalName, $params = array()) {
 		return  \OCP\Util::emitHook($signalClass, $signalName, $params);
 	}
 
 	/**
 	 * @brief clear hooks
-	 * @param string $signalclass  when $signalclass is evalued as false,
-	 *                             all hooks will be cleared.
-	 * @param string $signalname
+	 * @param string $signalClass
+	 * @param string $signalName
 	 */
-	public function hookClear($signalclass='', $signalname='') {
-		\OC_Hook::clear($signalclass, $signalname);
+	public function clearHook($signalClass=false $signalName=false) {
+		if ($signalClass) {
+			\OC_Hook::clear($signalClass, $signalName);
+		}
 	}
 
 	/**
