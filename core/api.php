@@ -396,5 +396,38 @@ class API {
 		return new \OC_EventSource();
 	}
 
+	/**
+	 * @brief connects a function to a hook
+	 * @param string $signalclass class name of emitter
+	 * @param string $signalname name of signal
+	 * @param string $slotclass class name of slot
+	 * @param string $slotname name of slot, in another word, this is the
+	 *               name of the method that will be called when registered
+	 *               signal is emitted.
+	 * @return bool, always true
+	 */
+	public function hookConnect($signalclass, $signalname, $slotclass, $slotname) {
+		return \OC_Hook::connect($signalclass, $signalname, $slotclass, $slotname);
+	}
 
+	/**
+	 * @brief Emits a signal. To get data from the slot use references!
+	 * @param string $signalclass class name of emitter
+	 * @param string $signalname name of signal
+	 * @param array $params defautl: array() array with additional data
+	 * @return bool, true if slots exists or false if not
+	 */
+	public function hookEmit($signalcalss, $signalname, $params = array()) {
+		return \OC_Hook::emit($signalclass, $signalname, $params);
+	}
+
+	/**
+	 * @brief clear hooks
+	 * @param string $signalclass  when $signalclass is evalued as false,
+	 *                             all hooks will be cleared.
+	 * @param string $signalname
+	 */
+	public function hookClear($signalclass='', $signalname='') {
+		\OC_Hook::clear($signalclass, $signalname);
+	}
 }
