@@ -431,3 +431,16 @@ class API {
 		\OC_Hook::clear($signalclass, $signalname);
 	}
 }
+
+	/**
+	 * Gets the content of an URL by using CURL or a fallback if it is not
+	 * installed
+	 * @param string $url the url that should be fetched
+	 * @return string the content of the webpage
+	 */
+	public function getUrlContent($url) {
+		return \OC_Util::getUrlContent($url);
+	}
+
+
+}
