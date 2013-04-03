@@ -426,7 +426,7 @@ class API {
 	 * @param string $signalClass
 	 * @param string $signalName
 	 */
-	public function clearHook($signalClass=false $signalName=false) {
+	public function clearHook($signalClass=false, $signalName=false) {
 		if ($signalClass) {
 			\OC_Hook::clear($signalClass, $signalName);
 		}
