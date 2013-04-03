@@ -398,27 +398,27 @@ class API {
 
 	/**
 	 * @brief connects a function to a hook
-	 * @param string $signalclass class name of emitter
-	 * @param string $signalname name of signal
-	 * @param string $slotclass class name of slot
-	 * @param string $slotname name of slot, in another word, this is the
+	 * @param string $signalClass class name of emitter
+	 * @param string $signalName name of signal
+	 * @param string $slotClass class name of slot
+	 * @param string $slotName name of slot, in another word, this is the
 	 *               name of the method that will be called when registered
 	 *               signal is emitted.
 	 * @return bool, always true
 	 */
-	public function hookConnect($signalclass, $signalname, $slotclass, $slotname) {
-		return \OC_Hook::connect($signalclass, $signalname, $slotclass, $slotname);
+	public function connectHook($signalClass, $signalName, $slotClass, $slotName) {
+		return \OCP\Util::connectHook($signalClass, $signalName, $slotClass, $slotName);
 	}
 
 	/**
 	 * @brief Emits a signal. To get data from the slot use references!
-	 * @param string $signalclass class name of emitter
-	 * @param string $signalname name of signal
+	 * @param string $signalClass class name of emitter
+	 * @param string $signalName name of signal
 	 * @param array $params defautl: array() array with additional data
 	 * @return bool, true if slots exists or false if not
 	 */
-	public function hookEmit($signalcalss, $signalname, $params = array()) {
-		return \OC_Hook::emit($signalclass, $signalname, $params);
+	public function emitHook($signalCalss, $signalName, $params = array()) {
+		return  \OCP\Util::emitHook($signalClass, $signalName, $params);
 	}
 
 	/**
@@ -430,7 +430,6 @@ class API {
 	public function hookClear($signalclass='', $signalname='') {
 		\OC_Hook::clear($signalclass, $signalname);
 	}
-}
 
 	/**
 	 * Gets the content of an URL by using CURL or a fallback if it is not
