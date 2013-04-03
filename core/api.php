@@ -339,7 +339,7 @@ class API {
 	 * @return bool true if app is enabled
 	 */
 	public function isAppEnabled($appName){
-		\OCP\App::isEnabled($appName);
+		return \OCP\App::isEnabled($appName);
 	}
 
 
@@ -439,6 +439,30 @@ class API {
 	 */
 	public function getUrlContent($url) {
 		return \OC_Util::getUrlContent($url);
+	}
+
+	/**
+	 * Register a backgroundjob task
+	 * @param string $className full namespace and class name of the class
+	 * @param string $methodName the name of the static method that should be
+	 * called
+	 */
+	public function addRegularTask($className, $methodName) {
+		\OCP\Backgroundjob::addRegularTask($className, $methodName);
+	}
+
+	/**
+	 * Tells ownCloud to include a template in the admin overview
+	 * @param string $mainPath the path to the main php file without the php
+	 * suffix, relative to your apps directory! not the template directory
+	 * @param string $appName the name of the app, defaults to the current one
+	 */
+	public function registerAdmin($mainPath, $appName=null) {
+		if($appName === null){
+			$appName = $this->appName;
+		}
+
+		\OCP\App::registerAdmin($appName, $mainPath);
 	}
 
 
