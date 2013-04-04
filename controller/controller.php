@@ -64,7 +64,9 @@ abstract class Controller {
 	 * @return mixed the content of the array
 	 */
 	public function params($key, $default=null){
-		return isset($this->request->{$key}) ? $this->request->{$key} : $default;
+		return isset($this->request->parameters[$key]) 
+			? $this->request->parameters[$key] 
+			: $default;
 	}
 
 
