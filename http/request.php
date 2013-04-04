@@ -30,8 +30,19 @@ namespace OCA\AppFramework\Http;
 class Request implements \ArrayAccess, \Countable {
 
 	protected $items = array();
-
-	protected $varnames = array('get', 'post', 'files', 'server', 'env', 'session', 'cookies', 'urlParams', 'params', 'parameters', 'method');
+	protected $allowedKeys = array(
+		'get', 
+		'post', 
+		'files', 
+		'server', 
+		'env', 
+		'session', 
+		'cookies', 
+		'urlParams', 
+		'params', 
+		'parameters', 
+		'method'
+	);
 
 	/**
 	 * @param array $vars An associative array with the following optional values:
@@ -47,10 +58,12 @@ class Request implements \ArrayAccess, \Countable {
 	 * @param string 'method' the request method (GET, POST etc)
 	 * @see http://www.php.net/manual/en/reserved.variables.php
 	 */
-	public function __construct(array $vars = array()) {
+	public function __construct(array $vars=array()) {
 
-		foreach($this->varnames as $name) {
-			$this->items[$name] = isset($vars[$name]) ? $vars[$name] : array();
+		foreach($this->allowedKeys as $name) {
+			$this->items[$name] = isset($vars[$name]) 
+				? $vars[$name] 
+				: array();
 		}
 
 		$this->items['parameters'] = array_merge(
@@ -154,17 +167,22 @@ class Request implements \ArrayAccess, \Countable {
 				return $this->items['method'];
 				break;
 			default;
-				return isset($this[$name]) ? $this[$name] : null;
+				return isset($this[$name]) 
+					? $this[$name] 
+					: null;
 				break;
 		}
 	}
+
 
 	public function __isset($name) {
 		return isset($this->items['parameters'][$name]);
 	}
 
+
 	public function __unset($id) {
 		throw new \RunTimeException('You cannot change the contents of the request object');
 	}
+
 
 }
