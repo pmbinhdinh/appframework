@@ -31,8 +31,6 @@ class RequestTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals(false, isset($request->{'flickname'}));
 		// Only testing 'get', but same approach for post, files etc.
 		$this->assertEquals('Joey', $request->get['nickname']);
-		// Direct access
-		$this->assertEquals('Joey', $request->getVar('get', 'nickname'));
 		// Always returns null if variable not set.
 		$this->assertEquals(null, $request->{'flickname'});
 	}
@@ -52,18 +50,6 @@ class RequestTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals('Johnny Weissmüller', $request->{'name'});
 	}
 
-	// Test default value
-	public function testDefaultValue() {
-		$vars = array(
-			'get' => array('name' => 'John Q. Public', 'nickname' => 'Joey'),
-		);
-
-		$request = new Request($vars);
-
-		$this->assertEquals(2, count($request));
-		$this->assertEquals('Joey', $request->getVar('get', 'nickname', 'Janey'));
-		$this->assertEquals('Apocalypse Now', $request->getVar('get', 'flickname', 'Apocalypse Now'));
-	}
 
 	/**
 	* @expectedException RuntimeException
