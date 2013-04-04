@@ -34,7 +34,7 @@ class Request implements \ArrayAccess, \Countable {
 	protected $varnames = array('get', 'post', 'files', 'server', 'env', 'session', 'cookies', 'urlParams', 'params', 'parameters', 'method');
 
 	/**
-	 * @param array $vars And associative array with the following optional	values:
+	 * @param array $vars An associative array with the following optional values:
 	 * @param array 'params' the parsed json array
 	 * @param array 'urlParams' the parameters which were matched from the URL
 	 * @param array 'get' the $_GET array
