@@ -62,30 +62,6 @@ class Request implements \ArrayAccess, \Countable {
 
 	}
 
-	/**
-	 * Returns an instance of Request using default request variables.
-	 */
-	public static function getRequest() {
-		// Ensure that params is an array, not null
-		$params = json_decode(file_get_contents('php://input'));
-		$params = is_null($params) ? array() : $params;
-		return new self(
-			array(
-				'get' => $_GET,
-				'post' => $_POST,
-				'files' => $_FILES,
-				'server' => $_SERVER,
-				'env' => $_ENV,
-				'session' => $_SESSION,
-				'cookies' => $_COOKIE,
-				'method' => (isset($_SERVER) && isset($_SERVER['REQUEST_METHOD']))
-						? $_SERVER['REQUEST_METHOD']
-						: '',
-				'params' => $params
-				)
-		);
-	}
-
 	// Countable method.
 	public function count() {
 		return count(array_keys($this->items['parameters']));
