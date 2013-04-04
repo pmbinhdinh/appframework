@@ -71,7 +71,7 @@ class DIContainer extends \Pimple {
 					'cookies' => $_COOKIE,
 					'method' => (isset($_SERVER) && isset($_SERVER['REQUEST_METHOD']))
 							? $_SERVER['REQUEST_METHOD']
-							: array(),
+							: null,
 					'params' => $params,
 					'urlParams' => $c['urlParams']
 				)
