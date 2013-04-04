@@ -1,10 +1,9 @@
 <?php
-
 /**
- * ownCloud - App Framework
+ * ownCloud - Request
  *
- * @author Bernhard Posselt
- * @copyright 2012 Bernhard Posselt nukeawhale@gmail.com
+ * @author Thomas Tanghus
+ * @copyright 2013 Thomas Tanghus (thomas@tanghus.net)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
@@ -21,175 +20,151 @@
  *
  */
 
-
 namespace OCA\AppFramework\Http;
 
-
 /**
- * Encapsulates $_GET, $_FILES and $_POST arrays for better testability
+ * Class for accessing variables in the request.
+ * This class provides an immutable object with request variables.
  */
-class Request {
 
-	private $params;
-	private $files;
-	private $server;
-	private $env;
-	private $session;
-	private $cookie;
-	private $urlParams;
+class Request implements \ArrayAccess, \Countable {
+
+	protected $items = array();
+
+	protected $varnames = array('get', 'post', 'files', 'server', 'env', 'session', 'cookies', 'urlParams', 'params', 'parameters', 'method');
 
 	/**
-	 * @param array $params the parsed json array
-	 * @param array $files the $_FILES array
-	 * @param array $server the $_SERVER array
-	 * @param array $env the $_ENV array
-	 * @param array $session the $_SESSION array
-	 * @param array $cookie the $_COOKIE array
-	 * @param array $urlParams the parameters which were matched from the URL
+	 * @param array $vars And associative array with the following optional	values:
+	 * @param array 'params' the parsed json array
+	 * @param array 'urlParams' the parameters which were matched from the URL
+	 * @param array 'get' the $_GET array
+	 * @param array 'post' the $_POST array
+	 * @param array 'files' the $_FILES array
+	 * @param array 'server' the $_SERVER array
+	 * @param array 'env' the $_ENV array
+	 * @param array 'session' the $_SESSION array
+	 * @param array 'cookies' the $_COOKIE array
+	 * @param string 'method' the request method (GET, POST etc)
+	 * @see http://www.php.net/manual/en/reserved.variables.php
 	 */
-	public function __construct(array $params=array(), array $files=array(), 
-								array $server=array(), array $env=array(), 
-								array $session=array(),	array $cookie=array(),
-								array $urlParams=array()) {
-		$this->params = $params;
-		$this->files = $files;
-		$this->server = $server;
-		$this->env = $env;
-		$this->session = $session;
-		$this->cookie = $cookie;
-		$this->urlParams = $urlParams;
+	public function __construct(array $vars = array()) {
+
+		foreach($this->varnames as $name) {
+			$this->items[$name] = isset($vars[$name]) ? $vars[$name] : array();
+		}
+
+		$this->items['parameters'] = array_merge(
+			$this->items['params'],
+			$this->items['get'],
+			$this->items['post'],
+			$this->items['urlParams']
+		);
+
 	}
 
-
-	/**
-	 * Returns the merged urlParams, GET and POST array
-	 * @return array the merged array
-	 */
-	public function getRequestParams(){
-		return array_merge($this->urlParams, $this->params);
+	// Countable method.
+	public function count() {
+		return count(array_keys($this->items['parameters']));
 	}
 
+	/**
+	* ArrayAccess methods
+	*
+	* Gives access to the combined GET, POST and urlParams arrays
+	*
+	* Examples:
+	*
+	* $var = $request['myvar'];
+	*
+	* or
+	*
+	* if(!isset($request['myvar']) {
+	* 	// Do something
+	* }
+	*
+	* $request['myvar'] = 'something'; // This throws an exception.
+	*
+	* @param string offset The key to lookup
+	* @return string|null
+	*/
+	public function offsetExists($offset) {
+		return isset($this->items['parameters'][$offset]);
+	}
 
 	/**
-	 * Returns the request params value or the default if not found
-	 * @param string $key the array key that should be looked up
-	 * @param string $default if the key is not found, return this value
-	 * @return mixed the value of the stored array or the default
-	 */
-	public function getParams($key, $default=null){
-		if(array_key_exists($key, $this->params)){
-			return $this->params[$key];
-		} else {
-			return $default;
+	* @see offsetExists
+	*/
+	public function offsetGet($offset) {
+		return isset($this->items['parameters'][$offset])
+			? $this->items['parameters'][$offset]
+			: null;
+	}
+
+	/**
+	* @see offsetExists
+	*/
+	public function offsetSet($offset, $value) {
+		throw new \RuntimeException('You cannot change the contents of the request object');
+	}
+
+	/**
+	* @see offsetExists
+	*/
+	public function offsetUnset($offset) {
+		throw new \RuntimeException('You cannot change the contents of the request object');
+	}
+
+	// Magic property accessors
+	public function __set($name, $value) {
+		throw new \RuntimeException('You cannot change the contents of the request object');
+	}
+
+	/**
+	* Access request variables by method and name.
+	* Examples:
+	*
+	* $request->post['myvar']; // Only look for POST variables
+	* $request->myvar; or $request->{'myvar'}; or $request->{$myvar}
+	* Looks in the combined GET, POST and urlParams array.
+	*
+	* if($request->method !== 'POST') {
+	* 	throw new Exception('This function can only be invoked using POST');
+	* }
+	*
+	* @param string $name The key to look for.
+	* @return mixed|null
+	*/
+	public function __get($name) {
+		switch($name) {
+			case 'get':
+			case 'post':
+			case 'files':
+			case 'server':
+			case 'env':
+			case 'session':
+			case 'cookies':
+			case 'parameters':
+			case 'params':
+			case 'urlParams':
+				return isset($this->items[$name])
+					? $this->items[$name]
+					: null;
+				break;
+			case 'method':
+				return $this->items['method'];
+				break;
+			default;
+				return isset($this[$name]) ? $this[$name] : null;
+				break;
 		}
 	}
 
-
-	/**
-	 * Returns the get value of the files array
-	 * @param string $key the array key that should be looked up
-	 * @return mixed the value of the stored array or the default
-	 */
-	public function getFILES($key){
-		if(array_key_exists($key, $this->files)){
-			return $this->files[$key];
-		} else {
-			return null;
-		}
+	public function __isset($name) {
+		return isset($this->items['parameters'][$name]);
 	}
 
-
-	/**
-	 * Returns the get value of the server array
-	 * @param string $key the array key that should be looked up
-	 * @param string $default if the key is not found, return this value
-	 * @return mixed the value of the stored array or the default
-	 */
-	public function getSERVER($key, $default=null){
-		if(array_key_exists($key, $this->server)){
-			return $this->server[$key];
-		} else {
-			return $default;
-		}
-	}
-
-
-	/**
-	 * Returns the get value of the env array
-	 * @param string $key the array key that should be looked up
-	 * @param string $default if the key is not found, return this value
-	 * @return mixed the value of the stored array or the default
-	 */
-	public function getENV($key, $default=null){
-		if(array_key_exists($key, $this->env)){
-			return $this->env[$key];
-		} else {
-			return $default;
-		}
-	}
-
-
-	/**
-	 * Returns the get value of the session array
-	 * @param string $key the array key that should be looked up
-	 * @param string $default if the key is not found, return this value
-	 * @return mixed the value of the stored array or the default
-	 */
-	public function getSESSION($key, $default=null){
-		if(array_key_exists($key, $this->session)){
-			return $this->session[$key];
-		} else {
-			return $default;
-		}
-	}
-
-
-	/**
-	 * Returns the get value of the cookie array
-	 * @param string $key the array key that should be looked up
-	 * @param string $default if the key is not found, return this value
-	 * @return mixed the value of the stored array or the default
-	 */
-	public function getCOOKIE($key, $default=null){
-		if(array_key_exists($key, $this->cookie)){
-			return $this->cookie[$key];
-		} else {
-			return $default;
-		}
-	}
-
-
-	/**
-	 * Returns the get value of the urlParams array
-	 * @param string $key the array key that should be looked up
-	 * @param string $default if the key is not found, return this value
-	 * @return mixed the value of the stored array or the default
-	 */
-	public function getURLParams($key, $default=null){
-		if(array_key_exists($key, $this->urlParams)){
-			return $this->urlParams[$key];
-		} else {
-			return $default;
-		}
-	}
-
-
-	/**
-	 * Returns the request method
-	 * @return string request method of the server array
-	 */
-	public function getMethod(){
-		return $this->getSERVER('REQUEST_METHOD');
-	}
-
-
-	/**
-	 * Sets a session variable
-	 * @param string $key the key of the session variable
-	 * @param string $value the value of the session variable
-	 */
-	public function setSESSION($key, $value){
-		$this->session[$key] = $value;
+	public function __unset($id) {
+		throw new \RunTimeException('You cannot change the contents of the request object');
 	}
 
 }

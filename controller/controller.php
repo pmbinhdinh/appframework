@@ -64,18 +64,7 @@ abstract class Controller {
 	 * @return mixed the content of the array
 	 */
 	public function params($key, $default=null){
-		$paramsValue = $this->request->getParams($key);
-		$urlValue = $this->request->getURLParams($key);
-
-		if($urlValue !== null){
-			return $urlValue;
-		}
-
-		if($paramsValue !== null){
-			return $paramsValue;
-		}
-
-		return $default;
+		return isset($this->request->{$key}) ? $this->request->{$key} : $default;
 	}
 
 
@@ -85,7 +74,7 @@ abstract class Controller {
 	 * @return array the array with all parameters
 	 */
 	public function getParams() {
-		return $this->request->getRequestParams();
+		return $this->request->parameters;
 	}
 
 
@@ -94,7 +83,7 @@ abstract class Controller {
 	 * @return string the method of the request (POST, GET, etc)
 	 */
 	public function method() {
-		return $this->request->getMethod();
+		return $this->request->method;
 	}
 
 
@@ -103,8 +92,8 @@ abstract class Controller {
 	 * @param string $key the key that will be taken from the $_FILES array
 	 * @return array the file in the $_FILES element
 	 */
-	public function getUploadedFile($key){
-		return $this->request->getFILES($key);
+	public function getUploadedFile($key) {
+		return isset($this->request->files[$key]) ? $this->request->files[$key] : null;
 	}
 
 
@@ -113,32 +102,28 @@ abstract class Controller {
 	 * @param string $key the key that will be taken from the $_ENV array
 	 * @return array the value in the $_ENV element
 	 */
-	public function env($key){
-		return $this->request->getENV($key);
+	public function env($key) {
+		return isset($this->request->env[$key]) ? $this->request->env[$key] : null;
 	}
 
 
 	/**
-	 * Shortcut for getting and setting session variables
+	 * Shortcut for getting session variables
 	 * @param string $key the key that will be taken from the $_SESSION array
-	 * @param string $value if given sets a new session variable
 	 * @return array the value in the $_SESSION element
 	 */
-	public function session($key, $value=null){
-		if($value !== null) {
-			$this->request->setSESSION($key, $value);
-		}
-		return $this->request->getSESSION($key);
+	public function session($key) {
+		return isset($this->request->session[$key]) ? $this->request->session[$key] : null;
 	}
 
 
 	/**
-	 * Shortcut for getting and setting cookie variables
+	 * Shortcut for getting cookie variables
 	 * @param string $key the key that will be taken from the $_COOKIE array
 	 * @return array the value in the $_COOKIE element
 	 */
-	public function cookie($key){
-		return $this->request->getCOOKIE($key);
+	public function cookie($key) {
+		return isset($this->request->cookies[$key]) ? $this->request->cookies[$key] : null;
 	}
 
 

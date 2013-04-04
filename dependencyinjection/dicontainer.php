@@ -57,14 +57,25 @@ class DIContainer extends \Pimple {
 			return new API($c['AppName']);
 		});
 
-		$this['Request'] = $this->share(function($c){
-			$params = json_decode(file_get_contents('php://input'), true);
-			if($params === null){
-				$params = array();
-			}
-			$params = array_merge($params, $_GET, $_POST);
-			return new Request($params, $_FILES, $_SERVER, $_ENV, $_SESSION, 
-				$_COOKIE, $c['urlParams']);
+		$this['Request'] = $this->share(function($c) {
+			$params = json_decode(file_get_contents('php://input'));
+			$params = is_null($params) ? array() : $params;
+			return new Request(
+				array(
+					'get' => $_GET,
+					'post' => $_POST,
+					'files' => $_FILES,
+					'server' => $_SERVER,
+					'env' => $_ENV,
+					'session' => $_SESSION,
+					'cookies' => $_COOKIE,
+					'method' => (isset($_SERVER) && isset($_SERVER['REQUEST_METHOD']))
+							? $_SERVER['REQUEST_METHOD']
+							: null,
+					'params' => $params,
+					'urlParams' => $c['urlParams']
+				)
+			);
 		});
 
 
