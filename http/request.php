@@ -114,18 +114,6 @@ class Request implements \ArrayAccess, \Countable {
 		throw new \RuntimeException('You cannot change the contents of the request object');
 	}
 
-	/**
-	* Get a value from a request variable or the default value e.g:
-	* $request->get('post', 'some_key', 'default value');
-	*
-	* @param string $vars Which variables to look in e.g. 'get', 'post, 'session'
-	* @param string $name
-	* @param string $default
-	*/
-	public function getVar($vars, $name, $default = null) {
-		return isset($this->{$vars}[$name]) ? $this->{$vars}[$name] : $default;
-	}
-
 	// Magic property accessors
 	public function __set($name, $value) {
 		throw new \RuntimeException('You cannot change the contents of the request object');
