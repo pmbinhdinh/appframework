@@ -156,6 +156,7 @@ class Request implements \ArrayAccess, \Countable {
 			case 'session':
 			case 'cookies':
 			case 'parameters':
+			case 'params':
 			case 'urlParams':
 				return isset($this->items[$name])
 					? $this->items[$name]
