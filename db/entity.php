@@ -157,7 +157,7 @@ abstract class Entity {
 	public function fromRow(array $row){
 		foreach($row as $key => $value){
 			$prop = $this->columnToProperty($key);
-			if(array_key_exists($prop, $this->fieldTypes)){
+			if($value !== null && array_key_exists($prop, $this->fieldTypes)){
 				settype($value, $this->fieldTypes[$prop]);
 			}
 			$this->$prop = $value;
