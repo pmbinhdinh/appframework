@@ -58,7 +58,7 @@ class DIContainer extends \Pimple {
 		});
 
 		$this['Request'] = $this->share(function($c) {
-			$params = json_decode(file_get_contents('php://input'));
+			$params = json_decode(file_get_contents('php://input'), true);
 			$params = is_array($params) ? $params: array();
 
 			return new Request(
