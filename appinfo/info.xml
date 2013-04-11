@@ -6,7 +6,7 @@
 	<version>1.0</version>
 	<licence>AGPL</licence>
 	<author>Bernhard Posselt</author>
-	<require>4</require>
+	<require>5</require>
 	<shipped>true</shipped>
 	<default_enable/>
 </info>
