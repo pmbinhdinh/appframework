@@ -13,3 +13,4 @@ return array()
 --EXPECT--
 foo
 bar
+

@@ -6,37 +6,37 @@ Whitespace trimming on tags.
 
 Trim on control tag:
 {% for i in range(1, 9) -%}
-        {{ i }}
+	{{ i }}
 {%- endfor %}
 
 
 Trim on output tag:
 {% for i in range(1, 9) %}
-        {{- i -}}
+	{{- i -}}
 {% endfor %}
 
 
 Trim comments:
-
+      
 {#- Invisible -#}
-
+       
 After the comment.
 
 Trim leading space:
 {% if leading %}
 
-                {{- leading }}
+		{{- leading }}
 {% endif %}
 
 {%- if leading %}
-        {{- leading }}
+	{{- leading }}
 
 {%- endif %}
 
 
 Trim trailing space:
-{% if trailing -%}
-        {{ trailing -}}
+{% if trailing -%}          
+	{{ trailing -}}
 
 {% endif -%}
 
@@ -44,7 +44,7 @@ Combined:
 
 {%- if both -%}
 <ul>
-        <li>    {{- both -}}   </li>
+	<li>    {{- both -}}   </li>
 </ul>
 
 {%- endif -%}
@@ -70,5 +70,5 @@ leading space
 
 Trim trailing space:
 trailing spaceCombined:<ul>
-        <li>both</li>
+	<li>both</li>
 </ul>end

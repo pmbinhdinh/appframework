@@ -7,3 +7,4 @@ Twig supports the ternary operator
 return array()
 --EXPECT--
 YES
+

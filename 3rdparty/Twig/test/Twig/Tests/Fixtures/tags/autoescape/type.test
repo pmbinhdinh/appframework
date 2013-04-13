@@ -66,3 +66,4 @@ return array('msg' => "<>\n'\"")
 6. autoescape 'html' |escape('js')|escape('html')
 
 <a onclick="alert(&quot;\x3C\x3E\x0A\x27\x22&quot;)"></a>
+
