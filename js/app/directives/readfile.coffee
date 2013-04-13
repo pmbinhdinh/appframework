@@ -29,12 +29,13 @@ angular.module('OC').directive 'ocReadFile',
 ['$rootScope', ($rootScope) ->
 
 	return (scope, elm, attr) ->
-		$(elm).change ->
+		elm.change ->
 
 			file = elm[0].files[0]
 			reader = new FileReader()
 
 			reader.onload = (e) ->
+				elm[0].value = null
 				scope.$fileContent = e.target.result
 				scope.$apply attr.ocReadFile
 			

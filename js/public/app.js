@@ -284,11 +284,12 @@ $fileContent parameter
   angular.module('OC').directive('ocReadFile', [
     '$rootScope', function($rootScope) {
       return function(scope, elm, attr) {
-        return $(elm).change(function() {
+        return elm.change(function() {
           var file, reader;
           file = elm[0].files[0];
           reader = new FileReader();
           reader.onload = function(e) {
+            elm[0].value = null;
             scope.$fileContent = e.target.result;
             return scope.$apply(attr.ocReadFile);
           };
