@@ -30,7 +30,7 @@ use OCA\AppFramework\Middleware\MiddlewareDispatcher;
 use OCA\AppFramework\Middleware\Security\SecurityMiddleware;
 use OCA\AppFramework\Middleware\Twig\TwigMiddleware;
 
-
+require_once __DIR__ . '/../3rdparty/SimplePie/autoloader.php';
 require_once __DIR__ . '/../3rdparty/Pimple/Pimple.php';
 require_once __DIR__ . '/../3rdparty/Twig/lib/Twig/Autoloader.php';
 \Twig_Autoloader::register();
