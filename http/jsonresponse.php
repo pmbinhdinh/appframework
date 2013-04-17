@@ -31,7 +31,7 @@ namespace OCA\AppFramework\Http;
 class JSONResponse extends Response {
 
 	private $name;
-	private $data;
+	protected $data;
 
 
 	public function __construct() {
