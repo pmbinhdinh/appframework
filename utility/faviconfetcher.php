@@ -47,6 +47,10 @@ class FaviconFetcher {
 	public function fetch($url) {
 		list($httpURL, $httpsURL) = $this->buildURL($url);
 
+		if(!$httpURL) {
+			return null;
+		}
+
 		// first check if the page defines an icon in its html
 		$httpURLFromPage = $this->extractFromPage($httpURL);
 		$httpsURLFromPage = $this->extractFromPage($httpsURL);
@@ -57,10 +61,16 @@ class FaviconFetcher {
 			return $httpsURLFromPage;
 		}
 
-		// try the /favicon.ico as a last resort
+		// try the /favicon.ico as a last resort but use the base url
+		// since they are always at the base url, remove the path
+		while(parse_url($httpURL, PHP_URL_PATH)){
+			$httpURL = dirname($httpURL);
+			$httpsURL = dirname($httpsURL);
+		}
+
 		$httpURL .= '/favicon.ico';
 		$httpsURL .= '/favicon.ico';
-		
+
 		if($this->isImage($httpURL)) {
 			return $httpURL;
 		} elseif($this->isImage($httpsURL)) {
@@ -78,6 +88,10 @@ class FaviconFetcher {
 	 * @return string the full url to the page
 	 */
 	protected function extractFromPage($url) {
+		if(!$url) {
+			return null;
+		}
+
 		$file = $this->apiFactory->getFile($url);
 
 		if($file->body !== '') {
@@ -104,6 +118,11 @@ class FaviconFetcher {
 	 * @return bool true if image
 	 */
 	protected function isImage($url) {
+		// check for empty urls
+		if(!$url) {
+			return false;
+		}
+
 		$file = $this->apiFactory->getFile($url);
 		$sniffer = new \SimplePie_Content_Type_Sniffer($file);
 		return $sniffer->image() !== false;
@@ -121,9 +140,12 @@ class FaviconFetcher {
 		// trim the right / from the url
 		$url = trim($url);
 		$url = rtrim($url, '/');
-
-		// if it starts with http, build the https url
-		if (strpos($url, 'http://') === 0) {
+		
+		// dont build empty urls
+		if(!$url) {
+			$result[0] = null;
+			$result[1] = null;
+		} elseif (strpos($url, 'http://') === 0) {
 			$result[0] = $url;
 			$result[1] = substr($url, 0, 4) . 's' . substr($url, 4);
 		} elseif (strpos($url, 'https://') === 0 ) {
