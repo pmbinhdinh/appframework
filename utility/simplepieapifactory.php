@@ -21,17 +21,25 @@
  *
  */
 
-require_once __DIR__ . '/../3rdparty/SimplePie/autoloader.php';
 
-// to execute without owncloud, we need to create our own classloader
-spl_autoload_register(function ($className){
-	if (strpos($className, 'OCA\\') === 0) {
+namespace OCA\AppFramework\Utility;
 
-		$path = strtolower(str_replace('\\', '/', substr($className, 3)) . '.php');
-		$relPath = __DIR__ . '/../..' . $path;
 
-		if(file_exists($relPath)){
-			require_once $relPath;
-		}
+class SimplePieAPIFactory {
+
+	/**
+	 * Builds a simplepie file object. This is needed because
+	 * the file object contains logic in its constructor which makes it
+	 * impossible to inject and test
+	 * @return SimplePie_File a new object
+	 */
+	public function getFile($url, $timeout=10, $redirects=5, $headers=null,
+	                        $useragent=null, $force_fsockopen=false) {
+
+		return new \SimplePie_File($url, $timeout, $redirects, $headers,
+	                        $useragent, $force_fsockopen);
+
 	}
-});
+
+
+}

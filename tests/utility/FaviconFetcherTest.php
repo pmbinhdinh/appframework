@@ -31,16 +31,159 @@ require_once(__DIR__ . "/../classloader.php");
 class FaviconFetcherTest extends \PHPUnit_Framework_TestCase {
 
 	private $fetcher;
-
+	private $fileFactory;
+	private $png;
 
 	protected function setUp(){
-		$this->fetcher = new FaviconFetcher();
+		$this->png = "\x89\x50\x4E\x47\x0D\x0A\x1A\x0A";
+		$this->fileFactory = $this->getMockBuilder(
+			'\OCA\AppFramework\Utility\SimplePieAPIFactory')
+			->disableOriginalConstructor()
+			->getMock();
+		$this->fetcher = new FaviconFetcher($this->fileFactory);
 	}
 
 
-	public function testFetchFavicon(){
-		$url = 'google.com';
+	protected function getFileMock($body='') {
+		$mock = $this->getMockBuilder('\SimplePie_File')
+			->disableOriginalConstructor()
+			->getMock();
+		$mock->body = $body;
+		return $mock;
+	}
+
+
+	protected function getFileMockCallback($onEqual, $returnMock) {
+		$defaultMock = $this->getFileMock();
+
+		return function($url) use ($onEqual, $returnMock, $defaultMock) {
+			if($url === $onEqual){
+				return $returnMock;
+			} else {
+				return $defaultMock;
+			}
+		};
+	}
+
+
+	public function testFetchNoResponseReturnsNull() {
+		$mock = $this->getFileMock();
+
+		$this->fileFactory->expects($this->any())
+			->method('getFile')
+			->will($this->returnValue($mock));
+
+		$favicon = $this->fetcher->fetch('dfdf');
+		$this->assertNull($favicon);
+	}
+
+
+	public function testFetchFaviconFaviconDotIcoHttp(){
+		$url = ' google.com ';
+		$mock = $this->getFileMock($this->png);
+
+		$callback = $this->getFileMockCallback(
+			'http://google.com/favicon.ico', $mock);
+
+		$this->fileFactory->expects($this->any())
+			->method('getFile')
+			->will($this->returnCallback($callback));
+
 		$favicon = $this->fetcher->fetch($url);
+
+		$this->assertEquals('http://google.com/favicon.ico', $favicon);
+	}
+
+
+	public function testFetchFaviconFaviconDotIcoHttps(){
+		$url = 'google.com/';
+		$mock = $this->getFileMock($this->png);
+
+		$callback = $this->getFileMockCallback(
+			'https://google.com/favicon.ico', $mock);
+
+		$this->fileFactory->expects($this->any())
+			->method('getFile')
+			->will($this->returnCallback($callback));
+
+		$favicon = $this->fetcher->fetch($url);
+
+		$this->assertEquals('https://google.com/favicon.ico', $favicon);
+	}
+
+
+	private function getFaviconHTML($faviconPath) {
+		return "<html>
+			<head>
+				<link rel=\"shortcut icon\" href=\"$faviconPath\" />
+			</head>
+			<body></body>
+		</html>";
+	}
+
+
+	public function testIconAbspathHTTP() {
+		$faviconPath = "/owncloud/core/img/favicon.png";
+		$html = $this->getFaviconHTML($faviconPath);
+
+		$url = 'http://google.com';
+		$pageMock = $this->getFileMock($html);
+		$pngMock = $this->getFileMock($this->png);
+
+		$this->fileFactory->expects($this->at(0))
+			->method('getFile')
+			->with($this->equalTo('http://google.com'))
+			->will($this->returnValue($pageMock));
+
+		$this->fileFactory->expects($this->at(1))
+			->method('getFile')
+			->with($this->equalTo('https://google.com'))
+			->will($this->returnValue($this->getFileMock()));
+
+		$this->fileFactory->expects($this->at(2))
+			->method('getFile')
+			->with($this->equalTo(
+				'http://google.com/owncloud/core/img/favicon.png'))
+			->will($this->returnValue($pngMock));
+
+		$favicon = $this->fetcher->fetch($url);
+
+		$this->assertEquals('http://google.com/owncloud/core/img/favicon.png', $favicon);
+	}
+
+
+	public function testIconAbspathHTTPS() {
+		$faviconPath = "owncloud/core/img/favicon.png";
+		$html = $this->getFaviconHTML($faviconPath);
+
+		$url = 'https://google.com/';
+		$pageMock = $this->getFileMock($html);
+		$pngMock = $this->getFileMock($this->png);
+
+		$this->fileFactory->expects($this->at(0))
+			->method('getFile')
+			->with($this->equalTo('http://google.com'))
+			->will($this->returnValue($this->getFileMock()));
+
+		$this->fileFactory->expects($this->at(1))
+			->method('getFile')
+			->with($this->equalTo('https://google.com'))
+			->will($this->returnValue($pageMock));
+
+		$this->fileFactory->expects($this->at(2))
+			->method('getFile')
+			->will($this->returnValue($this->getFileMock()));
+
+		$this->fileFactory->expects($this->at(3))
+			->method('getFile')
+			->with($this->equalTo(
+				'https://google.com/owncloud/core/img/favicon.png'))
+			->will($this->returnValue($pngMock));
+
+
+		$favicon = $this->fetcher->fetch($url);
+
+		$this->assertEquals('https://google.com/owncloud/core/img/favicon.png', $favicon);
 	}
 
 }

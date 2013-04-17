@@ -29,7 +29,10 @@ use OCA\AppFramework\Core\API;
 use OCA\AppFramework\Middleware\MiddlewareDispatcher;
 use OCA\AppFramework\Middleware\Security\SecurityMiddleware;
 use OCA\AppFramework\Middleware\Twig\TwigMiddleware;
+use OCA\AppFramework\Utility\FaviconFetcher;
+use OCA\AppFramework\Utility\SimplePieAPIFactory;
 
+// register 3rdparty autoloaders
 require_once __DIR__ . '/../3rdparty/SimplePie/autoloader.php';
 require_once __DIR__ . '/../3rdparty/Pimple/Pimple.php';
 require_once __DIR__ . '/../3rdparty/Twig/lib/Twig/Autoloader.php';
@@ -198,6 +201,19 @@ class DIContainer extends \Pimple {
 
 			return $dispatcher;
 		});
+
+
+		/**
+		 * Utilities
+		 */
+		$this['SimplePieAPIFactory'] = $this->share(function($c){
+			return new SimplePieAPIFactory();
+		});
+
+		$this['FaviconFetcher'] = $this->share(function($c){
+			return new FaviconFetcher($c['SimplePieAPIFactory']);
+		});
+
 
 	}
 
