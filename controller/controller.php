@@ -40,7 +40,7 @@ abstract class Controller {
 	 */
 	protected $api;
 
-	private $request;
+	protected $request;
 
 	/**
 	 * @param API $api an api wrapper instance
