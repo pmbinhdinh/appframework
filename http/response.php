@@ -127,7 +127,7 @@ class Response {
 	 * Sets the Expire date of the content. If cache is set, this is ignored
 	 * @param DateTime $expiresAt the date and time when it expires
 	 */
-	public function expiresAt(DateTime $expiresAt) {
+	public function expiresAt(\DateTime $expiresAt) {
 		$this->addHeader('Expires', $expiresAt->format(\DateTime::RFC2822));
 	}
 
@@ -138,15 +138,6 @@ class Response {
 	* @param string $etag token to use for modification check
 	*/
 	public function setETagHeader($etag) {
-		if(is_null($this->request)) {
-			throw new \BadMethodCallException(
-				__METHOD__
-				. ' You have to pass a Request object to the constructor to use this method'
-			);
-		}
-		if (empty($etag)) {
-			return;
-		}
 		$etag = '"' . $etag . '"';
 		if (isset($this->request->server['HTTP_IF_NONE_MATCH']) &&
 		    trim($this->request->server['HTTP_IF_NONE_MATCH']) === $etag) {
@@ -156,33 +147,19 @@ class Response {
 		$this->addHeader('ETag', $etag);
 	}
 
+
 	/**
 	* Checks and set Last-Modified header, when the request matches sends a
 	* 'not modified' response
 	* @param int|DateTime $lastModified time when the reponse was last modified
 	*/
-	public function setLastModifiedHeader($lastModified) {
-		if(is_null($this->request)) {
-			throw new \BadMethodCallException(
-				__METHOD__
-				. ' You have to pass a Request object to the constructor to use this method'
-			);
-		}
-		if (empty($lastModified)) {
-			return;
-		}
-		if (is_int($lastModified)) {
-			$lastModified = gmdate(\DateTime::RFC2822, $lastModified);
-		}
-		if ($lastModified instanceof \DateTime) {
-			$lastModified = $lastModified->format(\DateTime::RFC2822);
-		}
+	public function setLastModifiedHeader(\DateTime $lastModified) {
 		if (isset($this->request->server['HTTP_IF_MODIFIED_SINCE']) &&
 		    trim($this->request->server['HTTP_IF_MODIFIED_SINCE']) === $lastModified) {
 			$this->setStatus(self::STATUS_NOT_MODIFIED);
 			return;
 		}
-		$this->addHeader('Last-Modified', $lastModified);
+		$this->addHeader('Last-Modified', $lastModified->format(\DateTime::RFC2822));
 	}
 
 	/**
