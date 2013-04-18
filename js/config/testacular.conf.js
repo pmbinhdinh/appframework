@@ -33,6 +33,7 @@ files = [
         JASMINE_ADAPTER,
         'tests/vendor/jquery-1.9.1/jquery-1.9.1.js',
         'tests/vendor/jquery-ui-1.10.0/jquery-ui-1.10.0.custom.js',
+        'tests/vendor/tipsy/jquery.tipsy.js',
         'vendor/angular/angular.js',
         'vendor/angular/angular-mocks.js',
         'tests/stubs/owncloud.js',
