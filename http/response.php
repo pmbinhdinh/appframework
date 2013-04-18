@@ -46,16 +46,6 @@ class Response {
 	protected $request;
 
 
-	/**
-	 * @var Http
-	 */
-	protected $protocol;
-
-	public function __construct(Http $protocol) {
-		$this->protocol;
-	}
-
-
 	public function setCachePolicy(Cache $cache) {
 		foreach($cache->getHeaders as $key => $value) {
 			$this->addHeader($key, $value);
@@ -98,7 +88,7 @@ class Response {
 	* @param int $status a HTTP status code, see also the STATUS constants
 	*/
 	public function setStatus($status) {
-		$this->status = $protocol->getHttpStatusHeader($status);
+		$this->status = $status;
 	}
 
 

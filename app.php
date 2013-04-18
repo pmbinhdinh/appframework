@@ -75,7 +75,7 @@ class App {
 		// output headers and echo content
 		$status = $response->getStatus();
 		if($status) {
-			header($status);
+			header($container['Protocol']->getHttpStatusHeader($status));
 		}
 		foreach($response->getHeaders() as $name => $value) {
 			header($name . ': ' . $value);
