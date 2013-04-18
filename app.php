@@ -73,6 +73,10 @@ class App {
 		$output = $middlewareDispatcher->beforeOutput($controller, $methodName, $output);
 
 		// output headers and echo content
+		$status = $response->getStatus();
+		if($status) {
+			header($status);
+		}
 		foreach($response->getHeaders() as $header){
 			header($header);
 		}
