@@ -30,7 +30,7 @@ namespace OCA\AppFramework\Http;
  */
 class JSONResponse extends Response {
 
-	private $name; // What is this for?
+	protected $error;
 	protected $data;
 
 
