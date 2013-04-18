@@ -36,10 +36,27 @@ class Response {
 	const STATUS_FORBIDDEN = 403;
 	const STATUS_NOT_FOUND = 404;
 
+	/**
+	 * @var array
+	 */
 	private $headers;
 
-	public function __construct() {
+	/**
+	 * @var string
+	 */
+	private $status;
+
+	/**
+	 * @var Request;
+	 */
+	protected $request;
+
+	/**
+	 * @param Request $request Optional Request object required for methods querying server variables.
+	 */
+	public function __construct($request = null) {
 		$this->headers = array();
+		$this->request = $request;
 	}
 
 	/**
@@ -70,18 +87,24 @@ class Response {
 	}
 
 	/**
-	* @brief Enable response caching by sending correct HTTP headers
-	* @param $cache_time time to cache the response
+	* Enable response caching by sending correct HTTP headers
+	*
+	* @param int|DateTime|null $cacheTime time to cache the response
 	*  >0		cache time in seconds
 	*  0 and <0	enable default browser caching
+	*  DateTime Cache the time between now and $cacheTime
 	*  null		cache indefinitly
 	*/
-	public function enableCaching($cache_time = null) {
-		if (is_numeric($cache_time)) {
+	public function enableCaching($cacheTime = null) {
+		if ($cacheTime instanceof DateTime) {
+			$now = new DateTime('now');
+			$cacheTime = $cacheTime->format('U') - $now->format('U');
+		}
+		if (is_numeric($cacheTime)) {
 			$this->addHeader('Pragma: public');// enable caching in IE
-			if ($cache_time > 0) {
-				$this->setExpiresHeader('PT'.$cache_time.'S');
-				$this->addHeader('Cache-Control: max-age='.$cache_time.', must-revalidate');
+			if ($cacheTime > 0) {
+				$this->setExpiresHeader('PT' . $cacheTime . 'S');
+				$this->addHeader('Cache-Control: max-age=' . $cacheTime . ', must-revalidate');
 			}
 			else {
 				$this->setExpiresHeader(0);
@@ -95,16 +118,18 @@ class Response {
 	}
 
 	/**
-	* @brief disable browser caching
-	* @see enableCaching with cache_time = 0
+	* Disable browser caching
+	*
+	* @see enableCaching with cacheTime = 0
 	*/
 	public function disableCaching() {
 		$this->enableCaching(0);
 	}
 
 	/**
-	* @brief Set reponse expire time
-	* @param $expires date-time when the response expires
+	* Set reponse expire time
+	*
+	* @param string|DateTime $expires date-time when the response expires
 	*  string for DateInterval from now
 	*  DateTime object when to expire response
 	*/
@@ -124,15 +149,21 @@ class Response {
 	/**
 	* Checks and set ETag header, when the request matches sends a
 	* 'not modified' response
-	* @param $etag token to use for modification check
+	* @param string $etag token to use for modification check
 	*/
 	public function setETagHeader($etag) {
+		if(is_null($this->request)) {
+			throw new BadMethodCallException(
+				__METHOD__
+				. ' You have to pass a Request object to the constructor to use this method'
+			);
+		}
 		if (empty($etag)) {
 			return;
 		}
-		$etag = '"'.$etag.'"';
-		if (isset($_SERVER['HTTP_IF_NONE_MATCH']) &&
-		    trim($_SERVER['HTTP_IF_NONE_MATCH']) == $etag) {
+		$etag = '"' . $etag . '"';
+		if (isset($this->request->server['HTTP_IF_NONE_MATCH']) &&
+		    trim($this->request->server['HTTP_IF_NONE_MATCH']) === $etag) {
 			$this->setStatus(self::STATUS_NOT_MODIFIED);
 			return;
 		}
@@ -142,9 +173,15 @@ class Response {
 	/**
 	* Checks and set Last-Modified header, when the request matches sends a
 	* 'not modified' response
-	* @param $lastModified time when the reponse was last modified
+	* @param int|DateTime $lastModified time when the reponse was last modified
 	*/
 	public function setLastModifiedHeader($lastModified) {
+		if(is_null($this->request)) {
+			throw new BadMethodCallException(
+				__METHOD__
+				. ' You have to pass a Request object to the constructor to use this method'
+			);
+		}
 		if (empty($lastModified)) {
 			return;
 		}
@@ -154,8 +191,8 @@ class Response {
 		if ($lastModified instanceof DateTime) {
 			$lastModified = $lastModified->format(DateTime::RFC2822);
 		}
-		if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) &&
-		    trim($_SERVER['HTTP_IF_MODIFIED_SINCE']) == $lastModified) {
+		if (isset($this->request->server['HTTP_IF_MODIFIED_SINCE']) &&
+		    trim($this->request->server['HTTP_IF_MODIFIED_SINCE']) === $lastModified) {
 			$this->setStatus(self::STATUS_NOT_MODIFIED);
 			return;
 		}
@@ -163,8 +200,16 @@ class Response {
 	}
 
 	/**
-	* @brief Set response status
-	* @param $status a HTTP status code, see also the STATUS constants
+	 * Get response status
+	 */
+	public function getStatus() {
+		return $this->status;
+	}
+
+	/**
+	* Set response status
+	*
+	* @param int $status a HTTP status code, see also the STATUS constants
 	*/
 	public function setStatus($status) {
 		$protocol = $_SERVER['SERVER_PROTOCOL'];
@@ -189,8 +234,10 @@ class Response {
 			case self::STATUS_FORBIDDEN;
 				$status = $status . ' Forbidden';
 				break;
+			default:
+				return;
 		}
-		$this->addHeader($protocol.' '.$status);
+		$this->status = $protocol.' '.$status;
 	}
 
 }
