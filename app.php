@@ -80,7 +80,12 @@ class App {
 		header($container['Protocol']->getHttpStatusHeader($status, 
 			$cache->getETag(), $cache->getLastModified()));
 
-		$headers = array_merge($response->getHeaders(), $cache->getHeaders);
+		if($cache) {
+			$headers = array_merge($response->getHeaders(), $cache->getHeaders() );	
+		} else {
+			$headers = $response->getHeaders();
+		}
+		
 		foreach($headers as $name => $value) {
 			header($name . ': ' . $value);
 		}
