@@ -31,6 +31,7 @@ use OCA\AppFramework\Middleware\Security\SecurityMiddleware;
 use OCA\AppFramework\Middleware\Twig\TwigMiddleware;
 use OCA\AppFramework\Utility\FaviconFetcher;
 use OCA\AppFramework\Utility\SimplePieAPIFactory;
+use OCA\AppFramework\Utility\TimeFactory;
 
 // register 3rdparty autoloaders
 require_once __DIR__ . '/../3rdparty/SimplePie/autoloader.php';
