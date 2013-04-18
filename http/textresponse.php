@@ -41,7 +41,7 @@ class TextResponse extends Response {
 	public function __construct($content, $contentType='plain'){
 		parent::__construct();
 		$this->content = $content;
-		$this->addHeader('Content-type: text/' . $contentType);
+		$this->addHeader('Content-type', 'text/' . $contentType);
 	}
 
 

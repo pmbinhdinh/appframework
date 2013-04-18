@@ -135,7 +135,7 @@ abstract class Controller {
 	 * @param array $params the template parameters in key => value structure
 	 * @param string $renderAs user renders a full page, blank only your template
 	 *                          admin an entry in the admin settings
-	 * @param array $headers set additional headers
+	 * @param array $headers set additional headers in name/value pairs
 	 * @return \OCA\AppFramework\Http\TemplateResponse containing the page
 	 */
 	public function render($templateName, array $params=array(),
@@ -144,8 +144,8 @@ abstract class Controller {
 		$response->setParams($params);
 		$response->renderAs($renderAs);
 
-		foreach($headers as $header){
-			$response->addHeader($header);
+		foreach($headers as $name => $value){
+			$response->addHeader($name, $value);
 		}
 
 		return $response;

@@ -40,7 +40,7 @@ class RedirectResponse extends Response {
 		parent::__construct();
 		$this->redirectURL = $redirectURL;
 		$this->setStatus(self::STATUS_TEMPORARY_REDIRECT);
-		$this->addHeader('Location: ' . $redirectURL);
+		$this->addHeader('Location', $redirectURL);
 	}
 
 

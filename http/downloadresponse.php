@@ -45,8 +45,8 @@ abstract class DownloadResponse extends Response {
 		$this->filename = $filename;
 		$this->contentType = $contentType;
 
-		$this->addHeader('Content-Disposition: attachment; filename="' . $filename . '"');
-		$this->addHeader('Content-Type: ' . $contentType);
+		$this->addHeader('Content-Disposition', 'attachment; filename="' . $filename . '"');
+		$this->addHeader('Content-Type', $contentType);
 	}
 
 

@@ -36,8 +36,8 @@ class NotFoundResponseTest extends \PHPUnit_Framework_TestCase {
 
 
 	public function testReturnStatus() {
-		$this->assertContains('HTTP/1.1 404 Not Found',
-							$this->response->getHeaders());
+		$this->assertEquals('HTTP/1.1 404 Not Found',
+							$this->response->getStatus());
 	}
 
 }

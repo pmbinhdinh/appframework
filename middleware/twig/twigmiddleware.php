@@ -72,8 +72,8 @@ class TwigMiddleware extends Middleware {
 				$this->twig
 			);
 
-			foreach($response->getHeaders() as $header){
-				$twigResponse->addHeader($header);
+			foreach($response->getHeaders() as $name => $value){
+				$twigResponse->addHeader($name, $value);
 			}
 
 			$twigResponse->setParams($response->getParams());

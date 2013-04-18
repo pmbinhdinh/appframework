@@ -38,13 +38,13 @@ class JSONResponseTest extends \PHPUnit_Framework_TestCase {
 	}
 
 
-	public function testHeader(){
+	public function testHeader() {
 		$headers = $this->json->getHeaders();
-		$this->assertTrue(in_array('Content-type: application/json', $headers));
+		$this->assertEquals('application/json', $headers['Content-type']);
 	}
 
 
-	public function testSetParams(){
+	public function testSetParams() {
 		$params = array('hi', 'yo');
 		$this->json->setParams($params);
 
@@ -52,7 +52,7 @@ class JSONResponseTest extends \PHPUnit_Framework_TestCase {
 	}
 
 
-	public function testRender(){
+	public function testRender() {
 		$params = array('test' => 'hi');
 		$this->json->setParams($params);
 
@@ -62,7 +62,7 @@ class JSONResponseTest extends \PHPUnit_Framework_TestCase {
 	}
 
 
-	public function testRenderError(){
+	public function testRenderError() {
 		$params = array('test' => 'hi');
 		$this->json->setParams($params);
 		$this->json->setErrorMessage('kaputt');
@@ -74,9 +74,9 @@ class JSONResponseTest extends \PHPUnit_Framework_TestCase {
 
 
 
-	public function testShouldHaveXContentHeaderByDefault(){
-		$this->assertContains('X-Content-Type-Options: nosniff',
-			$this->json->getHeaders());
+	public function testShouldHaveXContentHeaderByDefault() {
+		$headers = $this->json->getHeaders();
+		$this->assertEquals('nosniff', $headers['X-Content-Type-Options']);
 	}
 
 }

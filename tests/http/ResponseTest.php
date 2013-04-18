@@ -40,9 +40,9 @@ class ResponseTest extends \PHPUnit_Framework_TestCase {
 
 
 	public function testAddHeader(){
-		$this->childResponse->addHeader('test');
+		$this->childResponse->addHeader('hello', 'world');
 		$headers = $this->childResponse->getHeaders();
-		$this->assertEquals('test', $headers[0]);
+		$this->assertEquals('world', $headers['hello']);
 	}
 
 
@@ -50,5 +50,20 @@ class ResponseTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals(null, $this->childResponse->render());
 	}
 
+	/**
+	* @expectedException BadMethodCallException
+	*/
+	public function testMethodRequireringRequest() {
+		$this->childResponse->setLastModifiedHeader(1234);
+	}
 
+	public function testEnableCaching() {
+		$cacheTime = '3000';
+		$this->childResponse->enableCaching($cacheTime);
+		$headers = $this->childResponse->getHeaders();
+
+		$this->assertEquals('public', $headers['Pragma']);
+		$this->assertEquals('max-age=' . $cacheTime . ', must-revalidate', $headers['Cache-Control']);
+		$this->assertTrue(isset($headers['Expires']));
+	}
 }

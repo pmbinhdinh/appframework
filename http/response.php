@@ -62,10 +62,11 @@ class Response {
 	/**
 	 * Adds a new header to the response that will be called before the render
 	 * function
-	 * @param string header the string that will be used in the header() function
+	 * @param string $name The name of the HTTP header
+	 * @param string $value The value
 	 */
-	public function addHeader($header) {
-		array_push($this->headers, $header);
+	public function addHeader($name, $value) {
+		$this->headers[$name] = $value;
 	}
 
 
@@ -96,24 +97,24 @@ class Response {
 	*  null		cache indefinitly
 	*/
 	public function enableCaching($cacheTime = null) {
-		if ($cacheTime instanceof DateTime) {
-			$now = new DateTime('now');
+		if ($cacheTime instanceof \DateTime) {
+			$now = new \DateTime('now');
 			$cacheTime = $cacheTime->format('U') - $now->format('U');
 		}
 		if (is_numeric($cacheTime)) {
-			$this->addHeader('Pragma: public');// enable caching in IE
+			$this->addHeader('Pragma', 'public');// enable caching in IE
 			if ($cacheTime > 0) {
 				$this->setExpiresHeader('PT' . $cacheTime . 'S');
-				$this->addHeader('Cache-Control: max-age=' . $cacheTime . ', must-revalidate');
+				$this->addHeader('Cache-Control', 'max-age=' . $cacheTime . ', must-revalidate');
 			}
 			else {
 				$this->setExpiresHeader(0);
-				$this->addHeader('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+				$this->addHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0');
 			}
 		}
 		else {
-			$this->addHeader('Cache-Control: cache');
-			$this->addHeader('Pragma: cache');
+			$this->addHeader('Cache-Control', 'cache');
+			$this->addHeader('Pragma', 'cache');
 		}
 	}
 
@@ -136,14 +137,14 @@ class Response {
 	public function setExpiresHeader($expires) {
 		if (is_string($expires) && $expires[0] == 'P') {
 			$interval = $expires;
-			$expires = new DateTime('now');
-			$expires->add(new DateInterval($interval));
+			$expires = new \DateTime('now');
+			$expires->add(new \DateInterval($interval));
 		}
-		if ($expires instanceof DateTime) {
-			$expires->setTimezone(new DateTimeZone('GMT'));
-			$expires = $expires->format(DateTime::RFC2822);
+		if ($expires instanceof \DateTime) {
+			$expires->setTimezone(new \DateTimeZone('GMT'));
+			$expires = $expires->format(\DateTime::RFC2822);
 		}
-		$this->addHeader('Expires: ' . $expires);
+		$this->addHeader('Expires', $expires);
 	}
 
 	/**
@@ -153,7 +154,7 @@ class Response {
 	*/
 	public function setETagHeader($etag) {
 		if(is_null($this->request)) {
-			throw new BadMethodCallException(
+			throw new \BadMethodCallException(
 				__METHOD__
 				. ' You have to pass a Request object to the constructor to use this method'
 			);
@@ -167,7 +168,7 @@ class Response {
 			$this->setStatus(self::STATUS_NOT_MODIFIED);
 			return;
 		}
-		$this->addHeader('ETag: ' . $etag);
+		$this->addHeader('ETag', $etag);
 	}
 
 	/**
@@ -177,7 +178,7 @@ class Response {
 	*/
 	public function setLastModifiedHeader($lastModified) {
 		if(is_null($this->request)) {
-			throw new BadMethodCallException(
+			throw new \BadMethodCallException(
 				__METHOD__
 				. ' You have to pass a Request object to the constructor to use this method'
 			);
@@ -186,17 +187,17 @@ class Response {
 			return;
 		}
 		if (is_int($lastModified)) {
-			$lastModified = gmdate(DateTime::RFC2822, $lastModified);
+			$lastModified = gmdate(\DateTime::RFC2822, $lastModified);
 		}
-		if ($lastModified instanceof DateTime) {
-			$lastModified = $lastModified->format(DateTime::RFC2822);
+		if ($lastModified instanceof \DateTime) {
+			$lastModified = $lastModified->format(\DateTime::RFC2822);
 		}
 		if (isset($this->request->server['HTTP_IF_MODIFIED_SINCE']) &&
 		    trim($this->request->server['HTTP_IF_MODIFIED_SINCE']) === $lastModified) {
 			$this->setStatus(self::STATUS_NOT_MODIFIED);
 			return;
 		}
-		$this->addHeader('Last-Modified: ' . $lastModified);
+		$this->addHeader('Last-Modified', $lastModified);
 	}
 
 	/**
@@ -212,7 +213,9 @@ class Response {
 	* @param int $status a HTTP status code, see also the STATUS constants
 	*/
 	public function setStatus($status) {
-		$protocol = $_SERVER['SERVER_PROTOCOL'];
+		$protocol = (isset($this->request) && isset($this->request->server['SERVER_PROTOCOL']))
+			? $this->request->server['SERVER_PROTOCOL']
+			: 'HTTP/1.1';
 		switch($status) {
 			case self::STATUS_NOT_MODIFIED:
 				$status = $status . ' Not Modified';

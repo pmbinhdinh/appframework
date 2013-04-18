@@ -77,8 +77,8 @@ class App {
 		if($status) {
 			header($status);
 		}
-		foreach($response->getHeaders() as $header){
-			header($header);
+		foreach($response->getHeaders() as $name => $value) {
+			header($name . ': ' . $value);
 		}
 
 		if($output !== null){
