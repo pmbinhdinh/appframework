@@ -21,7 +21,7 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 ###
 
 
-# Removes html tags 
+# Removes html tags
 # Example: remove all html tags {{ variable|ocRemoveTags:''}}
 # Example: remove all <em> tags {{ variable|ocRemoveTags:'em'}}
 # Example: remove all <em> and <p> tags {{ variable|ocRemoveTags:['em', 'p']}}

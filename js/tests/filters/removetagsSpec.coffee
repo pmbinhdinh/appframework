@@ -74,4 +74,4 @@ describe 'ocRemoveTags', ->
 		remove = ''
 		out = @filter(sentence, remove)
 
-		expect(out).toBe(filtered)		
+		expect(out).toBe(filtered)
