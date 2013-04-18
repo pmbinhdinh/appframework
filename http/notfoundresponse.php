@@ -35,7 +35,7 @@ class NotFoundResponse extends Response {
 	 */
 	public function __construct(){
 		parent::__construct();
-		$this->addHeader('HTTP/1.1 404 Not Found');
+		$this->setStatus(self::STATUS_NOT_FOUND);
 	}
 
 }

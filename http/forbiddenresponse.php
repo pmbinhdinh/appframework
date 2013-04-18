@@ -31,11 +31,11 @@ namespace OCA\AppFramework\Http;
 class ForbiddenResponse extends Response {
 
 	/**
-	 * Creates a response that just returns 404 status
+	 * Creates a response that just returns 403 status
 	 */
-	public function __construct(){
+	public function __construct() {
 		parent::__construct();
-		$this->addHeader('HTTP/1.1 403 Forbidden');
+		$this->setStatus(self::STATUS_FORBIDDEN);
 	}
 
 }
