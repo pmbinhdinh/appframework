@@ -30,16 +30,10 @@ namespace OCA\AppFramework\Http;
  */
 class Response {
 
-	const STATUS_FOUND = 304;
-	const STATUS_NOT_MODIFIED = 304;
-	const STATUS_TEMPORARY_REDIRECT = 307;
-	const STATUS_FORBIDDEN = 403;
-	const STATUS_NOT_FOUND = 404;
-
 	/**
 	 * @var array
 	 */
-	private $headers;
+	private $headers = array();
 
 	/**
 	 * @var string
@@ -51,13 +45,16 @@ class Response {
 	 */
 	protected $request;
 
+
 	/**
-	 * @param Request $request Optional Request object required for methods querying server variables.
+	 * @var Http
 	 */
-	public function __construct($request = null) {
-		$this->headers = array();
-		$this->request = $request;
+	protected $protocol;
+
+	public function __construct(Http $protocol) {
+		$this->protocol;
 	}
+
 
 	/**
 	 * Adds a new header to the response that will be called before the render
@@ -71,15 +68,6 @@ class Response {
 
 
 	/**
-	 * By default renders no output
-	 * @return null
-	 */
-	public function render() {
-		return null;
-	}
-
-
-	/**
 	 * Returns the set headers
 	 * @return array the headers
 	 */
@@ -89,85 +77,13 @@ class Response {
 
 
 	/**
-	 * Cache for an unlimited timespan
+	 * By default renders no output
+	 * @return null
 	 */
-	public function cacheIndefinitely() {
-		$this->addHeader('Pragma', 'cache');
-		$this->addHeader('Cache-Control', 'cache');
+	public function render() {
+		return null;
 	}
 
-
-	/**
-	 * Shortcut for cacheFor
-	 */
-	public function disableCaching() {
-		$this->cacheFor(0);
-	}
-
-
-	/**
-	 * Enable response caching by sending correct HTTP headers
-	 *
-	 * @param int $cacheTime time to cache the response in seconds
-	 */
-	public function cacheFor($deltaSeconds) {
-
-		$this->addHeader('Pragma', 'public');
-
-		if($deltaSeconds > 0) {
-			$this->addHeader('Cache-Control', 'max-age=' . $deltaSeconds . ', must-revalidate');
-		} else {
-			$this->addHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0');
-		}
-
-	}
-
-
-	/**
-	 * Sets the Expire date of the content. If cache is set, this is ignored
-	 * @param DateTime $expiresAt the date and time when it expires
-	 */
-	public function expiresAt(\DateTime $expiresAt) {
-		$this->addHeader('Expires', $expiresAt->format(\DateTime::RFC2822));
-	}
-
-
-	/**
-	* Checks and set ETag header, when the request matches sends a
-	* 'not modified' response
-	* @param string $etag token to use for modification check
-	*/
-	public function setETagHeader($etag) {
-		$etag = '"' . $etag . '"';
-		if (isset($this->request->server['HTTP_IF_NONE_MATCH']) &&
-		    trim($this->request->server['HTTP_IF_NONE_MATCH']) === $etag) {
-			$this->setStatus(self::STATUS_NOT_MODIFIED);
-			return;
-		}
-		$this->addHeader('ETag', $etag);
-	}
-
-
-	/**
-	* Checks and set Last-Modified header, when the request matches sends a
-	* 'not modified' response
-	* @param int|DateTime $lastModified time when the reponse was last modified
-	*/
-	public function setLastModifiedHeader(\DateTime $lastModified) {
-		if (isset($this->request->server['HTTP_IF_MODIFIED_SINCE']) &&
-		    trim($this->request->server['HTTP_IF_MODIFIED_SINCE']) === $lastModified) {
-			$this->setStatus(self::STATUS_NOT_MODIFIED);
-			return;
-		}
-		$this->addHeader('Last-Modified', $lastModified->format(\DateTime::RFC2822));
-	}
-
-	/**
-	 * Get response status
-	 */
-	public function getStatus() {
-		return $this->status;
-	}
 
 	/**
 	* Set response status
@@ -175,34 +91,15 @@ class Response {
 	* @param int $status a HTTP status code, see also the STATUS constants
 	*/
 	public function setStatus($status) {
-		$protocol = (isset($this->request) && isset($this->request->server['SERVER_PROTOCOL']))
-			? $this->request->server['SERVER_PROTOCOL']
-			: 'HTTP/1.1';
-		switch($status) {
-			case self::STATUS_NOT_MODIFIED:
-				$status = $status . ' Not Modified';
-				break;
-			case self::STATUS_TEMPORARY_REDIRECT:
-				if ($protocol == 'HTTP/1.1') {
-					$status = $status . ' Temporary Redirect';
-					break;
-				} else {
-					$status = self::STATUS_FOUND;
-					// fallthrough
-				}
-			case self::STATUS_FOUND;
-				$status = $status . ' Found';
-				break;
-			case self::STATUS_NOT_FOUND;
-				$status = $status . ' Not Found';
-				break;
-			case self::STATUS_FORBIDDEN;
-				$status = $status . ' Forbidden';
-				break;
-			default:
-				return;
-		}
-		$this->status = $protocol.' '.$status;
+		$this->status = $protocol->getHttpStatusHeader($status);
+	}
+
+
+	/**
+	 * Get response status
+	 */
+	public function getStatus() {
+		return $this->status;
 	}
 
 }
