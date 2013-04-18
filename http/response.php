@@ -87,65 +87,50 @@ class Response {
 		return $this->headers;
 	}
 
-	/**
-	* Enable response caching by sending correct HTTP headers
-	*
-	* @param int|DateTime|null $cacheTime time to cache the response
-	*  >0		cache time in seconds
-	*  0 and <0	enable default browser caching
-	*  DateTime Cache the time between now and $cacheTime
-	*  null		cache indefinitly
-	*/
-	public function enableCaching($cacheTime = null) {
-		if ($cacheTime instanceof \DateTime) {
-			$now = new \DateTime('now');
-			$cacheTime = $cacheTime->format('U') - $now->format('U');
-		}
-		if (is_numeric($cacheTime)) {
-			$this->addHeader('Pragma', 'public');// enable caching in IE
-			if ($cacheTime > 0) {
-				$this->setExpiresHeader('PT' . $cacheTime . 'S');
-				$this->addHeader('Cache-Control', 'max-age=' . $cacheTime . ', must-revalidate');
-			}
-			else {
-				$this->setExpiresHeader(0);
-				$this->addHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0');
-			}
-		}
-		else {
-			$this->addHeader('Cache-Control', 'cache');
-			$this->addHeader('Pragma', 'cache');
-		}
-	}
 
 	/**
-	* Disable browser caching
-	*
-	* @see enableCaching with cacheTime = 0
-	*/
+	 * Cache for an unlimited timespan
+	 */
+	public function cacheIndefinitely() {
+		$this->addHeader('Pragma', 'cache');
+		$this->addHeader('Cache-Control', 'cache');
+	}
+
+
+	/**
+	 * Shortcut for cacheFor
+	 */
 	public function disableCaching() {
-		$this->enableCaching(0);
+		$this->cacheFor(0);
 	}
 
+
 	/**
-	* Set reponse expire time
-	*
-	* @param string|DateTime $expires date-time when the response expires
-	*  string for DateInterval from now
-	*  DateTime object when to expire response
-	*/
-	public function setExpiresHeader($expires) {
-		if (is_string($expires) && $expires[0] == 'P') {
-			$interval = $expires;
-			$expires = new \DateTime('now');
-			$expires->add(new \DateInterval($interval));
+	 * Enable response caching by sending correct HTTP headers
+	 *
+	 * @param int $cacheTime time to cache the response in seconds
+	 */
+	public function cacheFor($deltaSeconds) {
+
+		$this->addHeader('Pragma', 'public');
+
+		if($deltaSeconds > 0) {
+			$this->addHeader('Cache-Control', 'max-age=' . $deltaSeconds . ', must-revalidate');
+		} else {
+			$this->addHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0');
 		}
-		if ($expires instanceof \DateTime) {
-			$expires->setTimezone(new \DateTimeZone('GMT'));
-			$expires = $expires->format(\DateTime::RFC2822);
-		}
-		$this->addHeader('Expires', $expires);
+
 	}
+
+
+	/**
+	 * Sets the Expire date of the content. If cache is set, this is ignored
+	 * @param DateTime $expiresAt the date and time when it expires
+	 */
+	public function expiresAt(DateTime $expiresAt) {
+		$this->addHeader('Expires', $expiresAt->format(\DateTime::RFC2822));
+	}
+
 
 	/**
 	* Checks and set ETag header, when the request matches sends a
