@@ -38,8 +38,19 @@ class SimplePieAPIFactory {
 
 		return new \SimplePie_File($url, $timeout, $redirects, $headers,
 	                        $useragent, $force_fsockopen);
-
 	}
 
+
+	/**
+	 * Returns a new instance of a SimplePie_Core() object. This is needed
+	 * because the class relies on external dependencies which are not passed
+	 * in via the constructor and thus making it nearly impossible to unittest
+	 * code that uses this class
+	 * @return \SimplePie_Core instance
+	 */
+	public function getCore() {
+		return new \SimplePie_Core();
+	}
+	
 
 }
