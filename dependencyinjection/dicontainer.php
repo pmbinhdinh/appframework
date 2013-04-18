@@ -214,6 +214,10 @@ class DIContainer extends \Pimple {
 			return new FaviconFetcher($c['SimplePieAPIFactory']);
 		});
 
+		$this['TimeFactory'] = $this->share(function($c){
+			return new TimeFactory();
+		});
+
 
 	}
 
