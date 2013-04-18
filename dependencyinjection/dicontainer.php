@@ -87,7 +87,7 @@ class DIContainer extends \Pimple {
 
 		$this['Protocol'] = $this->share(function($c){
 			$factory = new HttpFactory();
-			return $factory->get($c['Request']->server('SERVER_PROTOCOL'));
+			return $factory->get($_SERVER);
 		});
 
 

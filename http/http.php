@@ -30,14 +30,14 @@ namespace OCA\AppFramework\Http;
 
 class HttpFactory {
 
-	public function get($version)
-		if($version === 'HTTP/1.0') {
-			return new Http10();
+	public function get($server)
+		if($server['SERVER_PROTOCOL'] === 'HTTP/1.0') {
+			return new Http10($server);
 		} else {
-			return new Http11();
+			return new Http11($server);
 		}
 	}
-	
+
 }
 
 abstract class Http {
@@ -47,6 +47,8 @@ abstract class Http {
 	const STATUS_FORBIDDEN = 403;
 	const STATUS_NOT_FOUND = 404;
 
+	private $server;
+
 	protected $headers = array(
 		self::STATUS_FOUND => self::STATUS_FOUND . ' Found',
 		self::STATUS_NOT_MODIFIED => self::STATUS_NOT_MODIFIED . 'Not Modified',
@@ -55,7 +57,20 @@ abstract class Http {
 		self::STATUS_NOT_FOUND => STATUS_NOT_FOUND . ' Forbidden',
 	)
 
-	public function getHttpStatusHeader($status) {
+	public function __construct($server) {
+		$this->server = $server;
+	}
+
+	public function getHttpStatusHeader($status, $ETag, $lastModified) {
+		if ((isset($this->server['HTTP_IF_NONE_MATCH']) &&
+		    trim($this->server['HTTP_IF_NONE_MATCH']) === $ETag) 
+		    ||
+			(isset($this->server['HTTP_IF_MODIFIED_SINCE']) &&
+		    trim($this->server['HTTP_IF_MODIFIED_SINCE']) === $lastModified)) {
+
+			return $this->headers[Http::STATUS_NOT_MODIFIED];
+		}
+		
 		return $this->headers[$status];
 	}
 }
@@ -64,7 +79,12 @@ abstract class Http {
 /**
  * Http 1.0 protocol class
  */
-class Http10 extends Http { }
+class Http10 extends Http { 
+
+	public function __construct($server) {
+		parent::__construct($server);
+	}
+}
 
 /**
  * Http 1.1 protocol class
@@ -72,6 +92,7 @@ class Http10 extends Http { }
 class Http11 extends Http {
 
 	public function __construct() {
+		parent::__construct($server);
 		$this->headers[self::STATUS_TEMPORARY_REDIRECT] =
 			self::STATUS_TEMPORARY_REDIRECT . ' Temporary Redirect';
 	}

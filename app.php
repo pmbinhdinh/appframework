@@ -74,10 +74,14 @@ class App {
 
 		// output headers and echo content
 		$status = $response->getStatus();
-		if($status) {
-			header($container['Protocol']->getHttpStatusHeader($status));
-		}
-		foreach($response->getHeaders() as $name => $value) {
+		$cache = $response->getCachePolicy();
+		// we should always have a status and since the status depends on the
+		// etag and lastmodified stuff we have to pass this in too
+		header($container['Protocol']->getHttpStatusHeader($status, 
+			$cache->getETag(), $cache->getLastModified()));
+
+		$headers = array_merge($response->getHeaders(), $cache->getHeaders);
+		foreach($headers as $name => $value) {
 			header($name . ': ' . $value);
 		}
 

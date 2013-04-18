@@ -45,11 +45,19 @@ class Response {
 	 */
 	protected $request;
 
+	/**
+	 * @var Cache
+	 */
+	protected $cache;
+
 
 	public function setCachePolicy(Cache $cache) {
-		foreach($cache->getHeaders as $key => $value) {
-			$this->addHeader($key, $value);
-		}
+		$this->cache = $cache;
+	}
+
+
+	public function getCachePolicy() {
+		return $this->cache;
 	}
 
 
