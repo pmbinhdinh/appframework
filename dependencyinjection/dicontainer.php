@@ -60,6 +60,9 @@ class DIContainer extends \Pimple {
 			return new API($c['AppName']);
 		});
 
+		/**
+		 * Http
+		 */
 		$this['Request'] = $this->share(function($c) {
 			$params = json_decode(file_get_contents('php://input'), true);
 			$params = is_array($params) ? $params: array();
@@ -80,6 +83,11 @@ class DIContainer extends \Pimple {
 					'urlParams' => $c['urlParams']
 				)
 			);
+		});
+
+		$this['Protocol'] = $this->share(function($c){
+			$factory = new HttpFactory();
+			return $factory->get($c['Request']->server('SERVER_PROTOCOL'));
 		});
 
 

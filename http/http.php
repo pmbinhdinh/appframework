@@ -28,6 +28,18 @@ namespace OCA\AppFramework\Http;
  * Class for Http Constants
  */
 
+class HttpFactory {
+
+	public function get($version)
+		if($version === 'HTTP/1.0') {
+			return new Http10();
+		} else {
+			return new Http11();
+		}
+	}
+	
+}
+
 abstract class Http {
 	const STATUS_FOUND = 304;
 	const STATUS_NOT_MODIFIED = 304;
