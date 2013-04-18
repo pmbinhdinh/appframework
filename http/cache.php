@@ -30,15 +30,9 @@ namespace OCA\AppFramework\Http;
  */
 class Cache {
 
-
-	private $request;
-	private $headers;
-
-	public function __construct(Request $request) {
-		$this->request = $request;
-		$this->headers = array();
-	}
-
+	private $headers = array();
+	private $ETag;
+	private $lastModified;
 
 	public function getHeaders() {
 		return $this->headers;
@@ -104,31 +98,30 @@ class Cache {
 	* 'not modified' response
 	* @param string $ETag token to use for modification check
 	*/
-	public function setETagHeader($ETag) {
-		$ETag = '"' . $ETag . '"';
-		if (isset($this->request->server['HTTP_IF_NONE_MATCH']) &&
-		    trim($this->request->server['HTTP_IF_NONE_MATCH']) === $ETag) {
-			$this->setStatus(Http::STATUS_NOT_MODIFIED);
-			return;
-		}
-		$this->addHeader('ETag', $ETag);
+	public function setETag($ETag) {
+		$this->ETag = $ETag;
+		$this->addHeader('ETag', '"' . $ETag . '"');
+	}
+
+
+	public function getETag() {
+		return $this->ETag;
 	}
 
 
 	/**
 	* Checks and set Last-Modified header, when the request matches sends a
 	* 'not modified' response
-	* @param int|DateTime $lastModified time when the reponse was last modified
+	* @param DateTime $lastModified time when the reponse was last modified
 	*/
 	public function setLastModifiedHeader(\DateTime $lastModified) {
-		$lastModified->format(\DateTime::RFC2822)
+		$this->lastModified = $lastModified->format(\DateTime::RFC2822);
+		$this->addHeader('Last-Modified', $this->lastModified);
+	}
 
-		if (isset($this->request->server['HTTP_IF_MODIFIED_SINCE']) &&
-		    trim($this->request->server['HTTP_IF_MODIFIED_SINCE']) === $lastModified) {
-			$this->setStatus(Http::STATUS_NOT_MODIFIED);
-			return;
-		}
-		$this->addHeader('Last-Modified', $lastModified);
+
+	public function getLastModified() {
+		return $this->lastModified;
 	}
 
 
