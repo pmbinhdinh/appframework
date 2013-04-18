@@ -56,6 +56,13 @@ class Response {
 	}
 
 
+	public function setCachePolicy(Cache $cache) {
+		foreach($cache->getHeaders as $key => $value) {
+			$this->addHeader($key, $value);
+		}
+	}
+
+
 	/**
 	 * Adds a new header to the response that will be called before the render
 	 * function
