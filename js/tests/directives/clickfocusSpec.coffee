@@ -25,7 +25,7 @@ describe 'ocClickFocus', ->
 	beforeEach module 'OC'
 
 
-	beforeEach inject ($rootScope, $compile) =>
+	beforeEach inject ($rootScope, $compile, @$timeout) =>
 		@$rootScope = $rootScope
 		@$compile = $compile
 		@host = $('<div id="host"></div>')
@@ -49,6 +49,24 @@ describe 'ocClickFocus', ->
 		focused = document.activeElement == $(@host).find('#shouldfocus').get(0)
 		expect(focused).toBe(true)
 
+
+	it 'should execute the function when a timeout is being used', =>
+		elm = '<a 	href="#" ' +
+					'oc-click-focus="{selector: \'#shouldfocus\', ' +
+					'timeout: 3000}" ' +
+					'id="clicker"' +
+					'onclick="this.href=\'hi\'">test</a>' +
+			'<div><input id="shouldfocus" type="text" /></div>'
+		@elm = angular.element(elm)
+		scope = @$rootScope
+		@$compile(@elm)(scope)
+		scope.$digest()
+		@host.append(@elm)
+
+		$(@host).find('#clicker').trigger 'click'
+		@$timeout.flush()
+		focused = document.activeElement == $(@host).find('#shouldfocus').get(0)
+		expect(focused).toBe(true)
 
 
 	afterEach =>
