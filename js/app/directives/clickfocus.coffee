@@ -23,14 +23,22 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 # Used to focus an element when you click on the element that this directive is
 # bound to
 # The selector attribute needs to defined, this element will be focused
-# lost
-
-angular.module('OC').directive 'ocClickFocus', ->
+# If the timeout attribute is defined, it will focus the element after
+# after the passed miliseconds
+# Examlpe: <div oc-click-focus="{selector: '#app-content', timeout: 3000}">
+angular.module('OC').directive 'ocClickFocus', ['$timeout', ($timeout) ->
 
 	return (scope, elm, attr) ->
 		options = scope.$eval(attr.ocClickFocus)
 
 		if angular.isDefined(options) and angular.isDefined(options.selector)
 			elm.click ->
-				$(options.selector).focus()
+				if angular.isDefined(options.timeout)
+					$timeout ->
+						$(options.selector).focus()
+					, options.timeout
+				else
+					$(options.selector).focus()
 
+
+]

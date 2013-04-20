@@ -121,17 +121,25 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 
 (function() {
 
-  angular.module('OC').directive('ocClickFocus', function() {
-    return function(scope, elm, attr) {
-      var options;
-      options = scope.$eval(attr.ocClickFocus);
-      if (angular.isDefined(options) && angular.isDefined(options.selector)) {
-        return elm.click(function() {
-          return $(options.selector).focus();
-        });
-      }
-    };
-  });
+  angular.module('OC').directive('ocClickFocus', [
+    '$timeout', function($timeout) {
+      return function(scope, elm, attr) {
+        var options;
+        options = scope.$eval(attr.ocClickFocus);
+        if (angular.isDefined(options) && angular.isDefined(options.selector)) {
+          return elm.click(function() {
+            if (angular.isDefined(options.timeout)) {
+              return $timeout(function() {
+                return $(options.selector).focus();
+              }, options.timeout);
+            } else {
+              return $(options.selector).focus();
+            }
+          });
+        }
+      };
+    }
+  ]);
 
 }).call(this);
 
