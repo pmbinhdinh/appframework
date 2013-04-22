@@ -560,7 +560,7 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
       };
 
       Model.prototype.removeById = function(id, clearCache) {
-        var counter, entry, _i, _len, _ref, _results;
+        var counter, data, entry, _i, _len, _ref;
         if (clearCache == null) {
           clearCache = true;
         }
@@ -569,21 +569,18 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
         */
 
         _ref = this._data;
-        _results = [];
         for (counter = _i = 0, _len = _ref.length; _i < _len; counter = ++_i) {
           entry = _ref[counter];
           if (entry.id === id) {
             this._data.splice(counter, 1);
+            data = this._dataMap[id];
             delete this._dataMap[id];
             if (clearCache) {
               this._invalidateCache();
             }
-            break;
-          } else {
-            _results.push(void 0);
+            return data;
           }
         }
-        return _results;
       };
 
       Model.prototype.clear = function() {

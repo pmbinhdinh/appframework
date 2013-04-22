@@ -88,10 +88,11 @@ angular.module('OC').factory '_Model', ->
 			for entry, counter in @_data
 				if entry.id == id
 					@_data.splice(counter, 1)
+					data = @_dataMap[id]
 					delete @_dataMap[id]
 					if clearCache
 						@_invalidateCache()
-					break
+					return data
 
 
 		clear: ->

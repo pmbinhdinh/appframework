@@ -93,9 +93,10 @@ describe '_Model', ->
 
 
 	it 'should remove element when entry is removed', =>
-		@model.removeById(1)
+		removed = @model.removeById(1)
 
 		expect(@model.getById(1)).toBe(undefined)
+		expect(removed.name).toBe('john')
 
 
 	it 'should call add when handle is called', =>
