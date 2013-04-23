@@ -40,8 +40,6 @@ abstract class DownloadResponse extends Response {
 	 * @param string $contentType the mimetype that the downloaded file should have
 	 */
 	public function __construct($filename, $contentType) {
-		parent::__construct();
-
 		$this->filename = $filename;
 		$this->contentType = $contentType;
 

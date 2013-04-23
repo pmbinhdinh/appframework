@@ -35,7 +35,6 @@ class JSONResponse extends Response {
 
 
 	public function __construct() {
-		parent::__construct();
 		$this->data = array();
 		$this->error = false;
 		$this->data['status'] = 'success';

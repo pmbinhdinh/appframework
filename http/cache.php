@@ -78,7 +78,7 @@ class Cache {
 		if($deltaSeconds > 0) {
 			$this->addHeader('Cache-Control', 'max-age=' . $deltaSeconds . ', must-revalidate');
 		} else {
-			$this->addHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0');
+			$this->addHeader('Cache-Control', 'must-revalidate');
 		}
 
 	}

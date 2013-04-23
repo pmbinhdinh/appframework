@@ -3,8 +3,8 @@
 /**
  * ownCloud - App Framework
  *
- * @author Qingping Hou
- * @copyright 2012 Qingping Hou qingping.hou@gmail.com
+ * @author Bernhard Posselt, Thomas Tanghus, Bart Visscher
+ * @copyright 2012 Bernhard Posselt nukeawhale@gmail.com
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
@@ -24,17 +24,29 @@
 
 namespace OCA\AppFramework\Http;
 
+use \OCA\AppFramework\Controller\Controller;
+use \OCA\AppFramework\MiddlewareDispatcher;
+
 
 /**
- * Pure hader response, Just return 403 status to the browser
+ * Class to dispatch the request to the middleware disptacher
  */
-class ForbiddenResponse extends Response {
+class Dispatcher {
+
+	private $middlewareDispatcher;
+
+	public function __construct(MiddlewareDispatcher $middlewareDispatcher) {
+		$this->middlewareDispatcher = $middlewareDispatcher;
+	}
+
 
 	/**
-	 * Creates a response that just returns 403 status
+	 * Handles a request and calls the dispatcher on the controller
 	 */
-	public function __construct() {
-		$this->setStatus(Http::STATUS_FORBIDDEN);
+	public function dispatch(Controller $controller, $methodName) {
+		$response = array()
+
+		return $resonse;
 	}
 
 
