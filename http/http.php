@@ -24,6 +24,8 @@
 
 namespace OCA\AppFramework\Http;
 
+use \OCA\AppFramework\Http\Cache\Cache;
+
 
 class Http {
 

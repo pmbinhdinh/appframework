@@ -3,7 +3,7 @@
 /**
  * ownCloud - App Framework
  *
- * @author Bernhard Posselt
+ * @author Bernhard Posselt, Thomas Tanghus, Bart Visscher
  * @copyright 2012 Bernhard Posselt nukeawhale@gmail.com
  *
  * This library is free software; you can redistribute it and/or
@@ -22,33 +22,27 @@
  */
 
 
-namespace OCA\AppFramework\Http;
+namespace OCA\AppFramework\Http\Cache;
+
+class DeltaCache extends Cache {
 
 
-require_once(__DIR__ . "/../classloader.php");
+	/**
+	 * Cache for a certain amount of seconds
+	 * @param int $cacheSeconds time to cache the response in seconds
+	 * @param DateTime $lastModified time when the reponse was last modified
+	 * @param string $ETag token to use for modification check
+	 */
+	public function __construct($cacheSeconds, $ETag=null, 
+	                            \DateTime $lastModified=null) {
+		parent::__construct($ETag, $lastModified);		
 
-
-
-class RedirectResponseTest extends \PHPUnit_Framework_TestCase {
-
-
-	protected $response;
-
-	protected function setUp(){
-		$this->response = new RedirectResponse('/url');
-	}
-
-
-	public function testHeaders() {
-		$headers = $this->response->getHeaders();
-		$this->assertEquals('/url', $headers['Location']);
-		$this->assertEquals(Http::STATUS_TEMPORARY_REDIRECT, 
-			$this->response->getStatus());
-	}
-
-
-	public function testGetRedirectUrl(){
-		$this->assertEquals('/url', $this->response->getRedirectUrl());
+		if($cacheSeconds > 0) {
+			$this->addHeader('Cache-Control', 'max-age=' . $cacheSeconds . ', must-revalidate');
+		} else {
+			$this->addHeader('Cache-Control', 'must-revalidate');
+		}
+		
 	}
 
 

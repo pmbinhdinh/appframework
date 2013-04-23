@@ -3,8 +3,8 @@
 /**
  * ownCloud - App Framework
  *
- * @author Qingping Hou
- * @copyright 2012 Qingping Hou qingping.hou@gmail.com
+ * @author Bernhard Posselt, Thomas Tanghus, Bart Visscher
+ * @copyright 2012 Bernhard Posselt nukeawhale@gmail.com
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
@@ -22,21 +22,22 @@
  */
 
 
-namespace OCA\AppFramework\Http;
+namespace OCA\AppFramework\Http\Cache;
+
+class ExpiresAtCache extends Cache {
 
 
-require_once(__DIR__ . "/../classloader.php");
-
-
-class ForbidenResponseTest extends \PHPUnit_Framework_TestCase {
-
-	protected function setUp() {
-		$this->response = new ForbiddenResponse();
+	/**
+	 * Cache until a certain date
+	 * @param DateTime $expiresAt the date and time when it expires
+	 * @param DateTime $lastModified time when the reponse was last modified
+	 * @param string $ETag token to use for modification check
+	 */
+	public function __construct(\DateTime $expiresAt, $ETag=null, 
+	                            \DateTime $lastModified=null) {
+		parent::__construct($ETag, $lastModified);
+		$this->addHeader('Expires', $expiresAt->format(\DateTime::RFC2822));
 	}
 
-
-	public function testReturnStatus() {
-		$this->assertEquals(Http::STATUS_FORBIDDEN, $this->response->getStatus());
-	}
 
 }

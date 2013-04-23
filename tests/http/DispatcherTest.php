@@ -68,7 +68,7 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase {
 			$this->http, $this->middlewareDispatcher);
 		
 		$this->cache = $this->response = $this->getMockBuilder(
-			'\OCA\AppFramework\Http\Cache')
+			'\OCA\AppFramework\Http\Cache\Cache')
 			->disableOriginalConstructor()
 			->getMock();
 		$this->response = $this->getMockBuilder(

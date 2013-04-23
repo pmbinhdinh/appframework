@@ -22,43 +22,42 @@
  */
 
 
-namespace OCA\AppFramework\Http;
+namespace OCA\AppFramework\Http\Cache;
 
-use \OCA\AppFramework\Http\Cache\Cache;
 
 /**
- * Baseclass for responses. Also used to just send headers
+ * Baseclass for different caches
  */
-class Response {
+abstract class Cache {
 
-	/**
-	 * @var array
-	 */
 	private $headers = array();
+	private $ETag;
+	private $lastModified;
 
 	/**
-	 * @var string
+	 * @param DateTime $lastModified time when the reponse was last modified
+	 * @param string $ETag token to use for modification check
 	 */
-	private $status = Http::STATUS_OK;
+	public function __construct($ETag=null, \DateTime $lastModified=null) {
+		$this->ETag = $ETag;
+		$this->lastModified = $lastModified;
+		
+		if(!is_null($ETag)) {
+			$this->addHeader('ETag', '"' . $ETag . '"');
+		}
 
-	/**
-	 * @var Request;
-	 */
-	protected $request;
-
-	/**
-	 * @var Cache
-	 */
-	protected $cache = null;
-
-
-	public function setCache(Cache $cache) {
-		$this->cache = $cache;
+		if(!is_null($lastModified)) {
+			$this->lastModified = $lastModified->format(\DateTime::RFC2822);
+			$this->addHeader('Last-Modified', $this->lastModified);
+		}
 	}
 
 
-	public function getCache() {
-		return $this->cache;
+	/**
+	 * @return array the headers array
+	 */
+	public function getHeaders() {
+		return $this->headers;
 	}
 
 
@@ -68,47 +67,24 @@ class Response {
 	 * @param string $name The name of the HTTP header
 	 * @param string $value The value
 	 */
-	public function addHeader($name, $value) {
+	protected function addHeader($name, $value) {
 		$this->headers[$name] = $value;
 	}
 
 
 	/**
-	 * Returns the set headers
-	 * @return array the headers
+	 * @return string the etag
 	 */
-	public function getHeaders() {
-		if($this->cache) {
-			return array_merge($this->headers, $this->cache->getHeaders());
-		} else {
-			return $this->headers;
-		}
+	public function getETag() {
+		return $this->ETag;
 	}
 
 
 	/**
-	 * By default renders no output
-	 * @return null
+	 * @return string RFC2822 formatted last modified date
 	 */
-	public function render() {
-		return null;
-	}
-
-
-	/**
-	* Set response status
-	* @param int $status a HTTP status code, see also the STATUS constants
-	*/
-	public function setStatus($status) {
-		$this->status = $status;
-	}
-
-
-	/**
-	 * Get response status
-	 */
-	public function getStatus() {
-		return $this->status;
+	public function getLastModified() {
+		return $this->lastModified;
 	}
 
 
