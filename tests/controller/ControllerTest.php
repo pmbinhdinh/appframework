@@ -175,15 +175,4 @@ class ControllerTest extends \PHPUnit_Framework_TestCase {
 	}
 
 
-	/** Set methods currently disabled.
-	 * public function testSetCookieVariable(){
-		$this->controller->session('test', 'problem');
-		$this->assertEquals('problem', $this->controller->session('test'));
-	}
-
-
-	public function testGetCookieVariable(){
-		$this->assertEquals('warm', $this->controller->cookie('cooken'));
-	}*/
-
 }

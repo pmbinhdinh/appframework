@@ -22,34 +22,46 @@
  */
 
 
-namespace OCA\AppFramework\Http;
+namespace OCA\AppFramework\Http\Cache;
 
 
-require_once(__DIR__ . "/../classloader.php");
+require_once(__DIR__ . "/../../classloader.php");
 
 
 
-class RedirectResponseTest extends \PHPUnit_Framework_TestCase {
+class DeltaCacheTest extends \PHPUnit_Framework_TestCase {
 
-
-	protected $response;
+	private $cache;
+	private $time;
+	private $etag;
+	private $seconds;
 
 	protected function setUp(){
-		$this->response = new RedirectResponse('/url');
+		$this->time = new \DateTime(null, new \DateTimeZone('GMT'));
+		$this->time->setTimestamp(0);
+		$this->etag = 'hi';
+		$this->seconds = 33;
+
+		$this->cache = new DeltaCache($this->seconds, 
+			$this->etag, $this->time);
 	}
 
 
-	public function testHeaders() {
-		$headers = $this->response->getHeaders();
-		$this->assertEquals('/url', $headers['Location']);
-		$this->assertEquals(Http::STATUS_TEMPORARY_REDIRECT, 
-			$this->response->getStatus());
+	public function testCacheSecondsZero() {
+		$this->cache = new DeltaCache(0, 
+			$this->etag, $this->time);
+		
+		$headers = $this->cache->getHeaders();
+		$this->assertEquals('must-revalidate', $headers['Cache-Control']);	
 	}
 
 
-	public function testGetRedirectUrl(){
-		$this->assertEquals('/url', $this->response->getRedirectUrl());
+	public function testCacheSeconds() {
+		
+		$headers = $this->cache->getHeaders();
+		$this->assertEquals('max-age=33, must-revalidate', 
+			$headers['Cache-Control']);	
 	}
 
-
+	
 }

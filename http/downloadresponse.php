@@ -39,14 +39,12 @@ abstract class DownloadResponse extends Response {
 	 * @param string $filename the name that the downloaded file should have
 	 * @param string $contentType the mimetype that the downloaded file should have
 	 */
-	public function __construct($filename, $contentType){
-		parent::__construct();
-
+	public function __construct($filename, $contentType) {
 		$this->filename = $filename;
 		$this->contentType = $contentType;
 
-		$this->addHeader('Content-Disposition: attachment; filename="' . $filename . '"');
-		$this->addHeader('Content-Type: ' . $contentType);
+		$this->addHeader('Content-Disposition', 'attachment; filename="' . $filename . '"');
+		$this->addHeader('Content-Type', $contentType);
 	}
 
 

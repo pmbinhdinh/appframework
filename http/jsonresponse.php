@@ -30,17 +30,16 @@ namespace OCA\AppFramework\Http;
  */
 class JSONResponse extends Response {
 
-	private $name;
+	protected $error;
 	protected $data;
 
 
 	public function __construct() {
-		parent::__construct();
 		$this->data = array();
 		$this->error = false;
 		$this->data['status'] = 'success';
-		$this->addHeader('X-Content-Type-Options: nosniff');
-		$this->addHeader('Content-type: application/json');
+		$this->addHeader('X-Content-Type-Options', 'nosniff');
+		$this->addHeader('Content-type', 'application/json');
 	}
 
 

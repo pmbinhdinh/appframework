@@ -36,17 +36,17 @@ class RedirectResponse extends Response {
 	 * Creates a response that redirects to a url
 	 * @param string $redirectURL the url to redirect to
 	 */
-	public function __construct($redirectURL){
-		parent::__construct();
+	public function __construct($redirectURL) {
 		$this->redirectURL = $redirectURL;
-		$this->addHeader('Location: ' . $redirectURL);
+		$this->setStatus(Http::STATUS_TEMPORARY_REDIRECT);
+		$this->addHeader('Location', $redirectURL);
 	}
 
 
 	/**
 	 * @return string the url to redirect
 	 */
-	public function getRedirectURL(){
+	public function getRedirectURL() {
 		return $this->redirectURL;
 	}
 

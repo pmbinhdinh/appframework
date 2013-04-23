@@ -45,7 +45,6 @@ class TemplateResponse extends Response {
 	 *                        a different app
 	 */
 	public function __construct(API $api, $templateName, $appName=null) {
-		parent::__construct();
 		$this->templateName = $templateName;
 		$this->appName = $appName;
 		$this->api = $api;

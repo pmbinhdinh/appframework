@@ -3,7 +3,7 @@
 /**
  * ownCloud - App Framework
  *
- * @author Bernhard Posselt
+ * @author Bernhard Posselt, Thomas Tanghus, Bart Visscher
  * @copyright 2012 Bernhard Posselt nukeawhale@gmail.com
  *
  * This library is free software; you can redistribute it and/or
@@ -22,34 +22,21 @@
  */
 
 
-namespace OCA\AppFramework\Http;
+namespace OCA\AppFramework\Http\Cache;
 
-
-/**
- * Just outputs text to the browser
- */
-class TextResponse extends Response {
-
-	private $content;
-
-	/**
-	 * Creates a response that just outputs text
-	 * @param string $content the content that should be written into the file
-	 * @param string $contentType the mimetype. text/ is added automatically so
-	 * only plain or html can be added to get text/plain or text/html
-	 */
-	public function __construct($content, $contentType='plain'){
-		$this->content = $content;
-		$this->addHeader('Content-type', 'text/' . $contentType);
-	}
+class ExpireAtCache extends Cache {
 
 
 	/**
-	 * Simply sets the headers and returns the file contents
-	 * @return string the file contents
+	 * Cache until a certain date
+	 * @param DateTime $expiresAt the date and time when it expires
+	 * @param DateTime $lastModified time when the reponse was last modified
+	 * @param string $ETag token to use for modification check
 	 */
-	public function render(){
-		return $this->content;
+	public function __construct(\DateTime $expiresAt, $ETag=null, 
+	                            \DateTime $lastModified=null) {
+		parent::__construct($ETag, $lastModified);
+		$this->addHeader('Expires', $expiresAt->format(\DateTime::RFC2822));
 	}
 
 

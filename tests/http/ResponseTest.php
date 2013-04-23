@@ -28,6 +28,7 @@ namespace OCA\AppFramework\Http;
 require_once(__DIR__ . "/../classloader.php");
 
 
+use \OCA\AppFramework\Http\Cache\DeltaCache;
 
 class ResponseTest extends \PHPUnit_Framework_TestCase {
 
@@ -40,14 +41,43 @@ class ResponseTest extends \PHPUnit_Framework_TestCase {
 
 
 	public function testAddHeader(){
-		$this->childResponse->addHeader('test');
+		$this->childResponse->addHeader('hello', 'world');
 		$headers = $this->childResponse->getHeaders();
-		$this->assertEquals('test', $headers[0]);
+		$this->assertEquals('world', $headers['hello']);
 	}
 
 
 	public function testRenderReturnNullByDefault(){
 		$this->assertEquals(null, $this->childResponse->render());
+	}
+
+
+	public function testSettingCacheMergesHeaders() {
+		$cacheTime = '3000';
+		$cache = new DeltaCache($cacheTime);
+		$this->childResponse->setCache($cache);
+		$headers = $this->childResponse->getHeaders();
+
+		$this->assertEquals('max-age=' . $cacheTime . ', must-revalidate', 
+			$headers['Cache-Control']);
+	}
+
+
+	public function testGetCache() {
+		$cache = new DeltaCache(1);
+		$this->childResponse->setCache($cache);
+
+		$this->assertEquals($this->childResponse->getCache(), $cache);
+	}
+
+
+	public function testGetStatus() {
+		$default = $this->childResponse->getStatus();
+
+		$this->childResponse->setStatus(Http::STATUS_NOT_FOUND);
+
+		$this->assertEquals(Http::STATUS_OK, $default);
+		$this->assertEquals(Http::STATUS_NOT_FOUND, $this->childResponse->getStatus());
 	}
 
 

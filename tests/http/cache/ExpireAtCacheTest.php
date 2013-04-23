@@ -22,35 +22,38 @@
  */
 
 
-namespace OCA\AppFramework\Http;
+namespace OCA\AppFramework\Http\Cache;
 
 
-/**
- * Just outputs text to the browser
- */
-class TextResponse extends Response {
+require_once(__DIR__ . "/../../classloader.php");
 
-	private $content;
 
-	/**
-	 * Creates a response that just outputs text
-	 * @param string $content the content that should be written into the file
-	 * @param string $contentType the mimetype. text/ is added automatically so
-	 * only plain or html can be added to get text/plain or text/html
-	 */
-	public function __construct($content, $contentType='plain'){
-		$this->content = $content;
-		$this->addHeader('Content-type', 'text/' . $contentType);
+
+class ExpireAtCacheTest extends \PHPUnit_Framework_TestCase {
+
+	private $cache;
+	private $time;
+	private $etag;
+	private $expireAt;
+
+	protected function setUp(){
+		$this->time = new \DateTime(null, new \DateTimeZone('GMT'));
+		$this->time->setTimestamp(0);
+		$this->etag = 'hi';
+		$this->expireAt = new \DateTime(null, new \DateTimeZone('GMT'));
+		$this->expireAt->setTimestamp(12);
+
+		$this->cache = new ExpireAtCache($this->expireAt, 
+			$this->etag, $this->time);
 	}
 
 
-	/**
-	 * Simply sets the headers and returns the file contents
-	 * @return string the file contents
-	 */
-	public function render(){
-		return $this->content;
+	public function testExpiresAtCache() {
+		
+		$headers = $this->cache->getHeaders();
+		$this->assertEquals('Thu, 01 Jan 1970 00:00:12 +0000', 
+			$headers['Expires']);	
 	}
 
-
+	
 }

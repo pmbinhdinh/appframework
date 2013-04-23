@@ -59,11 +59,12 @@ class TwigMiddlewareTest extends \PHPUnit_Framework_TestCase {
 
 	public function testAfterControllerHeadersAreTransferred(){
 		$tpl = new TemplateResponse($this->api, 'a');
-		$tpl->addHeader('john');
-		$tpl->addHeader('tom');
+		$tpl->addHeader('john', 'doe');
+		$tpl->addHeader('tom', 'dick & harry');
 		$response = $this->middleware->afterController('a', 'b', $tpl);
-		$this->assertContains('john', $response->getHeaders());
-		$this->assertContains('tom', $response->getHeaders());
+		$headers = $response->getHeaders();
+		$this->assertEquals('doe', $headers['john']);
+		$this->assertEquals('dick & harry', $headers['tom']);
 	}
 
 

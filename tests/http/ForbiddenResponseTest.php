@@ -36,8 +36,7 @@ class ForbidenResponseTest extends \PHPUnit_Framework_TestCase {
 
 
 	public function testReturnStatus() {
-		$this->assertContains('HTTP/1.1 403 Forbidden',
-							$this->response->getHeaders());
+		$this->assertEquals(Http::STATUS_FORBIDDEN, $this->response->getStatus());
 	}
 
 }
