@@ -163,14 +163,27 @@ class Http {
 	}
 
 
-	public function getHeader($status, $ETag, $lastModified) {
+	/**
+	 * Gets the correct header
+	 * @param Http::CONSTANT $status the constant from the Http class
+	 * @param string $ETag the etag, defaults to null
+	 * @param DateTime $lastModified the GMT time when it was last modified
+	 */
+	public function getHeader($status, $ETag=null, \DateTime $lastModified=null) {
 		
 		// if etag or lastmodified have not changed, return a not modified
-		if ((isset($this->server['HTTP_IF_NONE_MATCH']) &&
-			trim($this->server['HTTP_IF_NONE_MATCH']) === $ETag) 
+		if ((
+			!is_null($ETag)
+			&& isset($this->server['HTTP_IF_NONE_MATCH'])
+			&& trim($this->server['HTTP_IF_NONE_MATCH']) === $ETag) 
+
 			||
-			(isset($this->server['HTTP_IF_MODIFIED_SINCE']) &&
-			trim($this->server['HTTP_IF_MODIFIED_SINCE']) === $lastModified)) {
+
+			(
+			!is_null($lastModified)
+			&& isset($this->server['HTTP_IF_MODIFIED_SINCE'])
+			&& trim($this->server['HTTP_IF_MODIFIED_SINCE']) === 
+				$lastModified->format(\DateTime::RFC2822))) {
 
 			$status = $this->headers[self::STATUS_NOT_MODIFIED];
 		}
