@@ -3,7 +3,7 @@
 /**
  * ownCloud - App Framework
  *
- * @author Bernhard Posselt, Thomas Tanghus, Bart Visscher
+ * @author Bernhard Posselt
  * @copyright 2012 Bernhard Posselt nukeawhale@gmail.com
  *
  * This library is free software; you can redistribute it and/or
@@ -22,22 +22,19 @@
  */
 
 
-namespace OCA\AppFramework\Http\Cache;
-
-class ExpiresAtCache extends Cache {
+namespace OCA\AppFramework\Http;
 
 
-	/**
-	 * Cache until a certain date
-	 * @param DateTime $expiresAt the date and time when it expires
-	 * @param DateTime $lastModified time when the reponse was last modified
-	 * @param string $ETag token to use for modification check
-	 */
-	public function __construct(\DateTime $expiresAt, $ETag=null, 
-	                            \DateTime $lastModified=null) {
-		parent::__construct($ETag, $lastModified);
-		$this->addHeader('Expires', $expiresAt->format(\DateTime::RFC2822));
+require_once(__DIR__ . "/../classloader.php");
+
+
+
+class HttpTest extends \PHPUnit_Framework_TestCase {
+
+	private $cache;
+
+	protected function setUp(){
+		//$this->cache = new ExpireAtCache();
 	}
-
 
 }

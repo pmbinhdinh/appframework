@@ -24,6 +24,7 @@
 
 namespace OCA\AppFramework\DependencyInjection;
 
+use OCA\AppFramework\Http\Http;
 use OCA\AppFramework\Http\Request;
 use OCA\AppFramework\Http\Dispatcher;
 use OCA\AppFramework\Core\API;
@@ -87,10 +88,10 @@ class DIContainer extends \Pimple {
 		});
 
 		$this['Protocol'] = $this->share(function($c){
-			if(isset($SERVER['SERVER_PROTOCOL'])) {
-				return new Http($SERVER, $SERVER['SERVER_PROTOCOL']);
+			if(isset($_SERVER['SERVER_PROTOCOL'])) {
+				return new Http($_SERVER, $_SERVER['SERVER_PROTOCOL']);
 			} else {
-				return new Http($SERVER);
+				return new Http($_SERVER);
 			}
 		});
 
