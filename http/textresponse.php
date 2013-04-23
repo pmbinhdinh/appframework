@@ -39,7 +39,6 @@ class TextResponse extends Response {
 	 * only plain or html can be added to get text/plain or text/html
 	 */
 	public function __construct($content, $contentType='plain'){
-		parent::__construct();
 		$this->content = $content;
 		$this->addHeader('Content-type', 'text/' . $contentType);
 	}

@@ -42,56 +42,28 @@ class App {
 	 * @param array $urlParams an array with variables extracted from the routes
 	 * @param Pimple $container an instance of a pimple container.
 	 */
-	public static function main($controllerName, $methodName, array $urlParams, \Pimple $container){
+	public static function main($controllerName, $methodName, array $urlParams, 
+	                            \Pimple $container){
 
 		$container['urlParams'] = $urlParams;
 		$controller = $container[$controllerName];
 
 		// initialize the dispatcher and run all the middleware before the controller
-		$middlewareDispatcher = $container['MiddlewareDispatcher'];
+		$dispatcher = $container['Dispatcher'];
 
-		// create response and run middleware that receives the response
-		// if an exception appears, the middleware is checked to handle the exception
-		// and to create a response. If no response is created, it is assumed that
-		// theres no middleware who can handle it and the error is thrown again
-		try {
-			$middlewareDispatcher->beforeController($controller, $methodName);
-			$response = $controller->$methodName();
-		} catch(\Exception $exception){
-			$response = $middlewareDispatcher->afterException($controller, $methodName, $exception);
-			if($response === null){
-				throw $exception;
-			}
-		}
-
-		// this can be used to modify or exchange a response object
-		$response = $middlewareDispatcher->afterController($controller, $methodName, $response);
-
-		// get the output which should be printed and run the after output middleware
-		// to modify the response
-		$output = $response->render();
-		$output = $middlewareDispatcher->beforeOutput($controller, $methodName, $output);
-
-		// output headers and echo content
-		$status = $response->getStatus();
-		$cache = $response->getCachePolicy();
-		// we should always have a status and since the status depends on the
-		// etag and lastmodified stuff we have to pass this in too
-		header($container['Protocol']->getHttpStatusHeader($status, 
-			$cache->getETag(), $cache->getLastModified()));
-
-		if($cache) {
-			$headers = array_merge($response->getHeaders(), $cache->getHeaders() );	
-		} else {
-			$headers = $response->getHeaders();
-		}
+		list($httpHeaders, $responseHeaders, $output) = 
+			$dispatcher->dispatch($controller, $methodName);
 		
-		foreach($headers as $name => $value) {
+		if(!is_null($httpHeaders)) {
+			header($httpHeaders);
+		}
+
+		foreach($responseHeaders as $name => $value) {
 			header($name . ': ' . $value);
 		}
 
-		if($output !== null){
-			echo $output;
+		if(!is_null($output)) {
+			print($output);
 		}
 
 	}

@@ -38,7 +38,7 @@ class Response {
 	/**
 	 * @var string
 	 */
-	private $status;
+	private $status = Http::STATUS_OK;
 
 	/**
 	 * @var Request;
@@ -48,15 +48,15 @@ class Response {
 	/**
 	 * @var Cache
 	 */
-	protected $cache;
+	protected $cache = null;
 
 
-	public function setCachePolicy(Cache $cache) {
+	public function setCache(Cache $cache) {
 		$this->cache = $cache;
 	}
 
 
-	public function getCachePolicy() {
+	public function getCache() {
 		return $this->cache;
 	}
 

@@ -25,7 +25,7 @@
 namespace OCA\AppFramework\Http;
 
 use \OCA\AppFramework\Controller\Controller;
-use \OCA\AppFramework\MiddlewareDispatcher;
+use \OCA\AppFramework\Middleware\MiddlewareDispatcher;
 
 
 /**
@@ -34,8 +34,11 @@ use \OCA\AppFramework\MiddlewareDispatcher;
 class Dispatcher {
 
 	private $middlewareDispatcher;
+	private $protocol;
 
-	public function __construct(MiddlewareDispatcher $middlewareDispatcher) {
+	public function __construct(Http $protocol,
+	                            MiddlewareDispatcher $middlewareDispatcher) {
+		$this->protocol = $protocol;
 		$this->middlewareDispatcher = $middlewareDispatcher;
 	}
 
@@ -44,9 +47,43 @@ class Dispatcher {
 	 * Handles a request and calls the dispatcher on the controller
 	 */
 	public function dispatch(Controller $controller, $methodName) {
-		$response = array()
+		$return = array(null, array(), null);
 
-		return $resonse;
+		// create response and run middleware that receives the response
+		// if an exception appears, the middleware is checked to handle the
+		// exception and to create a response. If no response is created, it is
+		// assumed that theres no middleware who can handle it and the error is 
+		// thrown again
+		try {
+
+			$this->middlewareDispatcher->beforeController($controller, 
+				$methodName);
+			$response = $controller->$methodName();
+
+		} catch(\Exception $exception){
+
+			$response = $this->middlewareDispatcher->afterException(
+				$controller, $methodName, $exception);
+
+			if($response === null){
+				throw $exception;
+			}
+		}
+
+		$response = $this->middlewareDispatcher->afterController(
+			$controller, $methodName, $response);
+
+		// get the output which should be printed and run the after output
+		// middleware to modify the response
+		$output = $response->render();
+		$return[2] = $this->middlewareDispatcher->beforeOutput(
+			$controller, $methodName, $output);
+
+		$return[0] = $this->protocol->getHeader($response->getStatus(), 
+			$response->getCache());
+		$return[1] = $response->getHeaders();
+
+		return $return;
 	}
 
 

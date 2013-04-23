@@ -25,6 +25,7 @@
 namespace OCA\AppFramework\DependencyInjection;
 
 use OCA\AppFramework\Http\Request;
+use OCA\AppFramework\Http\Dispatcher;
 use OCA\AppFramework\Core\API;
 use OCA\AppFramework\Middleware\MiddlewareDispatcher;
 use OCA\AppFramework\Middleware\Security\SecurityMiddleware;
@@ -86,8 +87,15 @@ class DIContainer extends \Pimple {
 		});
 
 		$this['Protocol'] = $this->share(function($c){
-			$factory = new HttpFactory();
-			return $factory->get($_SERVER);
+			if(isset($SERVER['SERVER_PROTOCOL'])) {
+				return new Http($SERVER, $SERVER['SERVER_PROTOCOL']);
+			} else {
+				return new Http($SERVER);
+			}
+		});
+
+		$this['Dispatcher'] = $this->share(function($c) {
+			return new Dispatcher($c['Protocol'], $c['MiddlewareDispatcher']);
 		});
 
 

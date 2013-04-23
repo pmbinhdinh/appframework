@@ -43,8 +43,8 @@ class DownloadResponseTest extends \PHPUnit_Framework_TestCase {
 	public function testHeaders() {
 		$headers = $this->response->getHeaders();
 
-		$this->assertEquals('attachment; filename="file"', $headers['Content-Disposition']);
-		$this->assertEquals('content', $headers['Content-Type']);
+		$this->assertContains('attachment; filename="file"', $headers['Content-Disposition']);
+		$this->assertContains('content', $headers['Content-Type']);
 	}
 
 

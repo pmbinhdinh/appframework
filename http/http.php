@@ -166,11 +166,18 @@ class Http {
 	/**
 	 * Gets the correct header
 	 * @param Http::CONSTANT $status the constant from the Http class
-	 * @param string $ETag the etag, defaults to null
-	 * @param DateTime $lastModified the GMT time when it was last modified
+	 * @param Cache $cache the cache object
 	 */
-	public function getHeader($status, $ETag=null, \DateTime $lastModified=null) {
+	public function getHeader($status, Cache $cache=null) {
 		
+		if(is_null($cache)) {
+			$ETag = null;
+			$lastModified = null;
+		} else {
+			$ETag = $cache->getEtag();
+			$lastModified = $cache->getLastModified();
+		}
+
 		// if etag or lastmodified have not changed, return a not modified
 		if ((
 			!is_null($ETag)
