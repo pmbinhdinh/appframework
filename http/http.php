@@ -192,12 +192,13 @@ class Http {
 			!is_null($lastModified)
 			&& isset($this->server['HTTP_IF_MODIFIED_SINCE'])
 			&& trim($this->server['HTTP_IF_MODIFIED_SINCE']) === 
-				$lastModified->format(\DateTime::RFC2822))) {
+				$lastModified)) {
 
-			$status = $this->headers[self::STATUS_NOT_MODIFIED];
+			$status = self::STATUS_NOT_MODIFIED;
 		}
 		
-		return $this->protocolVersion . ' ' . $status . ' ' . $this->headers[$status];
+		return $this->protocolVersion . ' ' . $status . ' ' . 
+			$this->headers[$status];
 	}
 
 
