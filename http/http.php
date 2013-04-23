@@ -3,8 +3,7 @@
 /**
  * ownCloud - App Framework
  *
- * @author Bernhard Posselt, Thomas Tanghus, Bart Visscher, 
- * Evert Pot (http://www.rooftopsolutions.nl/)
+ * @author Bernhard Posselt, Thomas Tanghus, Bart Visscher
  * @copyright 2012 Bernhard Posselt nukeawhale@gmail.com
  *
  * This library is free software; you can redistribute it and/or
@@ -100,7 +99,6 @@ class Http {
 		$this->server = $server;
 		$this->protocolVersion = $protocolVersion;
 
-		// taken from Sabre_HTTP_Response
 		$this->headers = array(
 			self::STATUS_CONTINUE => 'Continue',
 			self::STATUS_SWITCHING_PROTOCOLS => 'Switching Protocols',
