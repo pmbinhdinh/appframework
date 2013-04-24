@@ -37,7 +37,8 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase {
 	private $dispatcher;
 	private $controllerMethod;
 	private $response;
-	private $cache;
+	private $lastModified;
+	private $etag;
 	private $http;
 
 	protected function setUp() {
@@ -67,14 +68,13 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase {
 		$this->dispatcher = new Dispatcher(
 			$this->http, $this->middlewareDispatcher);
 		
-		$this->cache = $this->response = $this->getMockBuilder(
-			'\OCA\AppFramework\Http\Cache\Cache')
-			->disableOriginalConstructor()
-			->getMock();
 		$this->response = $this->getMockBuilder(
 			'\OCA\AppFramework\Http\Response')
 			->disableOriginalConstructor()
 			->getMock();
+
+		$this->lastModified = new \DateTime(null, new \DateTimeZone('GMT'));
+		$this->etag = 'hi';
 	}
 
 
@@ -122,14 +122,19 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase {
 			->method('getStatus')
 			->will($this->returnValue(Http::STATUS_OK));
 		$this->response->expects($this->once())
-			->method('getCache')
-			->will($this->returnValue($this->cache));
+			->method('getLastModified')
+			->will($this->returnValue($this->lastModified));
+		$this->response->expects($this->once())
+			->method('getETag')
+			->will($this->returnValue($this->etag));
 		$this->response->expects($this->once())
 			->method('getHeaders')
 			->will($this->returnValue($responseHeaders));
 		$this->http->expects($this->once())
 			->method('getStatusHeader')
-			->with(Http::STATUS_OK, $this->cache)
+			->with($this->equalTo(Http::STATUS_OK), 
+				$this->equalTo($this->lastModified),
+				$this->equalTo($this->etag))
 			->will($this->returnValue($httpHeaders));
 		
 		$this->middlewareDispatcher->expects($this->once())

@@ -93,7 +93,7 @@ class Dispatcher {
 
 		// depending on the cache object the headers need to be changed
 		$out[0] = $this->protocol->getStatusHeader($response->getStatus(), 
-			$response->getCache());
+			$response->getLastModified(), $response->getETag());
 		$out[1] = $response->getHeaders();
 
 		return $out;

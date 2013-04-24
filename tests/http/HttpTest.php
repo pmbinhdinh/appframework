@@ -24,8 +24,6 @@
 
 namespace OCA\AppFramework\Http;
 
-use \OCA\AppFramework\Http\Cache\DeltaCache;
-
 
 require_once(__DIR__ . "/../classloader.php");
 
@@ -56,25 +54,23 @@ class HttpTest extends \PHPUnit_Framework_TestCase {
 
 
 	public function testEtagMatchReturnsNotModified() {
-		$cache = new DeltaCache(1, 'hi');
 		$http = new Http(array('HTTP_IF_NONE_MATCH' => 'hi'));
 
-		$header = $http->getStatusHeader(Http::STATUS_OK, $cache);
-		$this->assertEquals('HTTP/1.1 304 Not Modified', $header);	
+		$header = $http->getStatusHeader(Http::STATUS_OK, null, 'hi');
+		$this->assertEquals('HTTP/1.1 304 Not Modified', $header);
 	}
 
 
 	public function testLastModifiedMatchReturnsNotModified() {
-		$lastModified = new \DateTime(null, new \DateTimeZone('GMT'));
-		$lastModified->setTimestamp(12);
+		$dateTime = new \DateTime(null, new \DateTimeZone('GMT'));
+		$dateTime->setTimestamp('12');
 
-		$cache = new DeltaCache(1, 'hi', $lastModified);
 		$http = new Http(
 			array(
 				'HTTP_IF_MODIFIED_SINCE' => 'Thu, 01 Jan 1970 00:00:12 +0000')
 			);
 
-		$header = $http->getStatusHeader(Http::STATUS_OK, $cache);
+		$header = $http->getStatusHeader(Http::STATUS_OK, $dateTime);
 		$this->assertEquals('HTTP/1.1 304 Not Modified', $header);
 	}
 

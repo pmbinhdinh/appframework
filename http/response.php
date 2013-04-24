@@ -32,33 +32,45 @@ use \OCA\AppFramework\Http\Cache\Cache;
 class Response {
 
 	/**
-	 * @var array
+	 * @var array default headers
 	 */
-	private $headers = array();
+	private $headers = array(
+		'Cache-Control' => 'no-cache, must-revalidate'
+	);
+
 
 	/**
 	 * @var string
 	 */
 	private $status = Http::STATUS_OK;
 
-	/**
-	 * @var Request;
-	 */
-	protected $request;
 
 	/**
-	 * @var Cache
+	 * @var \DateTime
 	 */
-	protected $cache = null;
+	private $lastModified;
 
 
-	public function setCache(Cache $cache) {
-		$this->cache = $cache;
-	}
+	/**
+	 * @var string
+	 */
+	private $ETag;
 
 
-	public function getCache() {
-		return $this->cache;
+	/**
+	 * Caches the response
+	 * @param int $cacheSeconds the amount of seconds that should be cached
+	 * if 0 then caching will be disabled
+	 */
+	public function cacheFor($cacheSeconds) {
+
+		if($cacheSeconds > 0) {
+			$this->addHeader('Cache-Control', 'max-age=' . $cacheSeconds . 
+				', must-revalidate');
+		} else {
+			$this->addHeader('Cache-Control', 'no-cache, must-revalidate');
+		}
+
 	}
 
 
@@ -66,10 +78,14 @@ class Response {
 	 * Adds a new header to the response that will be called before the render
 	 * function
 	 * @param string $name The name of the HTTP header
-	 * @param string $value The value
+	 * @param string $value The value, null will delete it
 	 */
 	public function addHeader($name, $value) {
-		$this->headers[$name] = $value;
+		if(is_null($value)) {
+			unset($this->headers[$name]);
+		} else {
+			$this->headers[$name] = $value;
+		}
 	}
 
 
@@ -78,11 +94,18 @@ class Response {
 	 * @return array the headers
 	 */
 	public function getHeaders() {
-		if($this->cache) {
-			return array_merge($this->headers, $this->cache->getHeaders());
-		} else {
-			return $this->headers;
+		$mergeWith = array();
+		
+		if($this->lastModified) {
+			$mergeWith['Last-Modified'] = 
+				$this->lastModified->format(\DateTime::RFC2822);
 		}
+
+		if($this->ETag) {
+			$mergeWith['ETag'] = '"' . $this->ETag . '"';
+		}
+			
+		return array_merge($mergeWith, $this->headers);
 	}
 
 
@@ -109,6 +132,38 @@ class Response {
 	 */
 	public function getStatus() {
 		return $this->status;
+	}
+
+
+	/**
+	 * @return string the etag
+	 */
+	public function getETag() {
+		return $this->ETag;
+	}
+
+
+	/**
+	 * @return string RFC2822 formatted last modified date
+	 */
+	public function getLastModified() {
+		return $this->lastModified;
+	}
+
+
+	/**
+	 * @param string $ETag
+	 */
+	public function setETag($ETag) {
+		$this->ETag = $ETag;
+	}
+
+
+	/**
+	 * @param \DateTime $lastModified
+	 */
+	public function setLastModified($lastModified) {
+		$this->lastModified = $lastModified;
 	}
 
 

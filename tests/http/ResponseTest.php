@@ -28,7 +28,6 @@ namespace OCA\AppFramework\Http;
 require_once(__DIR__ . "/../classloader.php");
 
 
-use \OCA\AppFramework\Http\Cache\DeltaCache;
 
 class ResponseTest extends \PHPUnit_Framework_TestCase {
 
@@ -47,27 +46,21 @@ class ResponseTest extends \PHPUnit_Framework_TestCase {
 	}
 
 
+	public function testAddHeaderValueNullDeletesIt(){
+		$this->childResponse->addHeader('hello', 'world');
+		$this->childResponse->addHeader('hello', null);
+		$this->assertEquals(1, count($this->childResponse->getHeaders()));	
+	}
+
+
+	public function testCacheHeadersAreDisabledByDefault(){
+		$headers = $this->childResponse->getHeaders();
+		$this->assertEquals('no-cache, must-revalidate', $headers['Cache-Control']);
+	}
+
+
 	public function testRenderReturnNullByDefault(){
 		$this->assertEquals(null, $this->childResponse->render());
-	}
-
-
-	public function testSettingCacheMergesHeaders() {
-		$cacheTime = '3000';
-		$cache = new DeltaCache($cacheTime);
-		$this->childResponse->setCache($cache);
-		$headers = $this->childResponse->getHeaders();
-
-		$this->assertEquals('max-age=' . $cacheTime . ', must-revalidate', 
-			$headers['Cache-Control']);
-	}
-
-
-	public function testGetCache() {
-		$cache = new DeltaCache(1);
-		$this->childResponse->setCache($cache);
-
-		$this->assertEquals($this->childResponse->getCache(), $cache);
 	}
 
 
@@ -78,6 +71,48 @@ class ResponseTest extends \PHPUnit_Framework_TestCase {
 
 		$this->assertEquals(Http::STATUS_OK, $default);
 		$this->assertEquals(Http::STATUS_NOT_FOUND, $this->childResponse->getStatus());
+	}
+
+
+	public function testGetEtag() {
+		$this->childResponse->setEtag('hi');
+		$this->assertEquals('hi', $this->childResponse->getEtag());
+	}
+
+
+	public function testGetLastModified() {
+		$lastModified = new \DateTime(null, new \DateTimeZone('GMT'));
+		$lastModified->setTimestamp(1);
+		$this->childResponse->setLastModified($lastModified);
+		$this->assertEquals($lastModified, $this->childResponse->getLastModified());
+	}
+
+
+
+	public function testCacheSecondsZero() {
+		$this->childResponse->cacheFor(0);
+		
+		$headers = $this->childResponse->getHeaders();
+		$this->assertEquals('no-cache, must-revalidate', $headers['Cache-Control']);	
+	}
+
+
+	public function testCacheSeconds() {
+		$this->childResponse->cacheFor(33);
+		
+		$headers = $this->childResponse->getHeaders();
+		$this->assertEquals('max-age=33, must-revalidate', 
+			$headers['Cache-Control']);	
+	}
+
+
+
+	public function testEtagLastModifiedHeaders() {
+		$lastModified = new \DateTime(null, new \DateTimeZone('GMT'));
+		$lastModified->setTimestamp(1);
+		$this->childResponse->setLastModified($lastModified);
+		$headers = $this->childResponse->getHeaders();
+		$this->assertEquals('Thu, 01 Jan 1970 00:00:01 +0000', $headers['Last-Modified']);
 	}
 
 

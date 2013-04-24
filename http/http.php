@@ -24,8 +24,6 @@
 
 namespace OCA\AppFramework\Http;
 
-use \OCA\AppFramework\Http\Cache\Cache;
-
 
 class Http {
 
@@ -168,29 +166,23 @@ class Http {
 	/**
 	 * Gets the correct header
 	 * @param Http::CONSTANT $status the constant from the Http class
-	 * @param Cache $cache the cache object
+	 * @param DateTime $lastModified formatted last modified date
+	 * @param string $Etag the etag
 	 */
-	public function getStatusHeader($status, Cache $cache=null) {
-		
-		if(is_null($cache)) {
-			$ETag = null;
-			$lastModified = null;
-		} else {
-			$ETag = $cache->getEtag();
-			$lastModified = $cache->getLastModified();
+	public function getStatusHeader($status, \DateTime $lastModified=null, 
+	                                $ETag=null) {
+
+		if(!is_null($lastModified)) {
+			$lastModified = $lastModified->format(\DateTime::RFC2822);
 		}
 
 		// if etag or lastmodified have not changed, return a not modified
-		if ((
-			!is_null($ETag)
-			&& isset($this->server['HTTP_IF_NONE_MATCH'])
+		if ((isset($this->server['HTTP_IF_NONE_MATCH'])
 			&& trim($this->server['HTTP_IF_NONE_MATCH']) === $ETag) 
 
 			||
 
-			(
-			!is_null($lastModified)
-			&& isset($this->server['HTTP_IF_MODIFIED_SINCE'])
+			(isset($this->server['HTTP_IF_MODIFIED_SINCE'])
 			&& trim($this->server['HTTP_IF_MODIFIED_SINCE']) === 
 				$lastModified)) {
 
