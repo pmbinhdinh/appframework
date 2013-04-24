@@ -128,7 +128,7 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase {
 			->method('getHeaders')
 			->will($this->returnValue($responseHeaders));
 		$this->http->expects($this->once())
-			->method('getHeader')
+			->method('getStatusHeader')
 			->with(Http::STATUS_OK, $this->cache)
 			->will($this->returnValue($httpHeaders));
 		

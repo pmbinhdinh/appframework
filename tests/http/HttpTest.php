@@ -43,14 +43,14 @@ class HttpTest extends \PHPUnit_Framework_TestCase {
 
 
 	public function testProtocol() {
-		$header = $this->http->getHeader(Http::STATUS_OK);
-		$this->assertEquals('HTTP/1.1 200 OK', $header);
+		$header = $this->http->getStatusHeader(Http::STATUS_TEMPORARY_REDIRECT);
+		$this->assertEquals('HTTP/1.1 307 Temporary Redirect', $header);
 	}
 
 
 	public function testProtocol10() {
 		$this->http = new Http($this->server, 'HTTP/1.0');
-		$header = $this->http->getHeader(Http::STATUS_OK);
+		$header = $this->http->getStatusHeader(Http::STATUS_OK);
 		$this->assertEquals('HTTP/1.0 200 OK', $header);
 	}
 
@@ -59,7 +59,7 @@ class HttpTest extends \PHPUnit_Framework_TestCase {
 		$cache = new DeltaCache(1, 'hi');
 		$http = new Http(array('HTTP_IF_NONE_MATCH' => 'hi'));
 
-		$header = $http->getHeader(Http::STATUS_OK, $cache);
+		$header = $http->getStatusHeader(Http::STATUS_OK, $cache);
 		$this->assertEquals('HTTP/1.1 304 Not Modified', $header);	
 	}
 
@@ -74,11 +74,18 @@ class HttpTest extends \PHPUnit_Framework_TestCase {
 				'HTTP_IF_MODIFIED_SINCE' => 'Thu, 01 Jan 1970 00:00:12 +0000')
 			);
 
-		$header = $http->getHeader(Http::STATUS_OK, $cache);
+		$header = $http->getStatusHeader(Http::STATUS_OK, $cache);
 		$this->assertEquals('HTTP/1.1 304 Not Modified', $header);
 	}
 
 
+
+	public function testTempRedirectBecomesFoundInHttp10() {
+		$http = new Http(array(), 'HTTP/1.0');
+
+		$header = $http->getStatusHeader(Http::STATUS_TEMPORARY_REDIRECT);
+		$this->assertEquals('HTTP/1.0 302 Found', $header);
+	}
 	// TODO: write unittests for http codes
 
 }

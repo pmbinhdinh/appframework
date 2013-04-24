@@ -36,6 +36,12 @@ class Dispatcher {
 	private $middlewareDispatcher;
 	private $protocol;
 
+
+	/**
+	 * @param Http $protocol the http protocol with contains all status headers
+	 * @param MiddlewareDispatcher $middlewareDispatcher the dispatcher which 
+	 * runs the middleware
+	 */
 	public function __construct(Http $protocol,
 	                            MiddlewareDispatcher $middlewareDispatcher) {
 		$this->protocol = $protocol;
@@ -45,21 +51,27 @@ class Dispatcher {
 
 	/**
 	 * Handles a request and calls the dispatcher on the controller
+	 * @param Controller $controller the controller which will be called
+	 * @param string $methodName the method name which will be called on
+	 * the controller
+	 * @return array $array[0] contains a string with the http main header, 
+	 * $array[1] contains headers in the form: $key => value, $array[2] contains
+	 * the response output
 	 */
 	public function dispatch(Controller $controller, $methodName) {
-		$return = array(null, array(), null);
+		$out = array(null, array(), null);
 
-		// create response and run middleware that receives the response
-		// if an exception appears, the middleware is checked to handle the
-		// exception and to create a response. If no response is created, it is
-		// assumed that theres no middleware who can handle it and the error is 
-		// thrown again
 		try {
 
 			$this->middlewareDispatcher->beforeController($controller, 
 				$methodName);
 			$response = $controller->$methodName();
 
+
+		// if an exception appears, the middleware checks if it can handle the
+		// exception and creates a response. If no response is created, it is
+		// assumed that theres no middleware who can handle it and the error is 
+		// thrown again
 		} catch(\Exception $exception){
 
 			$response = $this->middlewareDispatcher->afterException(
@@ -76,14 +88,15 @@ class Dispatcher {
 		// get the output which should be printed and run the after output
 		// middleware to modify the response
 		$output = $response->render();
-		$return[2] = $this->middlewareDispatcher->beforeOutput(
+		$out[2] = $this->middlewareDispatcher->beforeOutput(
 			$controller, $methodName, $output);
 
-		$return[0] = $this->protocol->getHeader($response->getStatus(), 
+		// depending on the cache object the headers need to be changed
+		$out[0] = $this->protocol->getStatusHeader($response->getStatus(), 
 			$response->getCache());
-		$return[1] = $response->getHeaders();
+		$out[1] = $response->getHeaders();
 
-		return $return;
+		return $out;
 	}
 
 
