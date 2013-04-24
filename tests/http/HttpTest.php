@@ -43,8 +43,8 @@ class HttpTest extends \PHPUnit_Framework_TestCase {
 
 
 	public function testProtocol() {
-		$header = $this->http->getHeader(Http::STATUS_OK);
-		$this->assertEquals('HTTP/1.1 200 OK', $header);
+		$header = $this->http->getHeader(Http::STATUS_TEMPORARY_REDIRECT);
+		$this->assertEquals('HTTP/1.1 307 Temporary Redirect', $header);
 	}
 
 
@@ -79,6 +79,13 @@ class HttpTest extends \PHPUnit_Framework_TestCase {
 	}
 
 
+
+	public function testTempRedirectBecomesFoundInHttp10() {
+		$http = new Http(array(), 'HTTP/1.0');
+
+		$header = $http->getHeader(Http::STATUS_TEMPORARY_REDIRECT);
+		$this->assertEquals('HTTP/1.0 302 Found', $header);
+	}
 	// TODO: write unittests for http codes
 
 }

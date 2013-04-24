@@ -196,7 +196,16 @@ class Http {
 
 			$status = self::STATUS_NOT_MODIFIED;
 		}
-		
+
+		// we have one change currently for the http 1.0 header that differs
+		// from 1.1: STATUS_TEMPORARY_REDIRECT should be STATUS_FOUND
+		// if this differs any more, we want to create childclasses for this
+		if($status === self::STATUS_TEMPORARY_REDIRECT 
+			&& $this->protocolVersion === 'HTTP/1.0') {
+			
+			$status = self::STATUS_FOUND;
+		}
+
 		return $this->protocolVersion . ' ' . $status . ' ' . 
 			$this->headers[$status];
 	}
