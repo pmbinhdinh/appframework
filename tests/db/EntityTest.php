@@ -156,4 +156,18 @@ class EntityTest extends \PHPUnit_Framework_TestCase {
 	}
 
 
+	public function testFromParams(){
+		$params = array(
+			'testId' => 4,
+			'email' => 'john@doe'
+		);
+
+		$entity = TestEntity::fromParams($params);
+
+		$this->assertEquals($params['testId'], $entity->getTestId());
+		$this->assertEquals($params['email'], $entity->getEmail());
+		$this->assertTrue($entity instanceof TestEntity);
+	}
+
+
 }

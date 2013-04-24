@@ -165,4 +165,22 @@ abstract class Entity {
 	}
 
 
+	/**
+	 * Simple alternative constructor for building entities from a request
+	 * @param array $params the array which was obtained via $this->params('key')
+	 * in the controller
+	 * @return Entity
+	 */
+	public static function fromParams(array $params) {
+		$instance = new static();
+
+		foreach($params as $key => $value) {
+			$method = 'set' . ucfirst($key);
+			$instance->$method($value);
+		}
+
+		return $instance;
+	}
+
+
 }
