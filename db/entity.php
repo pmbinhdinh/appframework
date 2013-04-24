@@ -33,6 +33,39 @@ abstract class Entity {
 
 
 	/**
+	 * Simple alternative constructor for building entities from a request
+	 * @param array $params the array which was obtained via $this->params('key')
+	 * in the controller
+	 * @return Entity
+	 */
+	public static function fromParams(array $params) {
+		$instance = new static();
+
+		foreach($params as $key => $value) {
+			$method = 'set' . ucfirst($key);
+			$instance->$method($value);
+		}
+
+		return $instance;
+	}
+
+
+	/**
+	 * Maps the keys of the row array to the attributes
+	 * @param array $row the row to map onto the entity
+	 */
+	public function fromRow(array $row){
+		foreach($row as $key => $value){
+			$prop = $this->columnToProperty($key);
+			if($value !== null && array_key_exists($prop, $this->fieldTypes)){
+				settype($value, $this->fieldTypes[$prop]);
+			}
+			$this->$prop = $value;
+		}
+	}
+
+	
+	/**
 	 * Marks the entity as clean needed for setting the id after the insertion
 	 */
 	public function resetUpdatedFields(){
@@ -150,37 +183,8 @@ abstract class Entity {
 	}
 
 
-	/**
-	 * Maps the keys of the row array to the attributes
-	 * @param array $row the row to map onto the entity
-	 */
-	public function fromRow(array $row){
-		foreach($row as $key => $value){
-			$prop = $this->columnToProperty($key);
-			if($value !== null && array_key_exists($prop, $this->fieldTypes)){
-				settype($value, $this->fieldTypes[$prop]);
-			}
-			$this->$prop = $value;
-		}
-	}
 
 
-	/**
-	 * Simple alternative constructor for building entities from a request
-	 * @param array $params the array which was obtained via $this->params('key')
-	 * in the controller
-	 * @return Entity
-	 */
-	public static function fromParams(array $params) {
-		$instance = new static();
-
-		foreach($params as $key => $value) {
-			$method = 'set' . ucfirst($key);
-			$instance->$method($value);
-		}
-
-		return $instance;
-	}
 
 
 }
