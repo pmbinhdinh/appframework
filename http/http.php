@@ -170,7 +170,7 @@ class Http {
 	 * @param Http::CONSTANT $status the constant from the Http class
 	 * @param Cache $cache the cache object
 	 */
-	public function getHeader($status, Cache $cache=null) {
+	public function getStatusHeader($status, Cache $cache=null) {
 		
 		if(is_null($cache)) {
 			$ETag = null;
@@ -202,7 +202,7 @@ class Http {
 		// if this differs any more, we want to create childclasses for this
 		if($status === self::STATUS_TEMPORARY_REDIRECT 
 			&& $this->protocolVersion === 'HTTP/1.0') {
-			
+
 			$status = self::STATUS_FOUND;
 		}
 

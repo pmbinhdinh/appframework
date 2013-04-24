@@ -79,7 +79,7 @@ class Dispatcher {
 		$return[2] = $this->middlewareDispatcher->beforeOutput(
 			$controller, $methodName, $output);
 
-		$return[0] = $this->protocol->getHeader($response->getStatus(), 
+		$return[0] = $this->protocol->getStatusHeader($response->getStatus(), 
 			$response->getCache());
 		$return[1] = $response->getHeaders();
 
