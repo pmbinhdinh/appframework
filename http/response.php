@@ -24,7 +24,6 @@
 
 namespace OCA\AppFramework\Http;
 
-use \OCA\AppFramework\Http\Cache\Cache;
 
 /**
  * Baseclass for responses. Also used to just send headers
