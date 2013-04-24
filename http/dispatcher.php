@@ -61,17 +61,17 @@ class Dispatcher {
 	public function dispatch(Controller $controller, $methodName) {
 		$out = array(null, array(), null);
 
-		// create response and run middleware that receives the response
-		// if an exception appears, the middleware is checked to handle the
-		// exception and to create a response. If no response is created, it is
-		// assumed that theres no middleware who can handle it and the error is 
-		// thrown again
 		try {
 
 			$this->middlewareDispatcher->beforeController($controller, 
 				$methodName);
 			$response = $controller->$methodName();
 
+
+		// if an exception appears, the middleware checks if it can handle the
+		// exception and creates a response. If no response is created, it is
+		// assumed that theres no middleware who can handle it and the error is 
+		// thrown again
 		} catch(\Exception $exception){
 
 			$response = $this->middlewareDispatcher->afterException(
@@ -91,6 +91,7 @@ class Dispatcher {
 		$out[2] = $this->middlewareDispatcher->beforeOutput(
 			$controller, $methodName, $output);
 
+		// depending on the cache object the headers need to be changed
 		$out[0] = $this->protocol->getStatusHeader($response->getStatus(), 
 			$response->getCache());
 		$out[1] = $response->getHeaders();
