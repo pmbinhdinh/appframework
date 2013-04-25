@@ -39,7 +39,7 @@ class JSONResponse extends Response {
 		$this->error = false;
 		$this->data['status'] = 'success';
 		$this->addHeader('X-Content-Type-Options', 'nosniff');
-		$this->addHeader('Content-type', 'application/json');
+		$this->addHeader('Content-type', 'application/json; charset=utf-8');
 	}
 
 
