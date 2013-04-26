@@ -57,7 +57,9 @@ abstract class MapperTestUtility extends TestUtility {
 	 * of the database query. If not provided, it wont be assumed that fetchRow
 	 * will be called on the result
 	 */
-	protected function setMapperResult($sql, $arguments=array(), $returnRows=array()){
+	protected function setMapperResult($sql, $arguments=array(), $returnRows=array(),
+		$limit=null, $offset=null){
+
 		$pdoResult = $this->getMock('Result', 
 			array('fetchRow'));
 
@@ -77,10 +79,31 @@ abstract class MapperTestUtility extends TestUtility {
 			->with($this->equalTo($arguments))
 			->will($this->returnValue($pdoResult));
 
-		$this->api->expects($this->once())
-			->method('prepareQuery')
-			->with($this->equalTo($sql))
-			->will(($this->returnValue($query)));
+		if($limit === null && $offset === null) {
+			$this->api->expects($this->once())
+				->method('prepareQuery')
+				->with($this->equalTo($sql))
+				->will(($this->returnValue($query)));
+		} elseif($limit !== null && $offset === null) {
+			$this->api->expects($this->once())
+				->method('prepareQuery')
+				->with($this->equalTo($sql), $this->equalTo($limit))
+				->will(($this->returnValue($query)));
+		} elseif($limit === null && $offset !== null) {
+			$this->api->expects($this->once())
+				->method('prepareQuery')
+				->with($this->equalTo($sql), 
+					$this->equalTo(null),
+					$this->equalTo($offset))
+				->will(($this->returnValue($query)));
+		} else  {
+			$this->api->expects($this->once())
+				->method('prepareQuery')
+				->with($this->equalTo($sql), 
+					$this->equalTo($limit),
+					$this->equalTo($offset))
+				->will(($this->returnValue($query)));
+		}
 
 	}
 	
