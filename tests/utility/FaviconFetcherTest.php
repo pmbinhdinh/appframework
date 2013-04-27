@@ -79,11 +79,11 @@ class FaviconFetcherTest extends \PHPUnit_Framework_TestCase {
 
 
 	public function testFetchFaviconFaviconDotIcoHttp(){
-		$url = ' google.com ';
+		$url = ' sub.google.com ';
 		$mock = $this->getFileMock($this->png);
 
 		$callback = $this->getFileMockCallback(
-			'http://google.com/favicon.ico', $mock);
+			'http://sub.google.com/favicon.ico', $mock);
 
 		$this->fileFactory->expects($this->any())
 			->method('getFile')
@@ -91,7 +91,7 @@ class FaviconFetcherTest extends \PHPUnit_Framework_TestCase {
 
 		$favicon = $this->fetcher->fetch($url);
 
-		$this->assertEquals('http://google.com/favicon.ico', $favicon);
+		$this->assertEquals('http://sub.google.com/favicon.ico', $favicon);
 	}
 
 
