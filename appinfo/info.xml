@@ -7,6 +7,4 @@
 	<licence>AGPL</licence>
 	<author>Bernhard Posselt</author>
 	<require>5</require>
-	<shipped>true</shipped>
-	<default_enable/>
 </info>
