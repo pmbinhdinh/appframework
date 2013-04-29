@@ -43,6 +43,13 @@
  */
 
 
+// autoloader
+spl_autoload_register(array(new SimplePie_Autoloader(), 'autoload'));
+
+if (!class_exists('SimplePie'))
+{
+	trigger_error('Autoloader not registered properly', E_USER_ERROR);
+}
 
 /**
  * Autoloader class
@@ -76,13 +83,4 @@ class SimplePie_Autoloader
 		$filename = $this->path . DIRECTORY_SEPARATOR . str_replace('_', DIRECTORY_SEPARATOR, $class) . '.php';
 		include $filename;
 	}
-}
-
-
-// autoloader
-spl_autoload_register(array(new SimplePie_Autoloader(), 'autoload'));
-
-if (!class_exists('SimplePie'))
-{
-	trigger_error('Autoloader not registered properly', E_USER_ERROR);
 }
