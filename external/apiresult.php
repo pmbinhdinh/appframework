@@ -27,8 +27,8 @@ class APIResult {
 
 	const OK = 100;
 	const SERVER_ERROR = 996;
-	const UNAUTHORISED = 997;
-	const NOT_FOUND = 998;
+	const UNAUTHORISED_ERROR = 997;
+	const NOT_FOUND_ERROR = 998;
 	const UNKNOWN_ERROR = 999;
 
 	private $data;

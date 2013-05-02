@@ -48,4 +48,21 @@ class APIResultTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals('heho', $result->getMessage());
 	}
 
+
+	public function testUnauthorized() {
+		$result = new APIResult(null, APIResult::UNAUTHORISED_ERROR);
+		$this->assertEquals(997, $result->getStatusCode());	
+	}
+
+
+	public function testNotFound() {
+		$result = new APIResult(null, APIResult::NOT_FOUND_ERROR);
+		$this->assertEquals(998, $result->getStatusCode());	
+	}
+
+
+	public function testUnknown() {
+		$result = new APIResult(null, APIResult::UNKNOWN_ERROR);
+		$this->assertEquals(999, $result->getStatusCode());	
+	}	
 }
