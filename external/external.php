@@ -38,7 +38,10 @@ class External {
 	                            \Pimple $container) {
 		$container['urlParams'] = $urlParams;
 		$response = $container[$controllerName]->$methodName();
-		return new \OC_OCS_Result($response->getData(), $response->getStatusCode());
+		return new \OC_OCS_Result(
+			$response->getData(), 
+			$response->getStatusCode(),
+			$response->getMessage());
 	}
 
 

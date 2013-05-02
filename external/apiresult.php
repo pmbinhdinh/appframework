@@ -33,10 +33,12 @@ class APIResult {
 
 	private $data;
 	private $statusCode;
+	private $message;
 
-	public function __construct($data, $statusCode=APIResult::OK) {
+	public function __construct($data, $statusCode=APIResult::OK, $message=null) {
 		$this->data = $data;
 		$this->statusCode = $statusCode;
+		$this->message = $message;
 	}
 
 
@@ -49,5 +51,9 @@ class APIResult {
 		return $this->statusCode;
 	}
 
+
+	public function getMessage() {
+		return $this->message;
+	}
 
 }

@@ -42,4 +42,10 @@ class APIResultTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals(100, $result->getStatusCode());
 	}
 
+
+	public function testGetMessage() {
+		$result = new APIResult(null, null, 'heho');
+		$this->assertEquals('heho', $result->getMessage());
+	}
+
 }
