@@ -59,7 +59,27 @@ class SimplePie_Sanitize
 	// Options
 	var $remove_div = true;
 	var $image_handler = '';
-	var $strip_htmltags = array('base', 'blink', 'body', 'doctype', 'embed', 'font', 'form', 'frame', 'frameset', 'html', 'input', 'marquee', 'meta', 'noscript', 'object', 'param', 'script', 'style');
+	var $strip_htmltags = array(
+		'base',
+		'blink',
+		'body',
+		'doctype',
+		'embed',
+		'font',
+		'form',
+		'frame',
+		'frameset',
+		'html',
+		'input',
+		'iframe',
+		'marquee',
+		'meta',
+		'noscript',
+		'object',
+		'param',
+		'script',
+		'style'
+	);
 	var $encode_instead_of_strip = false;
 	var $strip_attributes = array(
 		'onabort',
@@ -237,7 +257,27 @@ class SimplePie_Sanitize
 		}
 	}
 
-	public function strip_htmltags($tags = array('base', 'blink', 'body', 'doctype', 'embed', 'font', 'form', 'frame', 'frameset', 'html', 'input', 'marquee', 'meta', 'noscript', 'object', 'param', 'script', 'style'))
+	public function strip_htmltags($tags = array(
+		'base',
+		'blink',
+		'body',
+		'doctype',
+		'embed',
+		'font',
+		'form',
+		'frame',
+		'frameset',
+		'html',
+		'input',
+		'iframe',
+		'marquee',
+		'meta',
+		'noscript',
+		'object',
+		'param',
+		'script',
+		'style'
+	))
 	{
 		if ($tags)
 		{

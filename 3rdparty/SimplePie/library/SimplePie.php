@@ -718,6 +718,7 @@ class SimplePie
 		'frame',
 		'frameset',
 		'html',
+		'iframe',
 		'input',
 		'marquee',
 		'meta',
