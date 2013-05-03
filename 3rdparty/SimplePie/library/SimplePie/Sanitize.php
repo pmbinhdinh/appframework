@@ -180,9 +180,7 @@ class SimplePie_Sanitize
 		'id',
 		'style',
 		'lowsrc',
-		'dynsrc',
-		'src',
-		'href'
+		'dynsrc'
 	);
 	var $strip_comments = false;
 	var $output_encoding = 'UTF-8';
@@ -401,9 +399,7 @@ class SimplePie_Sanitize
 		'id',
 		'style',
 		'lowsrc',
-		'dynsrc',
-		'src',
-		'href'
+		'dynsrc'
 	)){
 		if ($attribs)
 		{
@@ -786,18 +782,7 @@ class SimplePie_Sanitize
 
 		foreach ($elements as $element)
 		{
-			// href and src elements can be attacked with javascript:cmd()
-			if($attrib === 'href') {
-				if(filter_var($element->getAttribute('href'), FILTER_VALIDATE_URL) === false) {
-					$element->removeAttribute($attrib);
-				}
-			} elseif($attrib === 'src') {
-				if(filter_var($element->getAttribute('href'), FILTER_VALIDATE_URL) === false) {
-					$element->removeAttribute($attrib);
-				}
-			} else {
-				$element->removeAttribute($attrib);
-			}
+			$element->removeAttribute($attrib);
 		}
 	}
 }
