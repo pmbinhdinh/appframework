@@ -699,7 +699,9 @@ class SimplePie
 		'id',
 		'style',
 		'lowsrc',
-		'dynsrc'
+		'dynsrc',
+		'src',
+		'href'
 	);
 
 	/**
