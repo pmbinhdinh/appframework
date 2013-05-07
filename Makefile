@@ -35,11 +35,10 @@ dist: clean
 	git archive HEAD --format=zip --prefix=$(app_name)/ > $(package_name).zip
 
 
-test: unit integration acceptance
+test: unit
+
 
 unit:
+	phpunit tests/
 
-integration:
-
-acceptance:
 	
