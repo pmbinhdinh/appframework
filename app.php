@@ -63,6 +63,7 @@ class App {
 		}
 
 		if(!is_null($output)) {
+			header('Content-Length: ' . strlen($output));
 			print($output);
 		}
 
