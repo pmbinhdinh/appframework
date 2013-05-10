@@ -110,7 +110,7 @@ class DIContainer extends \Pimple {
 		// if you want to cache the template directory, add this path
 		$this['TwigTemplateCacheDirectory'] = null;
 
-		// enables the l10n function as t() function in twig
+		// enables the l10n function as trans() function in twig
 		$this['TwigL10N'] = $this->share(function($c){
 			$trans = $c['API']->getTrans();;
 			return new \Twig_SimpleFunction('trans', function () use ($trans) {
