@@ -144,7 +144,7 @@ class DIContainer extends \Pimple {
 			});
 		});
 
-		// enables the linkToRoute function as url() function in twig
+		// enables the linkToAbsoluteRoute function as abs_url() function in twig
 		$this['TwigLinkToAbsoluteRoute'] = $this->share(function($c){
 			$api = $c['API'];
 			return new \Twig_SimpleFunction('abs_url', function () use ($api) {
@@ -161,7 +161,7 @@ class DIContainer extends \Pimple {
 			});
 		});
 
-		// enables the linkTo function as link_to() function in twig
+		// enables the imagePath function as image_path() function in twig
 		$this['TwigImagePath'] = $this->share(function($c){
 			$api = $c['API'];
 			return new \Twig_SimpleFunction('image_path', function () use ($api) {
