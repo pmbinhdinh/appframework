@@ -110,6 +110,13 @@ describe 'ocSanitizeURL', ->
 		expect(out).toBe(url)
 
 
+        it 'should validate an url', =>
+                url = 'google.de/someting#XML=123'
+                out = @filter(url)
+
+                expect(out).toBe(url)
+
+
 	it 'should return null if xss null', =>
 		url = 'java\0script:alert(\"XSS\")'
 		out = @filter(url)
