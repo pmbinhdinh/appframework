@@ -124,6 +124,7 @@ class SecurityMiddleware extends Middleware {
 
 				// ajax responses get an ajax error message
 				$response = new JSONResponse();
+				$response->setStatus(412); // Precondition failed
 				$response->setErrorMessage($exception->getMessage(),
 						get_class($controller) . '->' . $methodName);
 				$this->api->log($exception->getMessage());
