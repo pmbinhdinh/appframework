@@ -144,4 +144,12 @@ describe 'ocSanitizeURL', ->
 
 		expect(out).toBe('')
 
+
+	it 'should accept an amazon url', =>
+		url = 'http://www.amazon.com/Sony-Unlocked-Android-Phone--' +
+			'U-S-Warranty/dp/B00C7ATZMK/ref=xs_gb_rss_4015761/' +
+			'?ccmID=380205&tag=rssfeeds-20'
+		out = @filter(url)
+
+		expect(out).toBe(url)
 		

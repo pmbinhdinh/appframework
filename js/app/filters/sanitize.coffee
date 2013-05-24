@@ -30,7 +30,7 @@ angular.module('OC').filter 'ocSanitizeURL', ->
   			'((\\d{1,3}\\.){3}\\d{1,3}))' +
   			'(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' +
   			'(\\?[;&a-z\\d%_.~+=-]*)?' +
-  			'(\\#[-=a-z\\d_]*)?$','i','i')
+  			'.*$','i','i')
 		if regex.test(input)
 			return input
 		else
