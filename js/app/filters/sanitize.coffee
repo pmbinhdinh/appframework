@@ -26,13 +26,12 @@ angular.module('OC').filter 'ocSanitizeURL', ->
 
 	return (input) ->
 		regex = new RegExp('^(https?:\\/\\/)?' +
-  			'((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' +
-  			'((\\d{1,3}\\.){3}\\d{1,3}))' +
-  			'(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' +
-  			'(\\?[;&a-z\\d%_.~+=-]*)?' +
-  			'.*$','i','i')
+			'((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' +
+			'((\\d{1,3}\\.){3}\\d{1,3}))' +
+			'(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' +
+			'(\\?[;&a-z\\d%_.~+=-]*)?' +
+			'.*$','i','i')
 		if regex.test(input)
 			return input
 		else
 			return ''
-		
