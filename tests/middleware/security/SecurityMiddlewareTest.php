@@ -24,6 +24,7 @@
 
 namespace OCA\AppFramework\Middleware\Security;
 
+use OCA\AppFramework\Http\Http;
 use OCA\AppFramework\Http\Request;
 use OCA\AppFramework\Http\RedirectResponse;
 use OCA\AppFramework\Http\JSONResponse;
@@ -143,6 +144,103 @@ class SecurityMiddlewareTest extends \PHPUnit_Framework_TestCase {
 		$this->ajaxExceptionCheck('testNoAjaxException');
 	}
 
+
+	private function ajaxExceptionStatus($method, $test, $status) {
+		$api = $this->getAPI();
+		$api->expects($this->any())
+				->method($test)
+				->will($this->returnValue(false));
+
+		$sec = new SecurityMiddleware($api);
+
+		try {
+			$sec->beforeController('\OCA\AppFramework\Middleware\Security\SecurityMiddlewareTest',
+					$method);
+		} catch (SecurityException $ex){
+			$this->assertTrue($ex->isAjax());
+			$this->assertEquals($status, $ex->getCode());
+		}
+	}
+
+	/**
+	 * @Ajax
+	 */
+	public function testAjaxStatusLoggedInCheck() {
+		$this->ajaxExceptionStatus(
+			'testAjaxStatusLoggedInCheck',
+			'isLoggedIn',
+			Http::STATUS_UNAUTHORIZED
+		);
+	}
+
+	/**
+	 * @Ajax
+	 * @IsLoggedInExemption
+	 */
+	public function testAjaxNotAdminCheck() {
+		$this->ajaxExceptionStatus(
+			'testAjaxNotAdminCheck',
+			'isAdminUser',
+			Http::STATUS_FORBIDDEN
+		);
+	}
+
+	/**
+	 * @Ajax
+	 * @IsLoggedInExemption
+	 * @IsAdminExemption
+	 */
+	public function testAjaxNotSubAdminCheck() {
+		$this->ajaxExceptionStatus(
+			'testAjaxNotSubAdminCheck',
+			'isSubAdminUser',
+			Http::STATUS_FORBIDDEN
+		);
+	}
+
+	/**
+	 * @Ajax
+	 * @IsLoggedInExemption
+	 * @IsAdminExemption
+	 * @IsSubAdminExemption
+	 */
+	public function testAjaxStatusCSRFCheck() {
+		$this->ajaxExceptionStatus(
+			'testAjaxStatusCSRFCheck',
+			'passesCSRFCheck',
+			Http::STATUS_PRECONDITION_FAILED
+		);
+	}
+
+	/**
+	 * @Ajax
+	 * @CSRFExemption
+	 * @IsLoggedInExemption
+	 * @IsAdminExemption
+	 * @IsSubAdminExemption
+	 */
+	public function testAjaxStatusAllGood() {
+		$this->ajaxExceptionStatus(
+			'testAjaxStatusAllGood',
+			'isLoggedIn',
+			0
+		);
+		$this->ajaxExceptionStatus(
+			'testAjaxStatusAllGood',
+			'isAdminUser',
+			0
+		);
+		$this->ajaxExceptionStatus(
+			'testAjaxStatusAllGood',
+			'isSubAdminUser',
+			0
+		);
+		$this->ajaxExceptionStatus(
+			'testAjaxStatusAllGood',
+			'passesCSRFCheck',
+			0
+		);
+	}
 
 	/**
 	 * @IsLoggedInExemption
