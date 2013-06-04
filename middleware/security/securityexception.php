@@ -36,8 +36,8 @@ class SecurityException extends \Exception {
 	 * @param string $msg the security error message
 	 * @param bool $ajax true if it resulted because of an ajax request
 	 */
-	public function __construct($msg, $ajax){
-		parent::__construct($msg);
+	public function __construct($msg, $ajax, $code = 0) {
+		parent::__construct($msg, $code);
 		$this->ajax = $ajax;
 	}
 

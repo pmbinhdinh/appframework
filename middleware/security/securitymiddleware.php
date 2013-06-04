@@ -25,6 +25,7 @@
 namespace OCA\AppFramework\Middleware\Security;
 
 use OCA\AppFramework\Controller\Controller;
+use OCA\AppFramework\Http\Http;
 use OCA\AppFramework\Http\Response;
 use OCA\AppFramework\Http\JSONResponse;
 use OCA\AppFramework\Http\RedirectResponse;
@@ -74,35 +75,29 @@ class SecurityMiddleware extends Middleware {
 			$ajax = true;
 		}
 
-		$exceptionMessage = null;
-
 		// security checks
-		if(!$annotationReader->hasAnnotation('IsLoggedInExemption')){
-			if(!$this->api->isLoggedIn()){
-				$exceptionMessage = 'Current user is not logged in';
+		if(!$annotationReader->hasAnnotation('IsLoggedInExemption')) {
+			if(!$this->api->isLoggedIn()) {
+				throw new SecurityException('Current user is not logged in', $ajax, Http::STATUS_UNAUTHORIZED);
 			}
 		}
 
-		if(!$annotationReader->hasAnnotation('CSRFExemption')){
-			if(!$this->api->passesCSRFCheck()){
-				$exceptionMessage = 'CSRF check failed';
+		if(!$annotationReader->hasAnnotation('IsAdminExemption')) {
+			if(!$this->api->isAdminUser($this->api->getUserId())) {
+				throw new SecurityException('Logged in user must be an admin', $ajax, Http::STATUS_FORBIDDEN);
 			}
 		}
 
-		if(!$annotationReader->hasAnnotation('IsAdminExemption')){
-			if(!$this->api->isAdminUser($this->api->getUserId())){
-				$exceptionMessage = 'Logged in user must be an admin';
+		if(!$annotationReader->hasAnnotation('IsSubAdminExemption')) {
+			if(!$this->api->isSubAdminUser($this->api->getUserId())) {
+				throw new SecurityException('Logged in user must be a subadmin', $ajax, Http::STATUS_FORBIDDEN);
 			}
 		}
 
-		if(!$annotationReader->hasAnnotation('IsSubAdminExemption')){
-			if(!$this->api->isSubAdminUser($this->api->getUserId())){
-				$exceptionMessage = 'Logged in user must be a subadmin';
+		if(!$annotationReader->hasAnnotation('CSRFExemption')) {
+			if(!$this->api->passesCSRFCheck()) {
+				throw new SecurityException('CSRF check failed', $ajax, Http::STATUS_PRECONDITION_FAILED);
 			}
-		}
-
-		if($exceptionMessage !== null){
-			throw new SecurityException($exceptionMessage, $ajax);
 		}
 
 	}
@@ -124,7 +119,7 @@ class SecurityMiddleware extends Middleware {
 
 				// ajax responses get an ajax error message
 				$response = new JSONResponse();
-				$response->setStatus(412); // Precondition failed
+				$response->setStatus($exception->getCode());
 				$response->setErrorMessage($exception->getMessage(),
 						get_class($controller) . '->' . $methodName);
 				$this->api->log($exception->getMessage());
@@ -135,7 +130,6 @@ class SecurityMiddleware extends Middleware {
 				// normal error messages link to the index page
 				//$url = $this->api->linkToRoute('index')
 				$url = $this->api->linkToAbsolute('index.php', ''); // TODO: replace with link to route
-				$this->api->log('hi');
 				$this->api->log($exception->getMessage());
 				return new RedirectResponse($url);
 			}
