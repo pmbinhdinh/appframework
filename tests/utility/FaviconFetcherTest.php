@@ -112,23 +112,6 @@ class FaviconFetcherTest extends \PHPUnit_Framework_TestCase {
 	}
 
 
-	public function testFetchFaviconFaviconDotIcoHttps(){
-		$url = 'google.com/';
-		$mock = $this->getFileMock($this->png);
-
-		$callback = $this->getFileMockCallback(
-			'https://google.com/favicon.ico', $mock);
-
-		$this->fileFactory->expects($this->any())
-			->method('getFile')
-			->will($this->returnCallback($callback));
-
-		$favicon = $this->fetcher->fetch($url);
-
-		$this->assertEquals('https://google.com/favicon.ico', $favicon);
-	}
-
-
 	private function getFaviconHTML($faviconPath) {
 		return "<html>
 			<head>
@@ -154,11 +137,6 @@ class FaviconFetcherTest extends \PHPUnit_Framework_TestCase {
 
 		$this->fileFactory->expects($this->at(1))
 			->method('getFile')
-			->with($this->equalTo('https://google.com'))
-			->will($this->returnValue($this->getFileMock()));
-
-		$this->fileFactory->expects($this->at(2))
-			->method('getFile')
 			->with($this->equalTo(
 				'http://google.com/owncloud/core/img/favicon.png'))
 			->will($this->returnValue($pngMock));
@@ -169,43 +147,40 @@ class FaviconFetcherTest extends \PHPUnit_Framework_TestCase {
 	}
 
 
-	public function testIconAbspathHTTPS() {
-		$faviconPath = "owncloud/core/img/favicon.png";
-		$html = $this->getFaviconHTML($faviconPath);
-
-		$url = 'https://google.com/';
-		$pageMock = $this->getFileMock($html);
-		$pngMock = $this->getFileMock($this->png);
-
-		$this->fileFactory->expects($this->at(0))
-			->method('getFile')
-			->with($this->equalTo('http://google.com'))
-			->will($this->returnValue($this->getFileMock()));
-
-		$this->fileFactory->expects($this->at(1))
-			->method('getFile')
-			->with($this->equalTo('https://google.com'))
-			->will($this->returnValue($pageMock));
-
-		$this->fileFactory->expects($this->at(2))
-			->method('getFile')
-			->with($this->equalTo(
-				'https://google.com/owncloud/core/img/favicon.png'))
-			->will($this->returnValue($pngMock));
-
-
-		$favicon = $this->fetcher->fetch($url);
-
-		$this->assertEquals('https://google.com/owncloud/core/img/favicon.png', $favicon);
-	}
-
-
-
 	public function testEmptyFilePathDoesNotOpenFile() {
 		$faviconPath = "owncloud/core/img/favicon.png";
 		$html = $this->getFaviconHTML($faviconPath);
 
 		$url = '';
+		$pageMock = $this->getFileMock($html);
+		$pngMock = $this->getFileMock($this->png);
+
+		$this->fileFactory->expects($this->never())
+			->method('getFile');
+
+		$favicon = $this->fetcher->fetch($url);
+	}
+
+	public function testInvalidHostnameDoesNotOpenFile() {
+		$faviconPath = "owncloud/core/img/favicon.png";
+		$html = $this->getFaviconHTML($faviconPath);
+
+		$url = "a.b_c.de";
+		$pageMock = $this->getFileMock($html);
+		$pngMock = $this->getFileMock($this->png);
+
+		$this->fileFactory->expects($this->never())
+			->method('getFile');
+
+		$favicon = $this->fetcher->fetch($url);
+	}
+
+
+	public function testInvalidHostnameDoesNotOpenFileHttp() {
+		$faviconPath = "owncloud/core/img/favicon.png";
+		$html = $this->getFaviconHTML($faviconPath);
+
+		$url = "http://a.b_c.de";
 		$pageMock = $this->getFileMock($html);
 		$pngMock = $this->getFileMock($this->png);
 

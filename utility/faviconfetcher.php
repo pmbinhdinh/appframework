@@ -45,40 +45,28 @@ class FaviconFetcher {
 	 * @param string|null $url the url where to fetch it from
 	 */
 	public function fetch($url) {
-		list($httpURL, $httpsURL) = $this->buildURL($url);
-
-		if(!$httpURL) {
+		try {
+			$url = $this->buildURL($url);
+		} catch (NoValidUrlException $e) {
 			return null;
 		}
 
-		// first check if the page defines an icon in its html
-		$httpURLFromPage = $this->extractFromPage($httpURL);
-		$httpsURLFromPage = $this->extractFromPage($httpsURL);
+		$faviconUrl = $this->extractFromPage($url);
 
-		if($this->isImage($httpURLFromPage)) {
-			return $httpURLFromPage;
-		} elseif ($this->isImage($httpsURLFromPage)) {
-			return $httpsURLFromPage;
+		// check the url for a valid image
+		if($faviconUrl && $this->isImage($faviconUrl)) {
+			return $faviconUrl;
+		} elseif($url) {
+			// try /favicon.ico as fallback
+			$parts = parse_url($url);
+			$faviconUrl = $parts['scheme'] . "://" . $parts['host'] . (array_key_exists("port", $parts) ? $parts['port'] : '') . "/favicon.ico";
+
+			if($this->isImage($faviconUrl)) {
+				return $faviconUrl;
+			}
 		}
 
-		// try the /favicon.ico as a last resort but use the base url
-		// since they are always at the base url, remove the path
-		while(parse_url($httpURL, PHP_URL_PATH)){
-			$httpURL = dirname($httpURL);
-			$httpsURL = dirname($httpsURL);
-		}
-
-		$httpURL .= '/favicon.ico';
-		$httpsURL .= '/favicon.ico';
-
-		if($this->isImage($httpURL)) {
-			return $httpURL;
-		} elseif($this->isImage($httpsURL)) {
-			return $httpsURL;
-		} else {
-			return null;
-		}
-
+		return null;
 	}
 
 
@@ -130,34 +118,34 @@ class FaviconFetcher {
 
 
 	/**
-	 * Get HTTP and HTTPS adresses from an incomplete URL
+	 * Get HTTP or HTTPS addresses from an incomplete URL
 	 * @param string $url the url that should be built
-	 * @return array an array containing the http and https address
+	 * @return string a string containing the http or https address
+	 * @throws NoValidUrlException when no valid url can be returned
 	 */
 	protected function buildURL($url) {
-		$result = array();
-
 		// trim the right / from the url
 		$url = trim($url);
 		$url = rtrim($url, '/');
-		
-		// dont build empty urls
-		if(!$url) {
-			$result[0] = null;
-			$result[1] = null;
-		} elseif (strpos($url, 'http://') === 0) {
-			$result[0] = $url;
-			$result[1] = substr($url, 0, 4) . 's' . substr($url, 4);
-		} elseif (strpos($url, 'https://') === 0 ) {
-			$result[0] = substr($url, 0, 4) . substr($url, 5);
-			$result[1] = $url;
-		} else {
-			$result[0] = 'http://' . $url;
-			$result[1] = 'https://' . $url;
+
+		// check for http:// or https:// and validate URL
+		if (strpos($url, 'http://') === 0 || strpos($url, 'https://') === 0) {
+			if (filter_var($url, FILTER_VALIDATE_URL)) {
+				return $url;
+			}
+		} elseif (filter_var("http://" . $url, FILTER_VALIDATE_URL)) {
+			// maybe $url was something like www.example.com
+			return 'http://' . $url;
 		}
 
-		return $result;
+		// no valid URL was passed in or could be built from $url
+		throw new NoValidUrlException();
 	}
- 
 
+}
+
+/**
+ * Thrown when no valid url was found by faviconfetcher
+ */
+class NoValidUrlException extends \Exception {
 }
