@@ -156,7 +156,7 @@ class MiddlewareDispatcherTest extends \PHPUnit_Framework_TestCase {
 	}
 
 
-	public function testAfterExceptionShouldThrowAgainNotHandled(){
+	public function testAfterExceptionShouldThrowAgainWhenNotHandled(){
 		$m1 = $this->getMock('\OCA\AppFramework\Middleware\Middleware',
 				array('afterException', 'beforeController'));
 		$m1->expects($this->once())
@@ -166,7 +166,7 @@ class MiddlewareDispatcherTest extends \PHPUnit_Framework_TestCase {
 				array('afterException', 'beforeController'));
 		$m2->expects($this->once())
 				->method('afterException')
-				->will($this->returnValue(null));
+				->will($this->throwException($this->exception));
 
 		$this->dispatcher->registerMiddleware($m1);
 		$this->dispatcher->registerMiddleware($m2);

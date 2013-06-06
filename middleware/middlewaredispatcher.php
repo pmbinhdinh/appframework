@@ -111,8 +111,7 @@ class MiddlewareDispatcher {
 			$middleware = $this->middlewares[$i];
 			try {
 				return $middleware->afterException($controller, $methodName, $exception);
-			} catch(\Exception $ex){
-				$exception = $ex;
+			} catch(\Exception $exception){
 				continue;
 			}
 		}
