@@ -78,7 +78,7 @@ class TestMiddleware extends Middleware {
 		$this->controller = $controller;
 		$this->methodName = $methodName;
 		$this->exception = $exception;
-		return parent::afterException($controller, $methodName, $exception);
+		parent::afterException($controller, $methodName, $exception);
 	}
 
 	public function afterController($controller, $methodName, Response $response){
@@ -156,23 +156,16 @@ class MiddlewareDispatcherTest extends \PHPUnit_Framework_TestCase {
 	}
 
 
-	public function testAfterExceptionShouldReturnNullIfNotHandled(){
-		$m1 = $this->getMock('\OCA\AppFramework\Middleware\Middleware',
-				array('afterException', 'beforeController'));
-		$m1->expects($this->once())
-				->method('afterException');
-
-		$m2 = $this->getMock('OCA\AppFramework\Middleware\Middleware',
-				array('afterException', 'beforeController'));
-		$m2->expects($this->once())
-				->method('afterException')
-				->will($this->returnValue(null));
+	public function testAfterExceptionShouldThrowAgainWhenNotHandled(){
+		$m1 = new TestMiddleware(false);
+		$m2 = new TestMiddleware(true);
 
 		$this->dispatcher->registerMiddleware($m1);
 		$this->dispatcher->registerMiddleware($m2);
 
+		$this->setExpectedException('\Exception');
 		$this->dispatcher->beforeController($this->controller, $this->method);
-		$this->assertNull($this->dispatcher->afterException($this->controller, $this->method, $this->exception));
+		$this->dispatcher->afterException($this->controller, $this->method, $this->exception);
 	}
 
 
@@ -199,7 +192,7 @@ class MiddlewareDispatcherTest extends \PHPUnit_Framework_TestCase {
 	public function testAfterExceptionCorrectArguments(){
 		$m1 = $this->getMiddleware();
 
-		$this->setExpectedException('Exception');
+		$this->setExpectedException('\Exception');
 
 		$this->dispatcher->beforeController($this->controller, $this->method);
 		$this->dispatcher->afterException($this->controller, $this->method, $this->exception);
@@ -246,7 +239,7 @@ class MiddlewareDispatcherTest extends \PHPUnit_Framework_TestCase {
 		$m1 = $this->getMiddleware();
 		$m2 = $this->getMiddleware();
 
-		$this->setExpectedException('Exception');
+		$this->setExpectedException('\Exception');
 		$this->dispatcher->beforeController($this->controller, $this->method);
 		$this->dispatcher->afterException($this->controller, $this->method, $this->exception);
 

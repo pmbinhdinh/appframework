@@ -39,7 +39,7 @@ class Dispatcher {
 
 	/**
 	 * @param Http $protocol the http protocol with contains all status headers
-	 * @param MiddlewareDispatcher $middlewareDispatcher the dispatcher which 
+	 * @param MiddlewareDispatcher $middlewareDispatcher the dispatcher which
 	 * runs the middleware
 	 */
 	public function __construct(Http $protocol,
@@ -54,7 +54,7 @@ class Dispatcher {
 	 * @param Controller $controller the controller which will be called
 	 * @param string $methodName the method name which will be called on
 	 * the controller
-	 * @return array $array[0] contains a string with the http main header, 
+	 * @return array $array[0] contains a string with the http main header,
 	 * $array[1] contains headers in the form: $key => value, $array[2] contains
 	 * the response output
 	 */
@@ -63,23 +63,18 @@ class Dispatcher {
 
 		try {
 
-			$this->middlewareDispatcher->beforeController($controller, 
+			$this->middlewareDispatcher->beforeController($controller,
 				$methodName);
 			$response = $controller->$methodName();
 
 
 		// if an exception appears, the middleware checks if it can handle the
 		// exception and creates a response. If no response is created, it is
-		// assumed that theres no middleware who can handle it and the error is 
+		// assumed that theres no middleware who can handle it and the error is
 		// thrown again
 		} catch(\Exception $exception){
-
 			$response = $this->middlewareDispatcher->afterException(
 				$controller, $methodName, $exception);
-
-			if($response === null){
-				throw $exception;
-			}
 		}
 
 		$response = $this->middlewareDispatcher->afterController(
@@ -92,7 +87,7 @@ class Dispatcher {
 			$controller, $methodName, $output);
 
 		// depending on the cache object the headers need to be changed
-		$out[0] = $this->protocol->getStatusHeader($response->getStatus(), 
+		$out[0] = $this->protocol->getStatusHeader($response->getStatus(),
 			$response->getLastModified(), $response->getETag());
 		$out[1] = $response->getHeaders();
 
