@@ -156,7 +156,7 @@ class MiddlewareDispatcherTest extends \PHPUnit_Framework_TestCase {
 	}
 
 
-	public function testAfterExceptionShouldReturnNullIfNotHandled(){
+	public function testAfterExceptionShouldThrowAgainNotHandled(){
 		$m1 = $this->getMock('\OCA\AppFramework\Middleware\Middleware',
 				array('afterException', 'beforeController'));
 		$m1->expects($this->once())
@@ -172,7 +172,8 @@ class MiddlewareDispatcherTest extends \PHPUnit_Framework_TestCase {
 		$this->dispatcher->registerMiddleware($m2);
 
 		$this->dispatcher->beforeController($this->controller, $this->method);
-		$this->assertNull($this->dispatcher->afterException($this->controller, $this->method, $this->exception));
+		$this->setExpectedException('\Exception');
+		$this->dispatcher->afterException($this->controller, $this->method, $this->exception);
 	}
 
 
@@ -199,7 +200,7 @@ class MiddlewareDispatcherTest extends \PHPUnit_Framework_TestCase {
 	public function testAfterExceptionCorrectArguments(){
 		$m1 = $this->getMiddleware();
 
-		$this->setExpectedException('Exception');
+		$this->setExpectedException('\Exception');
 
 		$this->dispatcher->beforeController($this->controller, $this->method);
 		$this->dispatcher->afterException($this->controller, $this->method, $this->exception);
@@ -246,7 +247,7 @@ class MiddlewareDispatcherTest extends \PHPUnit_Framework_TestCase {
 		$m1 = $this->getMiddleware();
 		$m2 = $this->getMiddleware();
 
-		$this->setExpectedException('Exception');
+		$this->setExpectedException('\Exception');
 		$this->dispatcher->beforeController($this->controller, $this->method);
 		$this->dispatcher->afterException($this->controller, $this->method, $this->exception);
 

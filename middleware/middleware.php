@@ -60,7 +60,8 @@ abstract class Middleware {
 	 * @param string $methodName the name of the method that will be called on
 	 *                           the controller
 	 * @param \Exception $exception the thrown exception
-	 * @return Response a Response object or null in case that the exception could not be handled
+	 * @throws \Exception the passed in exception if it cant handle it
+	 * @return Response a Response object in case that the exception was handled
 	 */
 	public function afterException($controller, $methodName, \Exception $exception){
 		throw $exception;

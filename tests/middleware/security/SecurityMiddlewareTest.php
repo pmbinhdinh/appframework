@@ -366,11 +366,10 @@ class SecurityMiddlewareTest extends \PHPUnit_Framework_TestCase {
 
 
 
-	public function testAfterExceptionNotCaughtReturnsNull(){
+	public function testAfterExceptionNotCaughtThrowsItAgain(){
 		$ex = new \Exception();
-
-		$this->assertEquals(null,
-				$this->middleware->afterException($this->controller, 'test', $ex));
+		$this->setExpectedException('\Exception');
+		$this->middleware->afterException($this->controller, 'test', $ex);
 	}
 
 

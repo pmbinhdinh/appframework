@@ -134,7 +134,7 @@ class SecurityMiddleware extends Middleware {
 				return new RedirectResponse($url);
 			}
 		} else  {
-			return null;
+			throw $exception;
 		}
 	}
 

@@ -102,18 +102,20 @@ class MiddlewareDispatcher {
 	 * @param string $methodName the name of the method that will be called on
 	 *                            the controller
 	 * @param \Exception $exception the thrown exception
-	 * @return Response a Response object or null in case that the exception could not be
-	 * handled
+	 * @return Response a Response object if the middleware can handle the
+	 * exception
+	 * @throws \Exception the passed in exception if it cant handle it
 	 */
 	public function afterException(Controller $controller, $methodName, \Exception $exception){
 		for($i=$this->middlewareCounter-1; $i>=0; $i--){
 			$middleware = $this->middlewares[$i];
-			$response = $middleware->afterException($controller, $methodName, $exception);
-			if($response !== null){
-				return $response;
+			try {
+				return $middleware->afterException($controller, $methodName, $exception);
+			} catch(\Exception $ex){
+				$exception = $ex;
+				continue;
 			}
 		}
-		return null;
 	}
 
 
