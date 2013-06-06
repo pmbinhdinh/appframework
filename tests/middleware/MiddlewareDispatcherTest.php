@@ -171,8 +171,8 @@ class MiddlewareDispatcherTest extends \PHPUnit_Framework_TestCase {
 		$this->dispatcher->registerMiddleware($m1);
 		$this->dispatcher->registerMiddleware($m2);
 
-		$this->dispatcher->beforeController($this->controller, $this->method);
 		$this->setExpectedException('\Exception');
+		$this->dispatcher->beforeController($this->controller, $this->method);
 		$this->dispatcher->afterException($this->controller, $this->method, $this->exception);
 	}
 

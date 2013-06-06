@@ -116,6 +116,7 @@ class MiddlewareDispatcher {
 				continue;
 			}
 		}
+		throw $exception;
 	}
 
 
