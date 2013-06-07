@@ -24,6 +24,8 @@
 
 namespace OCA\AppFramework\DependencyInjection;
 
+use \OCA\AppFramework\Http\Request;
+
 
 require_once(__DIR__ . "/../classloader.php");
 
@@ -97,6 +99,7 @@ class DIContainerTest extends \PHPUnit_Framework_TestCase {
 
 
 	public function testMiddlewareDispatcherIncludesSecurityMiddleware(){
+		$this->container['Request'] = new Request();
 		$security = $this->container['SecurityMiddleware'];
 		$dispatcher = $this->container['MiddlewareDispatcher'];
 
@@ -105,6 +108,7 @@ class DIContainerTest extends \PHPUnit_Framework_TestCase {
 
 
 	public function testMiddlewareDispatcherIncludesHttpMiddleware(){
+		$this->container['Request'] = new Request();
 		$http = $this->container['HttpMiddleware'];
 		$dispatcher = $this->container['MiddlewareDispatcher'];
 
@@ -129,6 +133,7 @@ class DIContainerTest extends \PHPUnit_Framework_TestCase {
 
 
 	public function testMiddlewareDispatcherIncludesTwigWhenTplDirectorySet(){
+		$this->container['Request'] = new Request();
 		$this->exchangeAPI();
 		$this->container['TwigTemplateDirectory'] = '.';
 		$twig = $this->container['TwigMiddleware'];
@@ -138,10 +143,11 @@ class DIContainerTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	public function testMiddlewareDispatcherDoesNotIncludeTwigWhenTplDirectoryNotSet(){
+		$this->container['Request'] = new Request();
 		$this->exchangeAPI();
 		$dispatcher = $this->container['MiddlewareDispatcher'];
 
-		$this->assertEquals(1, count($dispatcher->getMiddlewares()));
+		$this->assertEquals(2, count($dispatcher->getMiddlewares()));
 	}
 
 
