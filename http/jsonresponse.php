@@ -44,9 +44,11 @@ class JSONResponse extends Response {
 
 
 	/**
+	 * @deprecated use "not wrapping" method to add data
+	 * @see setData
 	 * Sets values in the data json array
-	 * @param array $params an array with key => value structure which will be
-	 *                      transformed to JSON
+	 * @param array|object $params an array or object which will be transformed
+	 *                             to JSON
 	 */
 	public function setParams(array $params){
 		$this->data['data'] = $params;
@@ -54,6 +56,8 @@ class JSONResponse extends Response {
 
 
 	/**
+	 * @deprecated use "not wrapping" method to read data
+	 * @see getData
 	 * Used to get the set parameters
 	 * @return array the params
 	 */
@@ -63,6 +67,8 @@ class JSONResponse extends Response {
 
 
 	/**
+	 * @deprecated use "not wrapping" method to add data
+	 * @see setData
 	 * in case we want to render an error message, also logs into the owncloud log
 	 * @param string $message the error message
 	 */
@@ -79,6 +85,24 @@ class JSONResponse extends Response {
 	 */
 	public function render(){
 		return json_encode($this->data);
+	}
+
+	/**
+	 * Sets values in the data json array
+	 * @param array|object $params an array or object which will be transformed
+	 *                             to JSON
+	 */
+	public function setData($data){
+		$this->data = $data;
+	}
+
+
+	/**
+	 * Used to get the set parameters
+	 * @return array the data
+	 */
+	public function getData(){
+		return $this->data;
 	}
 
 }
