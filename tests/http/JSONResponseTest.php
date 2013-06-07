@@ -52,6 +52,14 @@ class JSONResponseTest extends \PHPUnit_Framework_TestCase {
 	}
 
 
+	public function testSetData() {
+		$params = array('hi', 'yo');
+		$this->json->setData($params);
+
+		$this->assertEquals(array('hi', 'yo'), $this->json->getData());
+	}
+
+
 	public function testRender() {
 		$params = array('test' => 'hi');
 		$this->json->setParams($params);

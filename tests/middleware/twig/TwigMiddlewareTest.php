@@ -39,9 +39,9 @@ class TwigMiddlewareTest extends \PHPUnit_Framework_TestCase {
 
 	public function setUp(){
 		$this->api = $this->getMock('OCA\AppFramework\Core\API', array('getTemplate'), array('hi'));
-	$this->twig = $this->getMock('Twig', array('render'));
-	$this->middleware = new TwigMiddleware($this->api, $this->twig);
-	$this->octpl = $this->getMock('OC\Template', array('assign', 'fetchPage'));
+		$this->twig = $this->getMock('Twig', array('render'));
+		$this->middleware = new TwigMiddleware($this->api, $this->twig);
+		$this->octpl = $this->getMock('OC\Template', array('assign', 'fetchPage'));
 	}
 
 

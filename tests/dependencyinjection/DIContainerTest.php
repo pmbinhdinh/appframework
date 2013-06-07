@@ -59,6 +59,11 @@ class DIContainerTest extends \PHPUnit_Framework_TestCase {
 	}
 
 
+	public function testProvidesHttpMiddleware(){
+		$this->assertTrue(isset($this->container['HttpMiddleware']));
+	}
+
+
 	public function testProvidesMiddlewareDispatcher(){
 		$this->assertTrue(isset($this->container['MiddlewareDispatcher']));
 	}
@@ -96,6 +101,14 @@ class DIContainerTest extends \PHPUnit_Framework_TestCase {
 		$dispatcher = $this->container['MiddlewareDispatcher'];
 
 		$this->assertContains($security, $dispatcher->getMiddlewares());
+	}
+
+
+	public function testMiddlewareDispatcherIncludesHttpMiddleware(){
+		$http = $this->container['HttpMiddleware'];
+		$dispatcher = $this->container['MiddlewareDispatcher'];
+
+		$this->assertContains($http, $dispatcher->getMiddlewares());
 	}
 
 
