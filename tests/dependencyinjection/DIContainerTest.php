@@ -4,7 +4,9 @@
  * ownCloud - App Framework
  *
  * @author Bernhard Posselt
+ * @author Morris Jobke
  * @copyright 2012 Bernhard Posselt nukeawhale@gmail.com
+ * @copyright 2013 Morris Jobke morris.jobke@gmail.com
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
@@ -23,6 +25,8 @@
 
 
 namespace OCA\AppFramework\DependencyInjection;
+
+use \OCA\AppFramework\Http\Request;
 
 
 require_once(__DIR__ . "/../classloader.php");
@@ -59,6 +63,11 @@ class DIContainerTest extends \PHPUnit_Framework_TestCase {
 	}
 
 
+	public function testProvidesHttpMiddleware(){
+		$this->assertTrue(isset($this->container['HttpMiddleware']));
+	}
+
+
 	public function testProvidesMiddlewareDispatcher(){
 		$this->assertTrue(isset($this->container['MiddlewareDispatcher']));
 	}
@@ -92,10 +101,20 @@ class DIContainerTest extends \PHPUnit_Framework_TestCase {
 
 
 	public function testMiddlewareDispatcherIncludesSecurityMiddleware(){
+		$this->container['Request'] = new Request();
 		$security = $this->container['SecurityMiddleware'];
 		$dispatcher = $this->container['MiddlewareDispatcher'];
 
 		$this->assertContains($security, $dispatcher->getMiddlewares());
+	}
+
+
+	public function testMiddlewareDispatcherIncludesHttpMiddleware(){
+		$this->container['Request'] = new Request();
+		$http = $this->container['HttpMiddleware'];
+		$dispatcher = $this->container['MiddlewareDispatcher'];
+
+		$this->assertContains($http, $dispatcher->getMiddlewares());
 	}
 
 
@@ -116,6 +135,7 @@ class DIContainerTest extends \PHPUnit_Framework_TestCase {
 
 
 	public function testMiddlewareDispatcherIncludesTwigWhenTplDirectorySet(){
+		$this->container['Request'] = new Request();
 		$this->exchangeAPI();
 		$this->container['TwigTemplateDirectory'] = '.';
 		$twig = $this->container['TwigMiddleware'];
@@ -125,10 +145,11 @@ class DIContainerTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	public function testMiddlewareDispatcherDoesNotIncludeTwigWhenTplDirectoryNotSet(){
+		$this->container['Request'] = new Request();
 		$this->exchangeAPI();
 		$dispatcher = $this->container['MiddlewareDispatcher'];
 
-		$this->assertEquals(1, count($dispatcher->getMiddlewares()));
+		$this->assertEquals(2, count($dispatcher->getMiddlewares()));
 	}
 
 

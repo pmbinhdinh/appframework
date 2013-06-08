@@ -466,5 +466,13 @@ class API {
 		\OCP\App::registerAdmin($appName, $mainPath);
 	}
 
-
+	/**
+	 * Do a user login
+	 * @param string $user the username
+	 * @param string $password the password
+	 * @return bool true if successful
+	 */
+	public function login($user, $password) {
+		return \OC_User::login($user, $password);
+	}
 }

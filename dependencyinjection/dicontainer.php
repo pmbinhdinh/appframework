@@ -29,6 +29,7 @@ use OCA\AppFramework\Http\Request;
 use OCA\AppFramework\Http\Dispatcher;
 use OCA\AppFramework\Core\API;
 use OCA\AppFramework\Middleware\MiddlewareDispatcher;
+use OCA\AppFramework\Middleware\Http\HttpMiddleware;
 use OCA\AppFramework\Middleware\Security\SecurityMiddleware;
 use OCA\AppFramework\Middleware\Twig\TwigMiddleware;
 use OCA\AppFramework\Utility\FaviconFetcher;
@@ -204,12 +205,17 @@ class DIContainer extends \Pimple {
 			return new SecurityMiddleware($c['API']);
 		});
 
+		$this['HttpMiddleware'] = $this->share(function($c){
+			return new HttpMiddleware($c['API'], $c['Request']);
+		});
+
 		$this['TwigMiddleware'] = $this->share(function($c){
 			return new TwigMiddleware($c['API'], $c['Twig']);
 		});
 
 		$this['MiddlewareDispatcher'] = $this->share(function($c){
 			$dispatcher = new MiddlewareDispatcher();
+			$dispatcher->registerMiddleware($c['HttpMiddleware']);
 			$dispatcher->registerMiddleware($c['SecurityMiddleware']);
 
 			// only add twigmiddleware if the user set the template directory
