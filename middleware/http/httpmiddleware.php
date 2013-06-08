@@ -35,6 +35,7 @@ class HttpMiddleware extends Middleware {
 
 	private $api;
 	private $request;
+	private $wasAutomaticLogin = false;
 
 	/**
 	 * @param API $api an instance of the api
@@ -48,7 +49,6 @@ class HttpMiddleware extends Middleware {
 	 * This authenticate a user before a method call, if the credentials are given
 	 * @param string/Controller $controller the controllername or string
 	 * @param string $methodName the name of the method
-	 * @throws SecurityException when a security check fails
 	 */
 	public function beforeController($controller, $methodName){
 		if(isset($this->request->server['PHP_AUTH_USER']) && isset($this->request->server['PHP_AUTH_PW'])) {
@@ -56,6 +56,23 @@ class HttpMiddleware extends Middleware {
 				$this->request->server['PHP_AUTH_USER'],
 				$this->request->server['PHP_AUTH_PW']
 			);
+			$this->wasAutomaticLogin = true;
 		}
+	}
+
+	/**
+	 * This logs the user out, if he was automatically logged in
+	 *
+	 * @param Controller $controller the controller that is being called
+	 * @param string $methodName the name of the method that will be called on
+	 *                           the controller
+	 * @param string $output the generated output from a response
+	 * @return string the output that should be printed
+	 */
+	public function beforeOutput($controller, $methodName, $output){
+		if($this->wasAutomaticLogin === true) {
+			$this->api->logout();
+		}
+		return $output;
 	}
 }

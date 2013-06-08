@@ -33,7 +33,7 @@ class HttpMiddlewareTest extends \PHPUnit_Framework_TestCase {
 	private function getAPI(){
 		return $this->getMock(
 			'OCA\AppFramework\Core\API',
-			array('login'),
+			array('login', 'logout'),
 			array('test')
 		);
 	}
@@ -49,10 +49,13 @@ class HttpMiddlewareTest extends \PHPUnit_Framework_TestCase {
 		$api = $this->getAPI();
 		$request = $this->getRequest();
 
-		if($isLoginCalled)
+		if($isLoginCalled) {
 			$api->expects($this->once())->method('login');
-		else
+			$api->expects($this->once())->method('logout');
+		} else {
 			$api->expects($this->never())->method('login');
+			$api->expects($this->never())->method('logout');
+		}
 
 		$request->expects($this->any())
 				->method('__get')
@@ -61,16 +64,17 @@ class HttpMiddlewareTest extends \PHPUnit_Framework_TestCase {
 
 		$middleware = new HttpMiddleware($api, $request);
 		$middleware->beforeController('\OCA\AppFramework\Middleware\Http\HttpMiddlewareTest', 'testLogin');
+		$middleware->beforeOutput('\OCA\AppFramework\Middleware\Http\HttpMiddlewareTest', 'testLogin', 'output');
 	}
 
-	public function testLogin(){
+	public function testAutomaticLoginAndLogout(){
 		$this->checkLogin(array(
 			'PHP_AUTH_USER' => 'user',
 			'PHP_AUTH_PW' => 'pw'
 		), true);
 	}
 
-	public function testNoLogin(){
+	public function testNoAutomaticLoginAndLogout(){
 		$this->checkLogin(array(
 			'PHP_AUTH_USER' => 'user'
 		));
