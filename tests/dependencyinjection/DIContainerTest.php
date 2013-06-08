@@ -4,7 +4,9 @@
  * ownCloud - App Framework
  *
  * @author Bernhard Posselt
+ * @author Morris Jobke
  * @copyright 2012 Bernhard Posselt nukeawhale@gmail.com
+ * @copyright 2013 Morris Jobke morris.jobke@gmail.com
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
