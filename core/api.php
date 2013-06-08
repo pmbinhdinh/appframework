@@ -475,4 +475,12 @@ class API {
 	public function login($user, $password) {
 		return \OC_User::login($user, $password);
 	}
+
+	/**
+	 * @brief Loggs the user out including all the session data
+	 * Logout, destroys session
+	 */
+	public function logout() {
+		return \OCP\User::logout();
+	}
 }
