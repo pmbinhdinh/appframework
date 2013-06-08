@@ -35,7 +35,7 @@ class HttpMiddleware extends Middleware {
 
 	private $api;
 	private $request;
-	private $wasAutomaticLogin = false;
+	private $isRESTAuth = false;
 
 	/**
 	 * @param API $api an instance of the api
@@ -56,7 +56,7 @@ class HttpMiddleware extends Middleware {
 				$this->request->server['PHP_AUTH_USER'],
 				$this->request->server['PHP_AUTH_PW']
 			);
-			$this->wasAutomaticLogin = true;
+			$this->isRESTAuth = true;
 		}
 	}
 
@@ -70,7 +70,7 @@ class HttpMiddleware extends Middleware {
 	 * @return string the output that should be printed
 	 */
 	public function beforeOutput($controller, $methodName, $output){
-		if($this->wasAutomaticLogin === true) {
+		if($this->isRESTAuth === true) {
 			$this->api->logout();
 		}
 		return $output;
