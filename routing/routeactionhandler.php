@@ -25,19 +25,16 @@ namespace OCA\AppFramework\routing;
 use \OCA\AppFramework\App;
 use \OCA\Mail\DependencyInjection\DIContainer;
 
-class RouteActionHandler
-{
+class RouteActionHandler {
 	private $controllerName;
 	private $actionName;
 
-	public function __construct($controllerName, $actionName)
-	{
+	public function __construct($controllerName, $actionName) {
 		$this->controllerName = $controllerName;
 		$this->actionName = $actionName;
 	}
 
-	public function __invoke($params)
-	{
+	public function __invoke($params) {
 		App::main($this->controllerName, $this->actionName, $params, new DIContainer());
 	}
 }
