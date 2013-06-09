@@ -170,7 +170,10 @@ abstract class Mapper {
 
 		if($row === false){
 			throw new DoesNotExistException('No matching entry found');
-		} elseif($result->fetchRow() !== false) {
+		}
+		$row2 = $result->fetchRow();
+		//MDB2 returns null, PDO and doctrine false when no row is available
+		if( ! ($row2 === false || $row2 === null )) {
 			throw new MultipleObjectsReturnedException('More than one result');
 		} else {
 			return $row;
