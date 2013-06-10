@@ -42,8 +42,8 @@ class App {
 	 * @param array $urlParams an array with variables extracted from the routes
 	 * @param Pimple $container an instance of a pimple container.
 	 */
-	public static function main($controllerName, $methodName, array $urlParams,
-	                            \Pimple $container){
+	public static function main($controllerName, $methodName, array $urlParams, 
+									\Pimple $container) {
 
 		$container['urlParams'] = $urlParams;
 		$controller = $container[$controllerName];
@@ -53,7 +53,7 @@ class App {
 
 		list($httpHeaders, $responseHeaders, $output) =
 			$dispatcher->dispatch($controller, $methodName);
-
+		
 		if(!is_null($httpHeaders)) {
 			header($httpHeaders);
 		}
@@ -63,10 +63,34 @@ class App {
 		}
 
 		if(!is_null($output)) {
+			header('Content-Length: ' . strlen($output));
 			print($output);
 		}
 
 	}
 
+	/**
+	 * Shortcut for calling a controller method and printing the result.
+	 * Similar to App:main except that no headers will be sent.
+	 * This should be used for example when registering sections via
+	 * \OCA\AppFramework\Core\API::registerAdmin()
+	 *
+	 * @param string $controllerName the name of the controller under which it is
+	 *                               stored in the DI container
+	 * @param string $methodName the method that you want to call
+	 * @param array $urlParams an array with variables extracted from the routes
+	 * @param Pimple $container an instance of a pimple container.
+	 */
+	public static function part($controllerName, $methodName, array $urlParams,
+								\Pimple $container){
+
+		$container['urlParams'] = $urlParams;
+		$controller = $container[$controllerName];
+
+		$dispatcher = $container['Dispatcher'];
+
+		list(, , $output) =  $dispatcher->dispatch($controller, $methodName);
+		return $output;
+	}
 
 }
