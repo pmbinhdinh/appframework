@@ -1,5 +1,6 @@
 <?php
 
+use OCA\AppFramework\DependencyInjection\DIContainer;
 use OCA\AppFramework\routing\RouteConfig;
 
 require_once(__DIR__ . "/../classloader.php");
@@ -49,7 +50,8 @@ routes:
 		$router = $this->getMock("\OC_Router", array('create'));
 
 		// load route configuration
-		$config = new RouteConfig('app1', $router, $yaml);
+		$container = new DIContainer('app1');
+		$config = new RouteConfig($container, $router, $yaml);
 
 		$config->register();
 	}
@@ -97,7 +99,8 @@ resources:
 			->will($this->returnValue($route));
 
 		// load route configuration
-		$config = new RouteConfig('app1', $router, $yaml);
+		$container = new DIContainer('app1');
+		$config = new RouteConfig($container, $router, $yaml);
 
 		$config->register();
 	}
@@ -154,7 +157,8 @@ resources:
 			->will($this->returnValue($destroyRoute));
 
 		// load route configuration
-		$config = new RouteConfig('app1', $router, $yaml);
+		$container = new DIContainer('app1');
+		$config = new RouteConfig($container, $router, $yaml);
 
 		$config->register();
 	}
@@ -167,6 +171,7 @@ resources:
 	 */
 	private function mockRoute($verb, $controllerName, $actionName)
 	{
+		$container = new DIContainer('app1');
 		$route = $this->getMock("\OC_Route", array('method', 'action'));
 		$route
 			->expects($this->exactly(1))
@@ -177,7 +182,7 @@ resources:
 		$route
 			->expects($this->exactly(1))
 			->method('action')
-			->with($this->equalTo(new OCA\Appframework\routing\RouteActionHandler('app1', $controllerName, $actionName)))
+			->with($this->equalTo(new OCA\Appframework\routing\RouteActionHandler($container, $controllerName, $actionName)))
 			->will($this->returnValue($route));
 		return $route;
 	}
