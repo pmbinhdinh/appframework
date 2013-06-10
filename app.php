@@ -42,7 +42,7 @@ class App {
 	 * @param array $urlParams an array with variables extracted from the routes
 	 * @param Pimple $container an instance of a pimple container.
 	 */
-	public static function main($controllerName, $methodName, array $urlParams,
+	public static function main($controllerName, $methodName, array $urlParams, 
 	                            \Pimple $container){
 
 		$container['urlParams'] = $urlParams;
@@ -51,9 +51,9 @@ class App {
 		// initialize the dispatcher and run all the middleware before the controller
 		$dispatcher = $container['Dispatcher'];
 
-		list($httpHeaders, $responseHeaders, $output) =
+		list($httpHeaders, $responseHeaders, $output) = 
 			$dispatcher->dispatch($controller, $methodName);
-
+		
 		if(!is_null($httpHeaders)) {
 			header($httpHeaders);
 		}
@@ -63,6 +63,7 @@ class App {
 		}
 
 		if(!is_null($output)) {
+			header('Content-Length: ' . strlen($output));
 			print($output);
 		}
 
