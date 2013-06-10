@@ -43,7 +43,7 @@ class App {
 	 * @param Pimple $container an instance of a pimple container.
 	 */
 	public static function main($controllerName, $methodName, array $urlParams, 
-								\Pimple $container) {
+									\Pimple $container) {
 
 		$container['urlParams'] = $urlParams;
 		$controller = $container[$controllerName];
