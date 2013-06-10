@@ -32,19 +32,22 @@ use Symfony\Component\Yaml\Parser;
  * @package OCA\AppFramework\routing
  */
 class RouteConfig {
+	private $appName;
 	private $router;
 	private $yml;
 
 	/**
+	 * @param $appName
 	 * @param \OC_Router $router
 	 * @param string $pathToYml
 	 */
-	public function __construct(\OC_Router $router, $pathToYml) {
+	public function __construct($appName, \OC_Router $router, $pathToYml) {
 		if (file_exists($pathToYml)) {
 			$this->yml = file_get_contents($pathToYml);
 		} else {
 			$this->yml = $pathToYml;
 		}
+		$this->appName = $appName;
 		$this->router = $router;
 	}
 
@@ -87,7 +90,8 @@ class RouteConfig {
 			$actionName = $this->buildActionName($action);
 
 			// register the route
-			$this->router->create($name, $url)->method($verb)->action(new RouteActionHandler($controllerName, $actionName));
+			$handler = new RouteActionHandler($this->appName, $controllerName, $actionName);
+			$this->router->create($this->appName.'#'.$name, $url)->method($verb)->action($handler);
 		}
 	}
 
@@ -136,10 +140,10 @@ class RouteConfig {
 				$controllerName = $this->buildControllerName($controller);
 				$actionName = $this->buildActionName($method);
 
-				$routeName = strtolower($resource) . '#' . strtolower($method);
+				$routeName = $this->appName . '#' . strtolower($resource) . '#' . strtolower($method);
 
 				$this->router->create($routeName, $url)->method($verb)->action(
-					new RouteActionHandler($controllerName, $actionName)
+					new RouteActionHandler($this->appName, $controllerName, $actionName)
 				);
 			}
 		}
