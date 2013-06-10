@@ -90,9 +90,7 @@ class App {
 		$dispatcher = $container['Dispatcher'];
 
 		list(, , $output) =  $dispatcher->dispatch($controller, $methodName);
-		if(!is_null($output)) {
-			return $output;
-		}
+		return $output;
 	}
 
 }
