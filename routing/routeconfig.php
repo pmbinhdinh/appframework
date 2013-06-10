@@ -25,6 +25,7 @@ namespace OCA\AppFramework\routing;
 require_once __DIR__ . "/../3rdparty/Yaml/Parser.php";
 require_once __DIR__ . "/../3rdparty/Yaml/Inline.php";
 
+use OCA\AppFramework\DependencyInjection\DIContainer;
 use Symfony\Component\Yaml\Parser;
 
 /**
@@ -32,20 +33,26 @@ use Symfony\Component\Yaml\Parser;
  * @package OCA\AppFramework\routing
  */
 class RouteConfig {
+	private $container;
 	private $router;
 	private $yml;
+	private $appName;
 
 	/**
+	 * @param \OCA\AppFramework\DependencyInjection\DIContainer $container
 	 * @param \OC_Router $router
 	 * @param string $pathToYml
+	 * @internal param $appName
 	 */
-	public function __construct(\OC_Router $router, $pathToYml) {
+	public function __construct(DIContainer $container, \OC_Router $router, $pathToYml) {
 		if (file_exists($pathToYml)) {
 			$this->yml = file_get_contents($pathToYml);
 		} else {
 			$this->yml = $pathToYml;
 		}
+		$this->container = $container;
 		$this->router = $router;
+		$this->appName = $container['AppName'];
 	}
 
 	/**
@@ -87,7 +94,8 @@ class RouteConfig {
 			$actionName = $this->buildActionName($action);
 
 			// register the route
-			$this->router->create($name, $url)->method($verb)->action(new RouteActionHandler($controllerName, $actionName));
+			$handler = new RouteActionHandler($this->container, $controllerName, $actionName);
+			$this->router->create($this->appName.'#'.$name, $url)->method($verb)->action($handler);
 		}
 	}
 
@@ -136,10 +144,10 @@ class RouteConfig {
 				$controllerName = $this->buildControllerName($controller);
 				$actionName = $this->buildActionName($method);
 
-				$routeName = strtolower($resource) . '#' . strtolower($method);
+				$routeName = $this->appName . '#' . strtolower($resource) . '#' . strtolower($method);
 
 				$this->router->create($routeName, $url)->method($verb)->action(
-					new RouteActionHandler($controllerName, $actionName)
+					new RouteActionHandler($this->container, $controllerName, $actionName)
 				);
 			}
 		}

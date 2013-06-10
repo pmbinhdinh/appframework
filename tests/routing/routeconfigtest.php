@@ -1,5 +1,6 @@
 <?php
 
+use OCA\AppFramework\DependencyInjection\DIContainer;
 use OCA\AppFramework\routing\RouteConfig;
 
 require_once(__DIR__ . "/../classloader.php");
@@ -49,7 +50,8 @@ routes:
 		$router = $this->getMock("\OC_Router", array('create'));
 
 		// load route configuration
-		$config = new RouteConfig($router, $yaml);
+		$container = new DIContainer('app1');
+		$config = new RouteConfig($container, $router, $yaml);
 
 		$config->register();
 	}
@@ -93,11 +95,12 @@ resources:
 		$router
 			->expects($this->once())
 			->method('create')
-			->with( $this->equalTo($name), $this->equalTo($url))
+			->with( $this->equalTo('app1#'.$name), $this->equalTo($url))
 			->will($this->returnValue($route));
 
 		// load route configuration
-		$config = new RouteConfig($router, $yaml);
+		$container = new DIContainer('app1');
+		$config = new RouteConfig($container, $router, $yaml);
 
 		$config->register();
 	}
@@ -120,41 +123,42 @@ resources:
 		$router
 			->expects($this->at(0))
 			->method('create')
-			->with( $this->equalTo($resourceName.'#index'), $this->equalTo($url))
+			->with( $this->equalTo('app1#'.$resourceName.'#index'), $this->equalTo($url))
 			->will($this->returnValue($indexRoute));
 
 		$router
 			->expects($this->at(1))
 			->method('create')
-			->with( $this->equalTo($resourceName.'#show'), $this->equalTo($urlWithParam))
+			->with( $this->equalTo('app1#'.$resourceName.'#show'), $this->equalTo($urlWithParam))
 			->will($this->returnValue($showRoute));
 
 		$router
 			->expects($this->at(2))
 			->method('create')
-			->with( $this->equalTo($resourceName.'#new'), $this->equalTo($url.'/new'))
+			->with( $this->equalTo('app1#'.$resourceName.'#new'), $this->equalTo($url.'/new'))
 			->will($this->returnValue($newRoute));
 
 		$router
 			->expects($this->at(3))
 			->method('create')
-			->with( $this->equalTo($resourceName.'#create'), $this->equalTo($url))
+			->with( $this->equalTo('app1#'.$resourceName.'#create'), $this->equalTo($url))
 			->will($this->returnValue($createRoute));
 
 		$router
 			->expects($this->at(4))
 			->method('create')
-			->with( $this->equalTo($resourceName.'#update'), $this->equalTo($urlWithParam))
+			->with( $this->equalTo('app1#'.$resourceName.'#update'), $this->equalTo($urlWithParam))
 			->will($this->returnValue($updateRoute));
 
 		$router
 			->expects($this->at(5))
 			->method('create')
-			->with( $this->equalTo($resourceName.'#destroy'), $this->equalTo($urlWithParam))
+			->with( $this->equalTo('app1#'.$resourceName.'#destroy'), $this->equalTo($urlWithParam))
 			->will($this->returnValue($destroyRoute));
 
 		// load route configuration
-		$config = new RouteConfig($router, $yaml);
+		$container = new DIContainer('app1');
+		$config = new RouteConfig($container, $router, $yaml);
 
 		$config->register();
 	}
@@ -167,6 +171,7 @@ resources:
 	 */
 	private function mockRoute($verb, $controllerName, $actionName)
 	{
+		$container = new DIContainer('app1');
 		$route = $this->getMock("\OC_Route", array('method', 'action'));
 		$route
 			->expects($this->exactly(1))
@@ -177,7 +182,7 @@ resources:
 		$route
 			->expects($this->exactly(1))
 			->method('action')
-			->with($this->equalTo(new OCA\Appframework\routing\RouteActionHandler($controllerName, $actionName)))
+			->with($this->equalTo(new OCA\Appframework\routing\RouteActionHandler($container, $controllerName, $actionName)))
 			->will($this->returnValue($route));
 		return $route;
 	}
