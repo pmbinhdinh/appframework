@@ -107,6 +107,7 @@ class JSONResponseTest extends \PHPUnit_Framework_TestCase {
 
 		$expected = '["hi"]';
 		$this->assertEquals($expected, $response->render());
+		$this->assertEquals($code, $response->getStatus());
 	}
 
 }
