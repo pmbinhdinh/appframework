@@ -30,14 +30,16 @@ namespace OCA\AppFramework\Http;
  */
 class JSONResponse extends Response {
 
-	protected $error;
 	protected $data;
 
 
-	public function __construct() {
-		$this->data = array();
-		$this->error = false;
-		$this->data['status'] = 'success';
+	/**
+	 * @param array|object $data the object or array that should be transformed
+	 * @param int $statusCode the Http status code, defaults to 200
+	 */
+	public function __construct($data=array(), $statusCode=Http::STATUS_OK) {
+		$this->data = $data;
+		$this->setStatus($statusCode);
 		$this->addHeader('X-Content-Type-Options', 'nosniff');
 		$this->addHeader('Content-type', 'application/json; charset=utf-8');
 	}
@@ -52,6 +54,7 @@ class JSONResponse extends Response {
 	 */
 	public function setParams(array $params){
 		$this->data['data'] = $params;
+		$this->data['status'] = 'success';
 	}
 
 
