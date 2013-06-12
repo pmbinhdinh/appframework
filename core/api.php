@@ -349,8 +349,22 @@ class API {
 	 * @param int $level the error level
 	 */
 	public function log($msg, $level=null){
-		if($level === null){
-			$level = \OCP\Util::ERROR;
+		switch($level){
+			case 'debug':
+				$level = \OCP\Util::DEBUG;
+				break;
+			case 'info':
+				$level = \OCP\Util::INFO;
+				break;
+			case 'warn':
+				$level = \OCP\Util::WARN;
+				break;
+			case 'fatal':
+				$level = \OCP\Util::FATAL;
+				break;
+			default:
+				$level = \OCP\Util::ERROR;
+				break;
 		}
 		\OCP\Util::writeLog($this->appName, $msg, $level);
 	}
