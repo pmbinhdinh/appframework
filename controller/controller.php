@@ -64,8 +64,8 @@ abstract class Controller {
 	 * @return mixed the content of the array
 	 */
 	public function params($key, $default=null){
-		return isset($this->request->parameters[$key]) 
-			? $this->request->parameters[$key] 
+		return isset($this->request->parameters[$key])
+			? $this->request->parameters[$key]
 			: $default;
 	}
 
@@ -154,6 +154,7 @@ abstract class Controller {
 
 	/**
 	 * Shortcut for rendering a JSON response
+	 * @deprecated use return new JSONResponse($data, $statusCode) instead
 	 * @param array $data the PHP array that will be put into the JSON data index
 	 * empty by default
 	 * @param string $errorMsg If you want to return an error message, pass one

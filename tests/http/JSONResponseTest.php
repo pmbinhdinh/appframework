@@ -76,7 +76,7 @@ class JSONResponseTest extends \PHPUnit_Framework_TestCase {
 		$params = array('test' => 'hi');
 		$this->json->setParams($params);
 
-		$expected = '{"status":"success","data":{"test":"hi"}}';
+		$expected = '{"data":{"test":"hi"},"status":"success"}';
 
 		$this->assertEquals($expected, $this->json->render());
 	}
@@ -87,7 +87,7 @@ class JSONResponseTest extends \PHPUnit_Framework_TestCase {
 		$this->json->setParams($params);
 		$this->json->setErrorMessage('kaputt');
 
-		$expected = '{"status":"error","data":{"test":"hi"},"msg":"kaputt"}';
+		$expected = '{"data":{"test":"hi"},"status":"error","msg":"kaputt"}';
 
 		$this->assertEquals($expected, $this->json->render());
 	}
@@ -97,6 +97,16 @@ class JSONResponseTest extends \PHPUnit_Framework_TestCase {
 	public function testShouldHaveXContentHeaderByDefault() {
 		$headers = $this->json->getHeaders();
 		$this->assertEquals('nosniff', $headers['X-Content-Type-Options']);
+	}
+
+
+	public function testConstructorAllowsToSetData() {
+		$data = array('hi');
+		$code = 300;
+		$response = new JSONResponse($data, $code);
+
+		$expected = '["hi"]';
+		$this->assertEquals($expected, $response->render());
 	}
 
 }
