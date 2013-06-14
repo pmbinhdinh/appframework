@@ -40,13 +40,15 @@ class SecurityMiddlewareTest extends \PHPUnit_Framework_TestCase {
 	private $controller;
 	private $secException;
 	private $secAjaxException;
+	private $request;
 
 	public function setUp() {
 		$api = $this->getMock('OCA\AppFramework\Core\API', array(), array('test'));
 		$this->controller = $this->getMock('OCA\AppFramework\Controller\Controller',
 				array(), array($api, new Request()));
 
-		$this->middleware = new SecurityMiddleware($api);
+		$this->request = new Request();
+		$this->middleware = new SecurityMiddleware($api, $this->request);
 		$this->secException = new SecurityException('hey', false);
 		$this->secAjaxException = new SecurityException('hey', true);
 	}
@@ -72,7 +74,7 @@ class SecurityMiddlewareTest extends \PHPUnit_Framework_TestCase {
 				->method('activateNavigationEntry');
 		}
 
-		$sec = new SecurityMiddleware($api);
+		$sec = new SecurityMiddleware($api, $this->request);
 		$sec->beforeController('\OCA\AppFramework\Middleware\Security\SecurityMiddlewareTest', $method);
 	}
 
@@ -106,7 +108,7 @@ class SecurityMiddlewareTest extends \PHPUnit_Framework_TestCase {
 				->method('passesCSRFCheck')
 				->will($this->returnValue(false));
 
-		$sec = new SecurityMiddleware($api);
+		$sec = new SecurityMiddleware($api, $this->request);
 
 		try {
 			$sec->beforeController('\OCA\AppFramework\Middleware\Security\SecurityMiddlewareTest',
@@ -151,7 +153,7 @@ class SecurityMiddlewareTest extends \PHPUnit_Framework_TestCase {
 				->method($test)
 				->will($this->returnValue(false));
 
-		$sec = new SecurityMiddleware($api);
+		$sec = new SecurityMiddleware($api, $this->request);
 
 		try {
 			$sec->beforeController('\OCA\AppFramework\Middleware\Security\SecurityMiddlewareTest',
@@ -263,7 +265,7 @@ class SecurityMiddlewareTest extends \PHPUnit_Framework_TestCase {
 				->method('isLoggedIn')
 				->will($this->returnValue(true));
 
-		$sec = new SecurityMiddleware($api);
+		$sec = new SecurityMiddleware($api, $this->request);
 		$sec->beforeController('\OCA\AppFramework\Middleware\Security\SecurityMiddlewareTest',
 				'testNoChecks');
 	}
@@ -275,7 +277,7 @@ class SecurityMiddlewareTest extends \PHPUnit_Framework_TestCase {
 				->method($expects)
 				->will($this->returnValue(!$shouldFail));
 
-		$sec = new SecurityMiddleware($api);
+		$sec = new SecurityMiddleware($api, $this->request);
 
 		if($shouldFail){
 			$this->setExpectedException('\OCA\AppFramework\Middleware\Security\SecurityException');
@@ -388,5 +390,13 @@ class SecurityMiddlewareTest extends \PHPUnit_Framework_TestCase {
 		$this->assertTrue($response instanceof JSONResponse);
 	}
 
+
+	public function testAfterExceptionSetsAuthorizationHeader() {
+		$ex = new SecurityException('hi', true, Http::STATUS_UNAUTHORIZED);
+		$response = $this->middleware->afterException($this->controller, 'test', $ex);
+		$headers = $response->getHeaders();
+
+		$this->assertEquals('Basic realm="Authorisation Required"', $headers['WWW-Authenticate']);
+	}
 
 }

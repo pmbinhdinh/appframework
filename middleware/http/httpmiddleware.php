@@ -52,10 +52,11 @@ class HttpMiddleware extends Middleware {
 	 */
 	public function beforeController($controller, $methodName){
 		if(isset($this->request->server['PHP_AUTH_USER']) && isset($this->request->server['PHP_AUTH_PW'])) {
-			$this->api->login(
+			$loggedIn = $this->api->login(
 				$this->request->server['PHP_AUTH_USER'],
 				$this->request->server['PHP_AUTH_PW']
 			);
+
 			$this->isRESTAuth = true;
 		}
 	}

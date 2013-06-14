@@ -26,6 +26,7 @@ namespace OCA\AppFramework\Middleware\Security;
 
 use OCA\AppFramework\Controller\Controller;
 use OCA\AppFramework\Http\Http;
+use OCA\AppFramework\Http\Request;
 use OCA\AppFramework\Http\Response;
 use OCA\AppFramework\Http\JSONResponse;
 use OCA\AppFramework\Http\RedirectResponse;
@@ -44,12 +45,14 @@ class SecurityMiddleware extends Middleware {
 
 	private $security;
 	private $api;
+	private $request;
 
 	/**
 	 * @param API $api an instance of the api
 	 */
-	public function __construct(API $api){
+	public function __construct(API $api, Request $request){
 		$this->api = $api;
+		$this->request = $request;
 	}
 
 
@@ -118,22 +121,26 @@ class SecurityMiddleware extends Middleware {
 
 			if($exception->isAjax()){
 
-				// ajax responses get an ajax error message
-				$response = new JSONResponse();
-				$response->setStatus($exception->getCode());
-				$response->setErrorMessage($exception->getMessage(),
-						get_class($controller) . '->' . $methodName);
-				$this->api->log($exception->getMessage());
-				return $response;
-
+				$response = new JSONResponse(
+					array('message' => $exception->getMessage()),
+					$exception->getCode()
+				);
+				$this->api->log($exception->getMessage(), 'debug');
 			} else {
 
-				// normal error messages link to the index page
-				//$url = $this->api->linkToRoute('index')
 				$url = $this->api->linkToAbsolute('index.php', ''); // TODO: replace with link to route
-				$this->api->log($exception->getMessage());
-				return new RedirectResponse($url);
+				$response = new RedirectResponse($url);
+				$this->api->log($exception->getMessage(), 'debug');
 			}
+
+			// in case of HTTP auth we need to send the appropriate headers
+			if(!isset($this->request->server['PHP_AUTH_USER'])
+				&& $exception->getCode() === Http::STATUS_UNAUTHORIZED) {
+				$response->addHeader('WWW-Authenticate',
+					'Basic realm="Authorisation Required"');
+			}
+			return $response;
+
 		} else  {
 			throw $exception;
 		}
