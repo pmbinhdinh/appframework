@@ -14,7 +14,7 @@ routes:
     url: /folders/{folderId}/open
     verb: GET';
 
-		$this->assertSimpleRoute($yaml, 'folders#open', 'GET', '/folders/{folderId}/open', 'FoldersController', 'open');
+		$this->assertSimpleRoute($yaml, 'folders.open', 'GET', '/folders/{folderId}/open', 'FoldersController', 'open');
 	}
 
 	public function testSimpleRouteWithMissingVerb() {
@@ -23,7 +23,7 @@ routes:
   - name: folders#open
     url: /folders/{folderId}/open';
 
-		$this->assertSimpleRoute($yaml, 'folders#open', 'GET', '/folders/{folderId}/open', 'FoldersController', 'open');
+		$this->assertSimpleRoute($yaml, 'folders.open', 'GET', '/folders/{folderId}/open', 'FoldersController', 'open');
 	}
 
 	public function testSimpleRouteWithLowercaseVerb() {
@@ -33,7 +33,7 @@ routes:
     url: /folders/{folderId}/open
     verb: delete';
 
-		$this->assertSimpleRoute($yaml, 'folders#open', 'DELETE', '/folders/{folderId}/open', 'FoldersController', 'open');
+		$this->assertSimpleRoute($yaml, 'folders.open', 'DELETE', '/folders/{folderId}/open', 'FoldersController', 'open');
 	}
 
 	/**
@@ -63,7 +63,7 @@ routes:
     url: /folders/{folderId}/open
     verb: delete';
 
-		$this->assertSimpleRoute($yaml, 'admin_folders#open_current', 'DELETE', '/folders/{folderId}/open', 'AdminFoldersController', 'openCurrent');
+		$this->assertSimpleRoute($yaml, 'admin_folders.open_current', 'DELETE', '/folders/{folderId}/open', 'AdminFoldersController', 'openCurrent');
 	}
 
 	public function testResource() {
@@ -123,37 +123,37 @@ resources:
 		$router
 			->expects($this->at(0))
 			->method('create')
-			->with( $this->equalTo('app1#'.$resourceName.'#index'), $this->equalTo($url))
+			->with( $this->equalTo('app1.'.$resourceName.'.index'), $this->equalTo($url))
 			->will($this->returnValue($indexRoute));
 
 		$router
 			->expects($this->at(1))
 			->method('create')
-			->with( $this->equalTo('app1#'.$resourceName.'#show'), $this->equalTo($urlWithParam))
+			->with( $this->equalTo('app1.'.$resourceName.'.show'), $this->equalTo($urlWithParam))
 			->will($this->returnValue($showRoute));
 
 		$router
 			->expects($this->at(2))
 			->method('create')
-			->with( $this->equalTo('app1#'.$resourceName.'#new'), $this->equalTo($url.'/new'))
+			->with( $this->equalTo('app1.'.$resourceName.'.new'), $this->equalTo($url.'/new'))
 			->will($this->returnValue($newRoute));
 
 		$router
 			->expects($this->at(3))
 			->method('create')
-			->with( $this->equalTo('app1#'.$resourceName.'#create'), $this->equalTo($url))
+			->with( $this->equalTo('app1.'.$resourceName.'.create'), $this->equalTo($url))
 			->will($this->returnValue($createRoute));
 
 		$router
 			->expects($this->at(4))
 			->method('create')
-			->with( $this->equalTo('app1#'.$resourceName.'#update'), $this->equalTo($urlWithParam))
+			->with( $this->equalTo('app1.'.$resourceName.'.update'), $this->equalTo($urlWithParam))
 			->will($this->returnValue($updateRoute));
 
 		$router
 			->expects($this->at(5))
 			->method('create')
-			->with( $this->equalTo('app1#'.$resourceName.'#destroy'), $this->equalTo($urlWithParam))
+			->with( $this->equalTo('app1.'.$resourceName.'.destroy'), $this->equalTo($urlWithParam))
 			->will($this->returnValue($destroyRoute));
 
 		// load route configuration
@@ -194,26 +194,8 @@ resources:
 # sample routes.yaml for ownCloud
 #
 # the section simple describes one route
+
 routes:
-    -   name: news_folders:
-        url: /folders
-        verb: GET
-        controller: FolderController
-        action: folders
-
-    -   name: news_folders_open:
-        url: '/folders/{folderId}/open'
-        verb: GET
-        controller: FolderController
-        action: open
-
-    -  url: '/folders/{folderId}/open'
-       verb: GET
-       controller: FolderController
-       action: open
-       # name is generated controller+#+action
-
-super-simple:
         - name: folders#open
           url: /folders/{folderId}/open
           verb: GET

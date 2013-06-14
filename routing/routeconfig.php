@@ -95,7 +95,7 @@ class RouteConfig {
 
 			// register the route
 			$handler = new RouteActionHandler($this->container, $controllerName, $actionName);
-			$this->router->create($this->appName.'#'.$name, $url)->method($verb)->action($handler);
+			$this->router->create($this->appName.'.'.$controller.'.'.$action, $url)->method($verb)->action($handler);
 		}
 	}
 
@@ -144,7 +144,7 @@ class RouteConfig {
 				$controllerName = $this->buildControllerName($controller);
 				$actionName = $this->buildActionName($method);
 
-				$routeName = $this->appName . '#' . strtolower($resource) . '#' . strtolower($method);
+				$routeName = $this->appName . '.' . strtolower($resource) . '.' . strtolower($method);
 
 				$this->router->create($routeName, $url)->method($verb)->action(
 					new RouteActionHandler($this->container, $controllerName, $actionName)
