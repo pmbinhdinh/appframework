@@ -169,12 +169,12 @@ class EntityTest extends \PHPUnit_Framework_TestCase {
 		$this->assertTrue($entity instanceof TestEntity);
 	}
 
-	public function testToSlug(){
+	public function testSlugify(){
 		$entity = new TestEntity();
 		$entity->setName('Slugify this!');
-		$this->assertEquals('slugify-this', $entity->toSlug('name'));
+		$this->assertEquals('slugify-this', $entity->slugify('name'));
 		$entity->setName('°!"§$%&/()=?`´ß\}][{³²#\'+~*-_.:,;<>|äöüÄÖÜSlugify this!');
-		$this->assertEquals('slugify-this', $entity->toSlug('name'));
+		$this->assertEquals('slugify-this', $entity->slugify('name'));
 	}
 
 

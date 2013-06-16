@@ -188,7 +188,7 @@ abstract class Entity {
 	 * @param string $attributeName the name of the attribute, which value should be slugified
 	 * @return string slugified value
 	 */
-	public function toSlug($attributeName){
+	public function slugify($attributeName){
 		// toSlug should only work for existing attributes
 		if(property_exists($this, $attributeName)){
 			$value = $this->$attributeName;
