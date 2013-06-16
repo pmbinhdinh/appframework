@@ -185,6 +185,7 @@ abstract class Entity {
 
 	/**
 	 * Slugify the value of a given attribute
+	 * Warning: This doesn't result in a unique value
 	 * @param string $attributeName the name of the attribute, which value should be slugified
 	 * @return string slugified value
 	 */
