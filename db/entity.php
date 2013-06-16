@@ -183,8 +183,24 @@ abstract class Entity {
 	}
 
 
-
-
-
+	/**
+	 * Slugify the value of a given attribute
+	 * @param string $attributeName the name of the attribute, which value should be slugified
+	 * @return string slugified value
+	 */
+	public function toSlug($attributeName){
+		// toSlug should only work for existing attributes
+		if(property_exists($this, $attributeName)){
+			$value = $this->$attributeName;
+			// replace everything except alphanumeric with a single '-'
+			$value = preg_replace('/[^A-Za-z0-9]+/', '-', $value);
+			$value = strtolower($value);
+			// trim '-'
+			return trim($value, '-');
+		} else {
+			throw new \BadFunctionCallException($attributeName .
+				' is not a valid attribute');
+		}
+	}
 
 }
