@@ -4,7 +4,9 @@
  * ownCloud - App Framework
  *
  * @author Bernhard Posselt
+ * @author Morris Jobke
  * @copyright 2012 Bernhard Posselt nukeawhale@gmail.com
+ * @copyright 2013 Morris Jobke morris.jobke@gmail.com
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
@@ -158,6 +160,7 @@ abstract class Mapper {
 	/**
 	 * Returns an db result and throws exceptions when there are more or less
 	 * results
+	 * @see findEntity
 	 * @param string $sql the sql query
 	 * @param array $params the parameters of the sql query
 	 * @throws DoesNotExistException if the item does not exist
@@ -194,4 +197,60 @@ abstract class Mapper {
 		return $query->execute($params);
 	}
 
+	/**
+	 * Creates an entity from a row. Automatically determines the entity class
+	 * from the current mapper name (MyEntityMapper -> MyEntity)
+	 * @param array $row the row which should be converted to an entity
+	 * @return Entity the entity
+	 */
+	protected function mapRowToEntity($row) {
+		$class = get_class($this);
+		$entityName = str_replace('Mapper', '', $class);
+		$entity = new $entityName();
+		return $entity->fromRow($row);
+	}
+
+	/**
+	 * Runs a sql query and returns an array of entities
+	 * @param string $sql the prepare string
+	 * @param array $params the params which should replace the ? in the sql query
+	 * @param int $limit the maximum number of rows
+	 * @param int $offset from which row we want to start
+	 * @return array all fetched entities
+	 */
+	protected function findEntities($sql, array $params=array(), $limit=null, $offset=null) {
+		$result = $this->execute($sql, $params, $limit, $offset);
+
+		$entities = array();
+		while($row = $result->fetchRow()){
+			$entity = $this->mapRowToEntity($row);
+			array_push($entities, $entity);
+		}
+		return $entities;
+	}
+
+	/**
+	 * Returns an db result and throws exceptions when there are more or less
+	 * results
+	 * @param string $sql the sql query
+	 * @param array $params the parameters of the sql query
+	 * @throws DoesNotExistException if the item does not exist
+	 * @throws MultipleObjectsReturnedException if more than one item exist
+	 * @return array the result as row
+	 */
+	protected function findEntity($sql, $params){
+		$result = $this->execute($sql, $params);
+		$row = $result->fetchRow();
+
+		if($row === false){
+			throw new DoesNotExistException('No matching entry found');
+		}
+		$row2 = $result->fetchRow();
+		//MDB2 returns null, PDO and doctrine false when no row is available
+		if( ! ($row2 === false || $row2 === null )) {
+			throw new MultipleObjectsReturnedException('More than one result');
+		} else {
+			return $this->mapRowToEntity($row);
+		}
+	}
 }

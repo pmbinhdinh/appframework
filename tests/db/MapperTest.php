@@ -31,7 +31,7 @@ use OCA\AppFramework\Utility\MapperTestUtility;
 require_once(__DIR__ . "/../classloader.php");
 
 
-class MapperTestEntity extends Entity {
+class Example extends Entity {
 	public $preName;
 	public $email;
 };
@@ -40,6 +40,7 @@ class MapperTestEntity extends Entity {
 class ExampleMapper extends Mapper {
 	public function __construct(API $api){ parent::__construct($api, 'table'); }
 	public function find($table, $id){ return $this->findOneQuery($table, $id); }
+	public function findOneEntity($table, $id){ return $this->findEntity($table, $id); }
 	public function findAll($table){ return $this->findAllQuery($table); }
 	public function pDeleteQuery($table, $id){ $this->deleteQuery($table, $id); }
 }
@@ -70,6 +71,15 @@ class MapperTest extends MapperTestUtility {
 		$this->mapper->find($sql, $params);
 	}
 
+	public function testFindEntity(){
+		$sql = 'hi';
+		$params = array('jo');
+		$rows = array(
+			array('hi')
+		);
+		$row = $this->setMapperResult($sql, $params, $rows);
+		$this->mapper->findOneEntity($sql, $params);
+	}
 
 	public function testFindNotFound(){
 		$sql = 'hi';
@@ -81,6 +91,15 @@ class MapperTest extends MapperTestUtility {
 		$this->mapper->find($sql, $params);
 	}
 
+	public function testFindEntityNotFound(){
+		$sql = 'hi';
+		$params = array('jo');
+		$rows = array();
+		$row = $this->setMapperResult($sql, $params, $rows);
+		$this->setExpectedException(
+			'\OCA\AppFramework\Db\DoesNotExistException');
+		$this->mapper->findOneEntity($sql, $params);
+	}
 
 	public function testFindMultiple(){
 		$sql = 'hi';
@@ -88,10 +107,22 @@ class MapperTest extends MapperTestUtility {
 		$rows = array(
 			array('jo'), array('ho')
 		);
-		$row = $this->setMapperResult($sql, $params, $rows);		
+		$row = $this->setMapperResult($sql, $params, $rows);
 		$this->setExpectedException(
 			'\OCA\AppFramework\Db\MultipleObjectsReturnedException');
 		$this->mapper->find($sql, $params);
+	}
+
+	public function testFindEntityMultiple(){
+		$sql = 'hi';
+		$params = array('jo');
+		$rows = array(
+			array('jo'), array('ho')
+		);
+		$row = $this->setMapperResult($sql, $params, $rows);
+		$this->setExpectedException(
+			'\OCA\AppFramework\Db\MultipleObjectsReturnedException');
+		$this->mapper->findOneEntity($sql, $params);
 	}
 
 
@@ -100,7 +131,7 @@ class MapperTest extends MapperTestUtility {
 		$params = array(2);
 
 		$this->setMapperResult($sql, $params);
-		$entity = new MapperTestEntity();
+		$entity = new Example();
 		$entity->setId($params[0]);
 
 		$this->mapper->delete($entity);
@@ -117,7 +148,7 @@ class MapperTest extends MapperTestUtility {
 		$sql = 'INSERT INTO `*PREFIX*table`(`pre_name`,`email`) ' .
 				'VALUES(?,?)';
 		$params = array('john', 'my@email');
-		$entity = new MapperTestEntity();
+		$entity = new Example();
 		$entity->setPreName($params[0]);
 		$entity->setEmail($params[1]);
 
@@ -137,7 +168,7 @@ class MapperTest extends MapperTestUtility {
 		$sql = 'INSERT INTO `*PREFIX*table`(`pre_name`,`email`) ' .
 				'VALUES(?,?)';
 		$params = array('john', 'my@email');
-		$entity = new MapperTestEntity();
+		$entity = new Example();
 		$entity->setPreName($params[0]);
 		$entity->setEmail($params[1]);
 
@@ -157,7 +188,7 @@ class MapperTest extends MapperTestUtility {
 				'WHERE `id` = ?';
 
 		$params = array('john', 'my@email', 1);
-		$entity = new MapperTestEntity();
+		$entity = new Example();
 		$entity->setPreName($params[0]);
 		$entity->setEmail($params[1]);
 		$entity->setId($params[2]);
@@ -176,7 +207,7 @@ class MapperTest extends MapperTestUtility {
 				'WHERE `id` = ?';
 
 		$params = array('john', 'my@email');
-		$entity = new MapperTestEntity();
+		$entity = new Example();
 		$entity->setPreName($params[0]);
 		$entity->setEmail($params[1]);
 
