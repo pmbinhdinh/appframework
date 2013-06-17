@@ -42,6 +42,8 @@ class ExampleMapper extends Mapper {
 	public function find($table, $id){ return $this->findOneQuery($table, $id); }
 	public function findOneEntity($table, $id){ return $this->findEntity($table, $id); }
 	public function findAll($table){ return $this->findAllQuery($table); }
+	public function findAllEntities($table){ return $this->findEntities($table); }
+	public function mapRow($row){ return $this->mapRowToEntity($row); }
 	public function pDeleteQuery($table, $id){ $this->deleteQuery($table, $id); }
 }
 
@@ -213,7 +215,53 @@ class MapperTest extends MapperTestUtility {
 
 		$this->setExpectedException('InvalidArgumentException');
 
-		$this->mapper->update($entity);	
+		$this->mapper->update($entity);
 	}
 
+
+	public function testMapRowToEntity(){
+		$entity1 = $this->mapper->mapRow(array('pre_name' => 'test1', 'email' => 'test2'));
+		$entity2 = new Example();
+		$entity2->setPreName('test1');
+		$entity2->setEmail('test2');
+		$entity2->resetUpdatedFields();
+		$this->assertEquals($entity2, $entity1);
+	}
+
+	public function testFindEntities(){
+		$sql = 'hi';
+		$rows = array(
+			array('pre_name' => 'hi')
+		);
+		$entity = new Example();
+		$entity->setPreName('hi');
+		$entity->resetUpdatedFields();
+		$row = $this->setMapperResult($sql, array(), $rows);
+		$result = $this->mapper->findAllEntities($sql);
+		$this->assertEquals(array($entity), $result);
+	}
+
+	public function testFindEntitiesNotFound(){
+		$sql = 'hi';
+		$rows = array();
+		$row = $this->setMapperResult($sql, array(), $rows);
+		$result = $this->mapper->findAllEntities($sql);
+		$this->assertEquals(array(), $result);
+	}
+
+	public function testFindEntitiesMultiple(){
+		$sql = 'hi';
+		$rows = array(
+			array('pre_name' => 'jo'), array('email' => 'ho')
+		);
+		$entity1 = new Example();
+		$entity1->setPreName('jo');
+		$entity1->resetUpdatedFields();
+		$entity2 = new Example();
+		$entity2->setEmail('ho');
+		$entity2->resetUpdatedFields();
+		$row = $this->setMapperResult($sql, array(), $rows);
+		$result = $this->mapper->findAllEntities($sql);
+		$this->assertEquals(array($entity1, $entity2), $result);
+	}
 }
