@@ -47,7 +47,8 @@ abstract class ControllerTestUtility extends TestUtility {
 			'CSRFExemption',
 			'IsAdminExemption',
 			'IsSubAdminExemption',
-			'IsLoggedInExemption'
+			'IsLoggedInExemption',
+			'API'
 		);
 
 		$possible = array_merge($standard, $valid);

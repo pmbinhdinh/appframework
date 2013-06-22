@@ -46,6 +46,7 @@ class SecurityMiddleware extends Middleware {
 	private $security;
 	private $api;
 	private $request;
+	private $isAPICall;
 
 	/**
 	 * @param API $api an instance of the api
@@ -77,6 +78,8 @@ class SecurityMiddleware extends Middleware {
 		} else {
 			$ajax = true;
 		}
+
+		$this->isAPICall = $annotationReader->hasAnnotation('API');
 
 		// security checks
 		if(!$annotationReader->hasAnnotation('IsLoggedInExemption')) {
@@ -134,8 +137,7 @@ class SecurityMiddleware extends Middleware {
 			}
 
 			// in case of HTTP auth we need to send the appropriate headers
-			if(!isset($this->request->server['PHP_AUTH_USER'])
-				&& $exception->getCode() === Http::STATUS_UNAUTHORIZED) {
+			if($this->isAPICall	&& $exception->getCode() === Http::STATUS_UNAUTHORIZED) {
 				$response->addHeader('WWW-Authenticate',
 					'Basic realm="Authorisation Required"');
 			}

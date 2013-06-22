@@ -391,12 +391,24 @@ class SecurityMiddlewareTest extends \PHPUnit_Framework_TestCase {
 	}
 
 
+	/**
+	 * @API
+	 * @CSRFExemption
+	 * @IsAdminExemption
+	 * @IsSubAdminExemption
+	 */
 	public function testAfterExceptionSetsAuthorizationHeader() {
-		$ex = new SecurityException('hi', true, Http::STATUS_UNAUTHORIZED);
+		try {
+			$this->middleware->beforeController('\OCA\AppFramework\Middleware\Security\SecurityMiddlewareTest',
+			'testAfterExceptionSetsAuthorizationHeader');
+		} catch(SecurityException $ex) {};
+
+		echo $ex->getMessage();
 		$response = $this->middleware->afterException($this->controller, 'test', $ex);
 		$headers = $response->getHeaders();
 
 		$this->assertEquals('Basic realm="Authorisation Required"', $headers['WWW-Authenticate']);
 	}
+
 
 }
