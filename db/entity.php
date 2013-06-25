@@ -62,6 +62,7 @@ abstract class Entity {
 			}
 			$this->$prop = $value;
 		}
+		return $this;
 	}
 
 	
