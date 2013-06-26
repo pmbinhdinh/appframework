@@ -30,7 +30,7 @@ describe '_ContainsQuery', ->
 		@q = _Query
 		@model = _Model
 		data1 =
-			name: 3
+			id: 3
 			name: 'donovan'
 
 		data2 =
