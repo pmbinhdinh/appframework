@@ -403,7 +403,6 @@ class SecurityMiddlewareTest extends \PHPUnit_Framework_TestCase {
 			'testAfterExceptionSetsAuthorizationHeader');
 		} catch(SecurityException $ex) {};
 
-		echo $ex->getMessage();
 		$response = $this->middleware->afterException($this->controller, 'test', $ex);
 		$headers = $response->getHeaders();
 
