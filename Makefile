@@ -35,10 +35,14 @@ dist: clean
 	git archive HEAD --format=zip --prefix=$(app_name)/ > $(package_name).zip
 
 
-test: unit
+test: unit-tests javascript-tests
 
 
-unit:
+javascript-tests:
+	cd js; make test
+
+
+unit-tests:
 	phpunit tests/
 
 	
