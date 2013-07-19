@@ -502,9 +502,7 @@ class API {
 	 * get the filesystem info
 	 *
 	 * @param string $path
-	 * @return array
-	 *
-	 * returns an associative array with the following keys:
+	 * @return array with the following keys:
 	 * - size
 	 * - mtime
 	 * - mimetype
