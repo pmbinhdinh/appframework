@@ -509,7 +509,7 @@ class API {
 	 * - encrypted
 	 * - versioned
 	 */
-	public static function getFileInfo($path) {
+	public function getFileInfo($path) {
 		return \OC\Files\Filesystem::getFileInfo($path);
 	}
 }
