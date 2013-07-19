@@ -497,4 +497,21 @@ class API {
 	public function logout() {
 		return \OCP\User::logout();
 	}
+
+	/**
+	 * get the filesystem info
+	 *
+	 * @param string $path
+	 * @return array
+	 *
+	 * returns an associative array with the following keys:
+	 * - size
+	 * - mtime
+	 * - mimetype
+	 * - encrypted
+	 * - versioned
+	 */
+	public static function getFileInfo($path) {
+		return \OC\Files\Filesystem::getFileInfo($path);
+	}
 }
