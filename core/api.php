@@ -512,4 +512,14 @@ class API {
 	public function getFileInfo($path) {
 		return \OC\Files\Filesystem::getFileInfo($path);
 	}
+
+	/**
+	 * get the absolute path of an file
+	 *
+	 * @param string $path the path inside ownCloud
+	 * @return string the absolute path (with fakeRoot)
+	 */
+	public function getAbsolutePath($path) {
+		return \OC\Files\Filesystem::getView()->getAbsolutePath($path);
+	}
 }
