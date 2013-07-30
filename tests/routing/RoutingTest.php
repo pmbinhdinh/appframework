@@ -1,5 +1,7 @@
 <?php
 
+namespace OCA\AppFramework\routing;
+
 use OCA\AppFramework\DependencyInjection\DIContainer;
 use OCA\AppFramework\routing\RouteConfig;
 
@@ -167,7 +169,7 @@ resources:
 	 * @param $verb
 	 * @param $controllerName
 	 * @param $actionName
-	 * @return PHPUnit_Framework_MockObject_MockObject
+	 * @return \PHPUnit_Framework_MockObject_MockObject
 	 */
 	private function mockRoute($verb, $controllerName, $actionName)
 	{
@@ -182,7 +184,7 @@ resources:
 		$route
 			->expects($this->exactly(1))
 			->method('action')
-			->with($this->equalTo(new OCA\Appframework\routing\RouteActionHandler($container, $controllerName, $actionName)))
+			->with($this->equalTo(new RouteActionHandler($container, $controllerName, $actionName)))
 			->will($this->returnValue($route));
 		return $route;
 	}
