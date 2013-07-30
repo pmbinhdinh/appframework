@@ -114,7 +114,6 @@ resources:
 		// route mocks
 		$indexRoute = $this->mockRoute('GET', $controllerName, 'index');
 		$showRoute = $this->mockRoute('GET', $controllerName, 'show');
-		$newRoute = $this->mockRoute('GET', $controllerName, 'newAction');
 		$createRoute = $this->mockRoute('POST', $controllerName, 'create');
 		$updateRoute = $this->mockRoute('PUT', $controllerName, 'update');
 		$destroyRoute = $this->mockRoute('DELETE', $controllerName, 'destroy');
@@ -137,23 +136,17 @@ resources:
 		$router
 			->expects($this->at(2))
 			->method('create')
-			->with( $this->equalTo('app1.'.$resourceName.'.new'), $this->equalTo($url.'/new'))
-			->will($this->returnValue($newRoute));
-
-		$router
-			->expects($this->at(3))
-			->method('create')
 			->with( $this->equalTo('app1.'.$resourceName.'.create'), $this->equalTo($url))
 			->will($this->returnValue($createRoute));
 
 		$router
-			->expects($this->at(4))
+			->expects($this->at(3))
 			->method('create')
 			->with( $this->equalTo('app1.'.$resourceName.'.update'), $this->equalTo($urlWithParam))
 			->will($this->returnValue($updateRoute));
 
 		$router
-			->expects($this->at(5))
+			->expects($this->at(4))
 			->method('create')
 			->with( $this->equalTo('app1.'.$resourceName.'.destroy'), $this->equalTo($urlWithParam))
 			->will($this->returnValue($destroyRoute));

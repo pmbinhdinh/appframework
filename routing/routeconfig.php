@@ -116,7 +116,6 @@ class RouteConfig {
 		$actions = array(
 			array('name' => 'index', 'verb' => 'GET', 'on-collection' => true),
 			array('name' => 'show', 'verb' => 'GET'),
-			array('name' => 'new', 'verb' => 'GET', 'on-collection' => true, 'url-postfix' => 'new'),
 			array('name' => 'create', 'verb' => 'POST', 'on-collection' => true),
 			array('name' => 'update', 'verb' => 'PUT'),
 			array('name' => 'destroy', 'verb' => 'DELETE'),
@@ -178,19 +177,7 @@ class RouteConfig {
 	 * @return string
 	 */
 	private function buildActionName($action) {
-		$actionName = $this->underScoreToCamelCase($action);
-		$keywords = array('__halt_compiler', 'abstract', 'and', 'array', 'as', 'break', 'callable', 'case', 'catch',
-			'class', 'clone', 'const', 'continue', 'declare', 'default', 'die', 'do', 'echo', 'else', 'elseif',
-			'empty', 'enddeclare', 'endfor', 'endforeach', 'endif', 'endswitch', 'endwhile', 'eval', 'exit', 'extends',
-			'final', 'for', 'foreach', 'function', 'global', 'goto', 'if', 'implements', 'include', 'include_once',
-			'instanceof', 'insteadof', 'interface', 'isset', 'list', 'namespace', 'new', 'or', 'print', 'private',
-			'protected', 'public', 'require', 'require_once', 'return', 'static', 'switch', 'throw', 'trait', 'try',
-			'unset', 'use', 'var', 'while', 'xor');
-
-		if (in_array($action, $keywords)) {
-			return $action . 'Action';
-		}
-		return $actionName;
+		return $this->underScoreToCamelCase($action);
 	}
 
 	/**
