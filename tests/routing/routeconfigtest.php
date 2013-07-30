@@ -95,7 +95,7 @@ resources:
 		$router
 			->expects($this->once())
 			->method('create')
-			->with( $this->equalTo('app1#'.$name), $this->equalTo($url))
+			->with( $this->equalTo('app1.'.$name), $this->equalTo($url))
 			->will($this->returnValue($route));
 
 		// load route configuration
@@ -112,7 +112,7 @@ resources:
 		// route mocks
 		$indexRoute = $this->mockRoute('GET', $controllerName, 'index');
 		$showRoute = $this->mockRoute('GET', $controllerName, 'show');
-		$newRoute = $this->mockRoute('GET', $controllerName, 'new');
+		$newRoute = $this->mockRoute('GET', $controllerName, 'newAction');
 		$createRoute = $this->mockRoute('POST', $controllerName, 'create');
 		$updateRoute = $this->mockRoute('PUT', $controllerName, 'update');
 		$destroyRoute = $this->mockRoute('DELETE', $controllerName, 'destroy');
@@ -172,7 +172,7 @@ resources:
 	private function mockRoute($verb, $controllerName, $actionName)
 	{
 		$container = new DIContainer('app1');
-		$route = $this->getMock("\OC_Route", array('method', 'action'));
+		$route = $this->getMock("\OC_Route", array('method', 'action'), array(), '', false);
 		$route
 			->expects($this->exactly(1))
 			->method('method')
