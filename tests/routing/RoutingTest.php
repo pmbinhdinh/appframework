@@ -1,5 +1,7 @@
 <?php
 
+namespace OCA\AppFramework\routing;
+
 use OCA\AppFramework\DependencyInjection\DIContainer;
 use OCA\AppFramework\routing\RouteConfig;
 
@@ -95,7 +97,7 @@ resources:
 		$router
 			->expects($this->once())
 			->method('create')
-			->with( $this->equalTo('app1#'.$name), $this->equalTo($url))
+			->with( $this->equalTo('app1.'.$name), $this->equalTo($url))
 			->will($this->returnValue($route));
 
 		// load route configuration
@@ -112,7 +114,6 @@ resources:
 		// route mocks
 		$indexRoute = $this->mockRoute('GET', $controllerName, 'index');
 		$showRoute = $this->mockRoute('GET', $controllerName, 'show');
-		$newRoute = $this->mockRoute('GET', $controllerName, 'new');
 		$createRoute = $this->mockRoute('POST', $controllerName, 'create');
 		$updateRoute = $this->mockRoute('PUT', $controllerName, 'update');
 		$destroyRoute = $this->mockRoute('DELETE', $controllerName, 'destroy');
@@ -135,23 +136,17 @@ resources:
 		$router
 			->expects($this->at(2))
 			->method('create')
-			->with( $this->equalTo('app1.'.$resourceName.'.new'), $this->equalTo($url.'/new'))
-			->will($this->returnValue($newRoute));
-
-		$router
-			->expects($this->at(3))
-			->method('create')
 			->with( $this->equalTo('app1.'.$resourceName.'.create'), $this->equalTo($url))
 			->will($this->returnValue($createRoute));
 
 		$router
-			->expects($this->at(4))
+			->expects($this->at(3))
 			->method('create')
 			->with( $this->equalTo('app1.'.$resourceName.'.update'), $this->equalTo($urlWithParam))
 			->will($this->returnValue($updateRoute));
 
 		$router
-			->expects($this->at(5))
+			->expects($this->at(4))
 			->method('create')
 			->with( $this->equalTo('app1.'.$resourceName.'.destroy'), $this->equalTo($urlWithParam))
 			->will($this->returnValue($destroyRoute));
@@ -167,12 +162,12 @@ resources:
 	 * @param $verb
 	 * @param $controllerName
 	 * @param $actionName
-	 * @return PHPUnit_Framework_MockObject_MockObject
+	 * @return \PHPUnit_Framework_MockObject_MockObject
 	 */
 	private function mockRoute($verb, $controllerName, $actionName)
 	{
 		$container = new DIContainer('app1');
-		$route = $this->getMock("\OC_Route", array('method', 'action'));
+		$route = $this->getMock("\OC_Route", array('method', 'action'), array(), '', false);
 		$route
 			->expects($this->exactly(1))
 			->method('method')
@@ -182,7 +177,7 @@ resources:
 		$route
 			->expects($this->exactly(1))
 			->method('action')
-			->with($this->equalTo(new OCA\Appframework\routing\RouteActionHandler($container, $controllerName, $actionName)))
+			->with($this->equalTo(new RouteActionHandler($container, $controllerName, $actionName)))
 			->will($this->returnValue($route));
 		return $route;
 	}

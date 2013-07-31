@@ -116,7 +116,6 @@ class RouteConfig {
 		$actions = array(
 			array('name' => 'index', 'verb' => 'GET', 'on-collection' => true),
 			array('name' => 'show', 'verb' => 'GET'),
-			array('name' => 'new', 'verb' => 'GET', 'on-collection' => true, 'url-postfix' => 'new'),
 			array('name' => 'create', 'verb' => 'POST', 'on-collection' => true),
 			array('name' => 'update', 'verb' => 'PUT'),
 			array('name' => 'destroy', 'verb' => 'DELETE'),
