@@ -515,11 +515,22 @@ class API {
 
 	/**
 	 * get the absolute path of an file
+	 * @deprecated
+	 * @see getView
 	 *
 	 * @param string $path the path inside ownCloud
 	 * @return string the absolute path (with fakeRoot)
 	 */
 	public function getAbsolutePath($path) {
 		return \OC\Files\Filesystem::getView()->getAbsolutePath($path);
+	}
+
+	/**
+	 * get the view
+	 *
+	 * @return object View instance
+	 */
+	public function getView() {
+		return \OC\Files\Filesystem::getView();
 	}
 }
