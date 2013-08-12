@@ -26,7 +26,7 @@ namespace OCA\AppFramework\Http;
 
 
 /**
- * Baseclass for responses. Also used to just send headers
+ * Base class for responses. Also used to just send headers
  */
 class Response {
 

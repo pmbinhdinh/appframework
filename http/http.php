@@ -166,7 +166,7 @@ class Http {
 	/**
 	 * Gets the correct header
 	 * @param Http::CONSTANT $status the constant from the Http class
-	 * @param DateTime $lastModified formatted last modified date
+	 * @param \DateTime $lastModified formatted last modified date
 	 * @param string $Etag the etag
 	 */
 	public function getStatusHeader($status, \DateTime $lastModified=null, 

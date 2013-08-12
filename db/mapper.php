@@ -58,7 +58,7 @@ abstract class Mapper {
 
 	/**
 	 * Deletes an entity from the table
-	 * @param Entity $enttiy the entity that should be deleted
+	 * @param Entity $entity the entity that should be deleted
 	 */
 	public function delete(Entity $entity){
 		$sql = 'DELETE FROM `' . $this->tableName . '` WHERE `id` = ?';

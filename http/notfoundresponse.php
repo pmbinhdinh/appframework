@@ -26,7 +26,7 @@ namespace OCA\AppFramework\Http;
 
 
 /**
- * Pure hader response, Just return 404 status to the browser
+ * Pure header response, Just return 404 status to the browser
  */
 class NotFoundResponse extends Response {
 
