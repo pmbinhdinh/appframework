@@ -533,4 +533,14 @@ class API {
 	public function getView() {
 		return \OC\Files\Filesystem::getView();
 	}
+
+	/**
+	 * search the file base by mime type
+	 *
+	 * @param string $mimetype the mimetype to search for
+	 * @return array search results
+	 */
+	public function searchByMime($mimetype) {
+		return \OC\Files\Filesystem::searchByMime($mimetype);
+	}
 }
