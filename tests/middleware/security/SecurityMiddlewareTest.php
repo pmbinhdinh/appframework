@@ -28,6 +28,7 @@ use OCA\AppFramework\Http\Http;
 use OCA\AppFramework\Http\Request;
 use OCA\AppFramework\Http\RedirectResponse;
 use OCA\AppFramework\Http\JSONResponse;
+use OCA\AppFramework\Http\Response;
 use OCA\AppFramework\Middleware\Middleware;
 
 
@@ -409,5 +410,26 @@ class SecurityMiddlewareTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals('Basic realm="Authorisation Required"', $headers['WWW-Authenticate']);
 	}
 
+
+	/**
+	 * @API
+	 * @CSRFExemption
+	 * @IsAdminExemption
+	 * @IsSubAdminExemption
+	 * @IsLoggedInExemption
+	 */
+	public function testAfterControllerAPISetsCORSHeaders() {
+		$this->middleware->beforeController(
+			'\OCA\AppFramework\Middleware\Security\SecurityMiddlewareTest',
+			'testAfterControllerAPISetsCORSHeaders');
+		$response = $this->middleware->afterController(
+			$this->controller, 'testAfterControllerAPISetsCORSHeaders', new Response());
+
+		$headers = $response->getHeaders();
+
+		$this->assertEquals('*', $headers['Access-Control-Allow-Origin']);
+		$this->assertEquals('PUT, POST, GET, DELETE', $headers['Access-Control-Allow-Methods']);
+		$this->assertEquals('true', $headers['Access-Control-Allow-Credentials']);
+	}
 
 }

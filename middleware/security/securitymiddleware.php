@@ -110,6 +110,27 @@ class SecurityMiddleware extends Middleware {
 
 
 	/**
+	 * This is being run after a successful controllermethod call and allows
+	 * the manipulation of a Response object. The middleware is run in reverse order
+	 *
+	 * @param Controller $controller the controller that is being called
+	 * @param string $methodName the name of the method that will be called on
+	 *                           the controller
+	 * @param Response $response the generated response from the controller
+	 * @return Response a Response object
+	 */
+	public function afterController($controller, $methodName, Response $response){
+		// send CORS headers to allow access from webapps
+		if($this->isAPICall) {
+			$response->addHeader('Access-Control-Allow-Origin', '*');
+			$response->addHeader('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE');
+			$response->addHeader('Access-Control-Allow-Credentials', 'true');
+		}
+		return $response;
+	}
+
+
+	/**
 	 * If an SecurityException is being caught, ajax requests return a JSON error
 	 * response and non ajax requests redirect to the index
 	 * @param Controller $controller the controller that is being called
@@ -141,6 +162,7 @@ class SecurityMiddleware extends Middleware {
 				$response->addHeader('WWW-Authenticate',
 					'Basic realm="Authorisation Required"');
 			}
+
 			return $response;
 
 		} else  {
