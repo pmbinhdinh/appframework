@@ -137,7 +137,7 @@ class DIContainer extends \Pimple {
 			});
 		});
 
-		// enables the addScript function as script() function in twig
+		// enables the addScript function as style() function in twig
 		$this['TwigAddStyle'] = $this->share(function($c){
 			$api = $c['API'];
 			return new \Twig_SimpleFunction('style', function () use ($api) {
