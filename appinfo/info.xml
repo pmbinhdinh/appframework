@@ -3,7 +3,7 @@
 	<id>appframework</id>
 	<name>App Framework</name>
 	<description>Framework for creating apps</description>
-	<version>0.102</version>
+	<version>0.103</version>
 	<licence>AGPL</licence>
 	<author>Bernhard Posselt</author>
 	<require>5</require>
