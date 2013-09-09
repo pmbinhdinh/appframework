@@ -50,6 +50,7 @@ class TemplateResponse extends Response {
 		$this->api = $api;
 		$this->params = array();
 		$this->renderAs = 'user';
+		$this->addHeader('Content-Type', 'text/html');
 	}
 
 

@@ -154,4 +154,11 @@ class TemplateResponseTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals($render, $this->tpl->getRenderAs());
 	}
 
+
+	public function testGetHTMLHeaders(){
+		$headers = $this->tpl->getHeaders();
+		$this->assertEquals('text/html', $headers['Content-Type']);
+	}
+
+
 }
