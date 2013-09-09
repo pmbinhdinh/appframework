@@ -96,6 +96,7 @@ abstract class Mapper {
 
 			array_push($params, $entity->$getter());
 			$i++;
+
 		}
 
 		$sql = 'INSERT INTO `' . $this->tableName . '`(' .

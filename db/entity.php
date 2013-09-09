@@ -74,6 +74,35 @@ abstract class Entity {
 	}
 
 
+	protected function setter($name, $args) {
+		// setters should only work for existing attributes
+		if(property_exists($this, $name)){
+			$this->markFieldUpdated($name);
+
+			// if type definition exists, cast to correct type
+			if(array_key_exists($name, $this->fieldTypes)) {
+				settype($args[0], $this->fieldTypes[$name]);
+			}
+			$this->$name = $args[0];
+
+		} else {
+			throw new \BadFunctionCallException($name . 
+				' is not a valid attribute');
+		}
+	}
+
+
+	protected function getter($name) {
+		// getters should only work for existing attributes
+		if(property_exists($this, $name)){
+			return $this->$name;
+		} else {
+			throw new \BadFunctionCallException($name . 
+				' is not a valid attribute');
+		}
+	}
+
+
 	/**
 	 * Each time a setter is called, push the part after set
 	 * into an array: for instance setId will save Id in the 
@@ -81,31 +110,12 @@ abstract class Entity {
 	 * getter method
 	 */
 	public function __call($methodName, $args){
+		$attr = lcfirst( substr($methodName, 3) );
 
-		// setters
 		if(strpos($methodName, 'set') === 0){
-			$attr = lcfirst( substr($methodName, 3) );
-
-			// setters should only work for existing attributes
-			if(property_exists($this, $attr)){
-				$this->markFieldUpdated($attr);
-				$this->$attr = $args[0];	
-			} else {
-				throw new \BadFunctionCallException($attr . 
-					' is not a valid attribute');
-			}
-		
-		// getters
+			$this->setter($attr, $args);
 		} elseif(strpos($methodName, 'get') === 0) {
-			$attr = lcfirst( substr($methodName, 3) );
-
-			// getters should only work for existing attributes
-			if(property_exists($this, $attr)){
-				return $this->$attr;
-			} else {
-				throw new \BadFunctionCallException($attr . 
-					' is not a valid attribute');
-			}
+			return $this->getter($attr);
 		} else {
 			throw new \BadFunctionCallException($methodName . 
 					' does not exist');

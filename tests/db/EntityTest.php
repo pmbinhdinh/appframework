@@ -178,4 +178,11 @@ class EntityTest extends \PHPUnit_Framework_TestCase {
 	}
 
 
+	public function testSetterCasts() {
+		$entity = new TestEntity();
+		$entity->setId('3');
+		$this->assertSame(3, $entity->getId());
+	}
+
+
 }
