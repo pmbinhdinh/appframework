@@ -185,4 +185,11 @@ class EntityTest extends \PHPUnit_Framework_TestCase {
 	}
 
 
+	public function testSetterDoesNotCastOnNull() {
+		$entity = new TestEntity();
+		$entity->setId(null);
+		$this->assertSame(null, $entity->getId());
+	}
+
+
 }

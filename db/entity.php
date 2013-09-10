@@ -80,7 +80,7 @@ abstract class Entity {
 			$this->markFieldUpdated($name);
 
 			// if type definition exists, cast to correct type
-			if(array_key_exists($name, $this->fieldTypes)) {
+			if($args[0] !== null && array_key_exists($name, $this->fieldTypes)) {
 				settype($args[0], $this->fieldTypes[$name]);
 			}
 			$this->$name = $args[0];
