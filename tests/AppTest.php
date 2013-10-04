@@ -28,8 +28,10 @@ use OCA\AppFramework\Http\Request;
 use OCA\AppFramework\Core\API;
 use OCA\AppFramework\Middleware\MiddlewareDispatcher;
 
-
-require_once(__DIR__ . "/../3rdparty/Pimple/Pimple.php");
+// in OC6 pimple is already loaded
+if(!class_exists('Pimple')) {
+	require_once(__DIR__ . "/../3rdparty/Pimple/Pimple.php");
+}
 require_once(__DIR__ . "/classloader.php");
 
 

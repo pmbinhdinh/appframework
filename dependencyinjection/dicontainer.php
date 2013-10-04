@@ -38,7 +38,10 @@ use OCA\AppFramework\Utility\TimeFactory;
 
 // register 3rdparty autoloaders
 require_once __DIR__ . '/../3rdparty/SimplePie/autoloader.php';
-require_once __DIR__ . '/../3rdparty/Pimple/Pimple.php';
+// in OC6 pimple is already loaded
+if(!class_exists('Pimple')) {
+	require_once __DIR__ . '/../3rdparty/Pimple/Pimple.php';
+}
 require_once __DIR__ . '/../3rdparty/Twig/lib/Twig/Autoloader.php';
 \Twig_Autoloader::register();
 
