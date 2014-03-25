@@ -26,14 +26,14 @@ angular.module('OC').factory '_Request', ->
 
 	class Request
 
-		constructor: (@_$http, @_publisher, @_router) ->
+		constructor: (@_$http, @_publisher) ->
 			@_initialized = false
 			@_shelvedRequests = []
 
-			@_router.registerLoadedCallback =>
-				@_initialized = true
-				@_executeShelvedRequests()
-				@_shelvedRequests = []
+			#@_router.registerLoadedCallback =>
+			@_initialized = true
+			@_executeShelvedRequests()
+			@_shelvedRequests = []
 
 
 		request: (route, data={}) ->
@@ -63,7 +63,7 @@ angular.module('OC').factory '_Request', ->
 				@_shelveRequest(route, defaultData)
 				return
 
-			url = @_router.generate(route, defaultData.routeParams)
+			url = OC.generateUrl(route, defaultData.routeParams)
 
 			defaultConfig =
 				url: url
