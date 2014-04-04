@@ -29,7 +29,7 @@ abstract class Entity {
 	public $id;
 
 	private $_updatedFields = array();
-	private $_fieldTypes = array('id' => 'int');
+	private $_fieldTypes = array('id' => 'integer');
 
 
 	/**
