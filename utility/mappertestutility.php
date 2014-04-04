@@ -34,6 +34,12 @@ abstract class MapperTestUtility extends TestUtility {
 
 
 	protected $api;
+	private $query;
+	private $pdoResult;
+	private $queryAt;
+	private $prepareAt;
+	private $fetchAt;
+	private $iterators;
 	
 
 	/**
@@ -45,6 +51,13 @@ abstract class MapperTestUtility extends TestUtility {
 		$this->api = $this->getMock('\OCA\AppFramework\Core\API', 
 			array('prepareQuery', 'getInsertId'),
 			array('a'));
+
+		$this->query = $this->getMock('Query', array('execute', 'bindParam'));
+		$this->pdoResult = $this->getMock('Result', array('fetchRow'));
+		$this->queryAt = 0;
+		$this->prepareAt = 0;
+		$this->iterators = array();
+		$this->fetchAt = 0;
 	}
 
 
@@ -60,26 +73,27 @@ abstract class MapperTestUtility extends TestUtility {
 	protected function setMapperResult($sql, $arguments=array(), $returnRows=array(),
 		$limit=null, $offset=null){
 
-		$pdoResult = $this->getMock('Result', 
-			array('fetchRow'));
+		$this->iterators[] = new ArgumentIterator($returnRows);
 
-		$iterator = new ArgumentIterator($returnRows);
-		$pdoResult->expects($this->any())
+		$iterators = $this->iterators;
+		$fetchAt = $this->fetchAt;
+
+		$this->pdoResult->expects($this->any())
 			->method('fetchRow')
 			->will($this->returnCallback(
-				function() use ($iterator){
-					return $iterator->next();
+				function() use ($iterators, $fetchAt){
+					$iterator = $iterators[$fetchAt];
+					$result = $iterator->next();
+
+					if($result === false) {
+						$fetchAt++;
+					}
+
+					return $result;
 			  	}
 			));
-			
-		$query = $this->getMock('Query', 
-			array('execute', 'bindParam'));
-		$query->expects($this->once())
-			->method('execute')
-			->with()
-			->will($this->returnValue($pdoResult));
 
-		$index = 0;
+		$index = 1;
 		foreach($arguments as $argument) {
 			switch (gettype($argument)) {
 				case 'int':
@@ -98,42 +112,52 @@ abstract class MapperTestUtility extends TestUtility {
 					$pdoConstant = \PDO::PARAM_STR;
 					break;
 			}
-			$query->expects($this->at($index))
+			$this->query->expects($this->at($this->queryAt))
 				->method('bindParam')
-				->with($this->equalTo($index+1),
+				->with($this->equalTo($index),
 					$this->equalTo($argument),
 					$this->equalTo($pdoConstant));
 			$index++;
+			$this->queryAt++;
 		}
 
+		$this->query->expects($this->at($this->queryAt))
+			->method('execute')
+			->with()
+			->will($this->returnValue($this->pdoResult));
+		$this->queryAt++;
+
 		if($limit === null && $offset === null) {
-			$this->api->expects($this->once())
+			$this->api->expects($this->at($this->prepareAt))
 				->method('prepareQuery')
 				->with($this->equalTo($sql))
-				->will(($this->returnValue($query)));
+				->will(($this->returnValue($this->query)));
 		} elseif($limit !== null && $offset === null) {
-			$this->api->expects($this->once())
+			$this->api->expects($this->at($this->prepareAt))
 				->method('prepareQuery')
 				->with($this->equalTo($sql), $this->equalTo($limit))
-				->will(($this->returnValue($query)));
+				->will(($this->returnValue($this->query)));
 		} elseif($limit === null && $offset !== null) {
-			$this->api->expects($this->once())
+			$this->api->expects($this->at($this->prepareAt))
 				->method('prepareQuery')
 				->with($this->equalTo($sql), 
 					$this->equalTo(null),
 					$this->equalTo($offset))
-				->will(($this->returnValue($query)));
+				->will(($this->returnValue($this->query)));
 		} else  {
-			$this->api->expects($this->once())
+			$this->api->expects($this->at($this->prepareAt))
 				->method('prepareQuery')
 				->with($this->equalTo($sql), 
 					$this->equalTo($limit),
 					$this->equalTo($offset))
-				->will(($this->returnValue($query)));
+				->will(($this->returnValue($this->query)));
 		}
+		$this->prepareAt++;
+		$this->fetchAt++;
 
 	}
-	
+
+
 }
 
 
