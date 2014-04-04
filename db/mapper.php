@@ -186,7 +186,7 @@ abstract class Mapper {
 					break;
 			}
 			
-			$query->bindParam($index, $param, $pdoConstant);
+			$query->bindValue($index, $param, $pdoConstant);
 
 			$index++;
 		}

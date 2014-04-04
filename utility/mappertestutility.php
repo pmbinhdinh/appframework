@@ -52,7 +52,7 @@ abstract class MapperTestUtility extends TestUtility {
 			array('prepareQuery', 'getInsertId'),
 			array('a'));
 
-		$this->query = $this->getMock('Query', array('execute', 'bindParam'));
+		$this->query = $this->getMock('Query', array('execute', 'bindValue'));
 		$this->pdoResult = $this->getMock('Result', array('fetchRow'));
 		$this->queryAt = 0;
 		$this->prepareAt = 0;
@@ -113,7 +113,7 @@ abstract class MapperTestUtility extends TestUtility {
 					break;
 			}
 			$this->query->expects($this->at($this->queryAt))
-				->method('bindParam')
+				->method('bindValue')
 				->with($this->equalTo($index),
 					$this->equalTo($argument),
 					$this->equalTo($pdoConstant));
