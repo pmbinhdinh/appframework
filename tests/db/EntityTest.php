@@ -34,7 +34,7 @@ class TestEntity extends Entity {
 	public $testId;
 
 	public function __construct(){
-		$this->addType('testId', 'int');		
+		$this->addType('testId', 'integer');		
 	}
 };
 
@@ -195,8 +195,8 @@ class EntityTest extends \PHPUnit_Framework_TestCase {
 	public function testGetFieldTypes() {
 		$entity = new TestEntity();
 		$this->assertEquals(array(
-			'id' => 'int',
-			'testId' => 'int'
+			'id' => 'integer',
+			'testId' => 'integer'
 		), $entity->getFieldTypes());
 	}
 
