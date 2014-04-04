@@ -96,7 +96,7 @@ abstract class MapperTestUtility extends TestUtility {
 		$index = 1;
 		foreach($arguments as $argument) {
 			switch (gettype($argument)) {
-				case 'int':
+				case 'integer':
 					$pdoConstant = \PDO::PARAM_INT;
 					break;
 

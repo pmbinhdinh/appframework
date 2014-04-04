@@ -201,4 +201,10 @@ class EntityTest extends \PHPUnit_Framework_TestCase {
 	}
 
 
+	public function testGetItInt() {
+		$entity = new TestEntity();
+		$entity->setId(3);
+		$this->assertEquals('integer', gettype($entity->getId()));
+	}
+
 }

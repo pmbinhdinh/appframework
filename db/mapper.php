@@ -173,12 +173,8 @@ abstract class Mapper {
 		foreach($params as $param) {
 
 			switch (gettype($param)) {
-				case 'int':
+				case 'integer':
 					$pdoConstant = \PDO::PARAM_INT;
-					break;
-
-				case 'NULL':
-					$pdoConstant = \PDO::PARAM_NULL;
 					break;
 
 				case 'boolean':
