@@ -159,6 +159,47 @@ abstract class Mapper {
 
 
 	/**
+	 * Runs an sql query
+	 * @param string $sql the prepare string
+	 * @param array $params the params which should replace the ? in the sql query
+	 * @param int $limit the maximum number of rows
+	 * @param int $offset from which row we want to start
+	 * @return \PDOStatement the database query result
+	 */
+	protected function execute($sql, array $params=array(), $limit=null, $offset=null){
+		$query = $this->api->prepareQuery($sql, $limit, $offset);
+
+		$index = 1;  // bindParam is 1 indexed
+		foreach($params as $param) {
+
+			switch (gettype($param)) {
+				case 'int':
+					$pdoConstant = \PDO::PARAM_INT;
+					break;
+
+				case 'NULL':
+					$pdoConstant = \PDO::PARAM_NULL;
+					break;
+
+				case 'boolean':
+					$pdoConstant = \PDO::PARAM_BOOL;
+					break;
+				
+				default:
+					$pdoConstant = \PDO::PARAM_STR;
+					break;
+			}
+			
+			$query->bindParam($index, $param, $pdoConstant);
+
+			$index++;
+		}
+
+		return $query->execute();
+	}
+
+
+	/**
 	 * Returns an db result and throws exceptions when there are more or less
 	 * results
 	 * @see findEntity
@@ -186,19 +227,6 @@ abstract class Mapper {
 
 
 	/**
-	 * Runs an sql query
-	 * @param string $sql the prepare string
-	 * @param array $params the params which should replace the ? in the sql query
-	 * @param int $limit the maximum number of rows
-	 * @param int $offset from which row we want to start
-	 * @return \PDOStatement the database query result
-	 */
-	protected function execute($sql, array $params=array(), $limit=null, $offset=null){
-		$query = $this->api->prepareQuery($sql, $limit, $offset);
-		return $query->execute($params);
-	}
-
-	/**
 	 * Creates an entity from a row. Automatically determines the entity class
 	 * from the current mapper name (MyEntityMapper -> MyEntity)
 	 * @param array $row the row which should be converted to an entity
@@ -210,6 +238,7 @@ abstract class Mapper {
 		$entity = new $entityName();
 		return $entity->fromRow($row);
 	}
+
 
 	/**
 	 * Runs a sql query and returns an array of entities
@@ -229,6 +258,7 @@ abstract class Mapper {
 		}
 		return $entities;
 	}
+
 
 	/**
 	 * Returns an db result and throws exceptions when there are more or less

@@ -192,4 +192,13 @@ class EntityTest extends \PHPUnit_Framework_TestCase {
 	}
 
 
+	public function testGetFieldTypes() {
+		$entity = new TestEntity();
+		$this->assertEquals(array(
+			'id' => 'int',
+			'testId' => 'int'
+		), $entity->getFieldTypes());
+	}
+
+
 }

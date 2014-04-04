@@ -28,8 +28,8 @@ abstract class Entity {
 
 	public $id;
 
-	private $updatedFields = array();
-	private $fieldTypes = array('id' => 'int');
+	private $_updatedFields = array();
+	private $_fieldTypes = array('id' => 'int');
 
 
 	/**
@@ -57,12 +57,20 @@ abstract class Entity {
 	public function fromRow(array $row){
 		foreach($row as $key => $value){
 			$prop = $this->columnToProperty($key);
-			if($value !== null && array_key_exists($prop, $this->fieldTypes)){
-				settype($value, $this->fieldTypes[$prop]);
+			if($value !== null && array_key_exists($prop, $this->_fieldTypes)){
+				settype($value, $this->_fieldTypes[$prop]);
 			}
 			$this->$prop = $value;
 		}
 		return $this;
+	}
+
+
+	/**
+	 * @return an array with attribute and type
+	 */
+	public function getFieldTypes() {
+		return $this->_fieldTypes;
 	}
 
 	
@@ -70,7 +78,7 @@ abstract class Entity {
 	 * Marks the entity as clean needed for setting the id after the insertion
 	 */
 	public function resetUpdatedFields(){
-		$this->updatedFields = array();
+		$this->_updatedFields = array();
 	}
 
 
@@ -80,8 +88,8 @@ abstract class Entity {
 			$this->markFieldUpdated($name);
 
 			// if type definition exists, cast to correct type
-			if($args[0] !== null && array_key_exists($name, $this->fieldTypes)) {
-				settype($args[0], $this->fieldTypes[$name]);
+			if($args[0] !== null && array_key_exists($name, $this->_fieldTypes)) {
+				settype($args[0], $this->_fieldTypes[$name]);
 			}
 			$this->$name = $args[0];
 
@@ -129,7 +137,7 @@ abstract class Entity {
 	 * @param string $attribute the name of the attribute
 	 */
 	protected function markFieldUpdated($attribute){
-		$this->updatedFields[$attribute] = true;
+		$this->_updatedFields[$attribute] = true;
 	}
 
 
@@ -179,7 +187,7 @@ abstract class Entity {
 	 * @return array array of updated fields for update query
 	 */
 	public function getUpdatedFields(){
-		return $this->updatedFields;
+		return $this->_updatedFields;
 	}
 
 
@@ -190,7 +198,7 @@ abstract class Entity {
 	 * @param string $type the type which will be used to call settype()
 	 */
 	protected function addType($fieldName, $type){
-		$this->fieldTypes[$fieldName] = $type;
+		$this->_fieldTypes[$fieldName] = $type;
 	}
 
 

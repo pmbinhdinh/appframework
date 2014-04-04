@@ -73,11 +73,38 @@ abstract class MapperTestUtility extends TestUtility {
 			));
 			
 		$query = $this->getMock('Query', 
-			array('execute'));
+			array('execute', 'bindParam'));
 		$query->expects($this->once())
 			->method('execute')
-			->with($this->equalTo($arguments))
+			->with()
 			->will($this->returnValue($pdoResult));
+
+		$index = 0;
+		foreach($arguments as $argument) {
+			switch (gettype($argument)) {
+				case 'int':
+					$pdoConstant = \PDO::PARAM_INT;
+					break;
+
+				case 'NULL':
+					$pdoConstant = \PDO::PARAM_NULL;
+					break;
+
+				case 'boolean':
+					$pdoConstant = \PDO::PARAM_BOOL;
+					break;
+				
+				default:
+					$pdoConstant = \PDO::PARAM_STR;
+					break;
+			}
+			$query->expects($this->at($index))
+				->method('bindParam')
+				->with($this->equalTo($index+1),
+					$this->equalTo($argument),
+					$this->equalTo($pdoConstant));
+			$index++;
+		}
 
 		if($limit === null && $offset === null) {
 			$this->api->expects($this->once())
