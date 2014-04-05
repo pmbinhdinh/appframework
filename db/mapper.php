@@ -42,8 +42,7 @@ abstract class Mapper {
 	 * @param API $api Instance of the API abstraction layer
 	 * @param string $tableName the name of the table. set this to allow entity 
 	 * @param string $entityClass the name of the entity that the sql should be
-	 * mapped to
-	 * queries without using sql
+	 * mapped to queries without using sql
 	 */
 	public function __construct(API $api, $tableName, $entityClass=null){
 		$this->api = $api;
@@ -216,7 +215,7 @@ abstract class Mapper {
 	 * @throws MultipleObjectsReturnedException if more than one item exist
 	 * @return array the result as row
 	 */
-	protected function findOneQuery($sql, $params, $limit=null, $offset=null){
+	protected function findOneQuery($sql, array $params=array(), $limit=null, $offset=null){
 		$result = $this->execute($sql, $params, $limit, $offset);
 		$row = $result->fetchRow();
 
@@ -275,7 +274,7 @@ abstract class Mapper {
 	 * @throws MultipleObjectsReturnedException if more than one item exist
 	 * @return Entity the entity
 	 */
-	protected function findEntity($sql, $params, $limit=null, $offset=null){
+	protected function findEntity($sql, array $params=array(), $limit=null, $offset=null){
 		return $this->mapRowToEntity($this->findOneQuery($sql, $params, $limit, $offset));
 	}
 
