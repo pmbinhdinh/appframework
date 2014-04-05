@@ -54,15 +54,18 @@ abstract class Entity {
 	 * Maps the keys of the row array to the attributes
 	 * @param array $row the row to map onto the entity
 	 */
-	public function fromRow(array $row){
+	public static function fromRow(array $row){
+		$instance = new static();
+
 		foreach($row as $key => $value){
-			$prop = $this->columnToProperty($key);
-			if($value !== null && array_key_exists($prop, $this->_fieldTypes)){
-				settype($value, $this->_fieldTypes[$prop]);
-			}
-			$this->$prop = $value;
+			$prop = ucfirst($instance->columnToProperty($key));
+			$setter = 'set' . $prop;
+			$instance->$setter($value);
 		}
-		return $this;
+
+		$instance->resetUpdatedFields();
+
+		return $instance;
 	}
 
 

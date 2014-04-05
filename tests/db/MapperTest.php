@@ -77,7 +77,7 @@ class MapperTest extends MapperTestUtility {
 		$sql = 'hi';
 		$params = array('jo');
 		$rows = array(
-			array('hi')
+			array('pre_name' => 'hi')
 		);
 		$row = $this->setMapperResult($sql, $params, $rows);
 		$this->mapper->findOneEntity($sql, $params);

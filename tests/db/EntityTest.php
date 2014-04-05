@@ -32,6 +32,7 @@ class TestEntity extends Entity {
 	public $name;
 	public $email;
 	public $testId;
+	public $preName;
 
 	public function __construct(){
 		$this->addType('testId', 'integer');		
@@ -62,9 +63,7 @@ class EntityTest extends \PHPUnit_Framework_TestCase {
 			'pre_name' => 'john', 
 			'email' => 'john@something.com'
 		);
-		$this->entity = new TestEntity();
-
-		$this->entity->fromRow($row);
+		$this->entity = TestEntity::fromRow($row);
 
 		$this->assertEquals($row['pre_name'], $this->entity->getPreName());
 		$this->assertEquals($row['email'], $this->entity->getEmail());
@@ -133,26 +132,24 @@ class EntityTest extends \PHPUnit_Framework_TestCase {
 		$row = array();
 		$entity2 = new TestEntity();
 
-		$this->entity->fromRow($row);
+		$this->entity = TestEntity::fromRow($row);
 		$this->assertEquals($entity2, $this->entity);
 	}
 
 
 	public function testIdGetsConvertedToInt(){
 		$row = array('id' => '4');
-		$entity = new TestEntity();
 
-		$this->entity->fromRow($row);
-		$this->assertTrue(4 === $this->entity->getId());
+		$this->entity = TestEntity::fromRow($row);
+		$this->assertSame(4, $this->entity->getId());
 	}
 
 
 	public function testSetType(){
 		$row = array('testId' => '4');
-		$entity = new TestEntity();
 
-		$this->entity->fromRow($row);
-		$this->assertTrue(4 === $this->entity->getTestId());
+		$this->entity = TestEntity::fromRow($row);
+		$this->assertSame(4, $this->entity->getTestId());
 	}
 
 

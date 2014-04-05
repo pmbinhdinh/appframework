@@ -35,16 +35,25 @@ use OCA\AppFramework\Core\API;
  */
 abstract class Mapper {
 
-	private $tableName;
+	protected $tableName;
+	protected $entityClass;
 
 	/**
 	 * @param API $api Instance of the API abstraction layer
 	 * @param string $tableName the name of the table. set this to allow entity 
+	 * @param string $entityClass the name of the entity that the sql should be
+	 * mapped to
 	 * queries without using sql
 	 */
-	public function __construct(API $api, $tableName){
+	public function __construct(API $api, $tableName, $entityClass=null){
 		$this->api = $api;
 		$this->tableName = '*PREFIX*' . $tableName;
+
+		// if not given set the entity name to the class without the mapper part
+		// cache it here for later use since reflection is slow
+		if($entityClass === null) {
+			$this->entityClass = str_replace('Mapper', '', get_class($this));
+		}
 	}
 
 
@@ -201,12 +210,14 @@ abstract class Mapper {
 	 * @see findEntity
 	 * @param string $sql the sql query
 	 * @param array $params the parameters of the sql query
+	 * @param int $limit the maximum number of rows
+	 * @param int $offset from which row we want to start
 	 * @throws DoesNotExistException if the item does not exist
 	 * @throws MultipleObjectsReturnedException if more than one item exist
 	 * @return array the result as row
 	 */
-	protected function findOneQuery($sql, $params){
-		$result = $this->execute($sql, $params);
+	protected function findOneQuery($sql, $params, $limit=null, $offset=null){
+		$result = $this->execute($sql, $params, $limit, $offset);
 		$row = $result->fetchRow();
 
 		if($row === false || $row === null){
@@ -229,10 +240,7 @@ abstract class Mapper {
 	 * @return Entity the entity
 	 */
 	protected function mapRowToEntity($row) {
-		$class = get_class($this);
-		$entityName = str_replace('Mapper', '', $class);
-		$entity = new $entityName();
-		return $entity->fromRow($row);
+		return call_user_func($this->entityClass .'::fromRow', $row);
 	}
 
 
@@ -261,23 +269,15 @@ abstract class Mapper {
 	 * results
 	 * @param string $sql the sql query
 	 * @param array $params the parameters of the sql query
+	 * @param int $limit the maximum number of rows
+	 * @param int $offset from which row we want to start
 	 * @throws DoesNotExistException if the item does not exist
 	 * @throws MultipleObjectsReturnedException if more than one item exist
-	 * @return array the result as row
+	 * @return Entity the entity
 	 */
-	protected function findEntity($sql, $params){
-		$result = $this->execute($sql, $params);
-		$row = $result->fetchRow();
-
-		if($row === false){
-			throw new DoesNotExistException('No matching entry found');
-		}
-		$row2 = $result->fetchRow();
-		//MDB2 returns null, PDO and doctrine false when no row is available
-		if( ! ($row2 === false || $row2 === null )) {
-			throw new MultipleObjectsReturnedException('More than one result');
-		} else {
-			return $this->mapRowToEntity($row);
-		}
+	protected function findEntity($sql, $params, $limit=null, $offset=null){
+		return $this->mapRowToEntity($this->findOneQuery($sql, $params, $limit, $offset));
 	}
+
+
 }
